@@ -1,0 +1,20 @@
+﻿@page "/login"
+
+<PageTitle>Login</PageTitle>
+<html lang="en">
+<body style="margin-top: 1rem; background-color: gray">
+    <div class="card mx-auto" style="width: 25%;">
+        <h4 class="text-center" style="margin-top: .25rem">Sign In</h4>
+        <div class="card-body">
+            <form> <!--add websockets?-->
+                <input type="username" class="form-control" id="email" name="username" aria-describedby="emailHelp" placeholder="Enter Username" autofocus>
+                <input style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Password">
+                <div style="margin-top: .25rem; margin-bottom: .25rem;"><a href="newUser.php" class="link-primary">Create Account</a></div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
