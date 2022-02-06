@@ -1,0 +1,22 @@
+﻿@page "/newuser"
+
+<PageTitle>NewUser</PageTitle>
+
+<!DOCTYPE html>
+<html lang="en">
+    <body style="margin-top: 1rem; background-color: gray">
+        <div class="card mx-auto" style="width: 25%;">
+            <h4 class="text-center" style="margin-top: .25rem">Create Account</h4>
+            <div class="card-body">
+                <form>
+                    <input type="username" class="form-control" id="email" name="username" aria-describedby="emailHelp" placeholder="Enter username" autofocus>
+                    <input style="margin-top: 1rem; margin-bottom: .5rem;" type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password">
+                    <!-- update for new user -->
+                    <div style="margin-top: .5rem; margin-bottom: .5rem;"><a href="" class="link-primary">Already have an Account</a></div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

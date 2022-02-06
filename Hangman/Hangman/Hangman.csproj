@@ -15,4 +15,8 @@
     <Compile Remove="Pages\Login.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Pages\NewUser.razor" />
+  </ItemGroup>
+
 </Project>

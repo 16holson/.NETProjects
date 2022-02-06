@@ -1,20 +1,50 @@
 ﻿@page "/login"
+@inject NavigationManager NavManager
 
 <PageTitle>Login</PageTitle>
 <html lang="en">
-<body style="margin-top: 1rem; background-color: gray">
-    <div class="card mx-auto" style="width: 25%;">
-        <h4 class="text-center" style="margin-top: .25rem">Sign In</h4>
-        <div class="card-body">
-            <form> <!--add websockets?-->
-                <input type="username" class="form-control" id="email" name="username" aria-describedby="emailHelp" placeholder="Enter Username" autofocus>
-                <input style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Password">
-                <div style="margin-top: .25rem; margin-bottom: .25rem;"><a href="newUser.php" class="link-primary">Create Account</a></div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+<body style="margin-top: 1rem;">
+<div class="card mx-auto" style="width: 25%;">
+    <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
+    <div class="card-body">
+         <!--add websockets?-->
+         <input type="username" class="form-control" id="email" name="username" aria-describedby="emailHelp" placeholder="Enter Username" autofocus>
+         <input style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Password">
+         <input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password">
+         <!-- figure out how to change pages -->
+         <button class="btn btn-primary" @onclick="CreateAccount">@account</button>
+         <button type="submit" class="btn btn-primary" @onclick="HangManPage">@sign</button>
+        
     </div>
+</div>
 
 </body>
 
 </html>
+
+@code
+{
+    private String display = "none";
+    private String account = "Create Account";
+    private String sign = "Sign in";
+    private void CreateAccount()
+    {
+        if (display == "inline")
+        {
+            display = "none";
+            account = "Create Account";
+            sign = "Sign in";
+        }
+        else
+        {
+            display = "inline";
+            account = "Sign In";
+            sign = "Sign Up";
+        }
+    }
+    private void HangManPage()
+    {
+        NavManager.NavigateTo("/hangman");
+    }
+}
+
