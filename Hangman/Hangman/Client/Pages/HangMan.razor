@@ -2,9 +2,70 @@
 
 <PageTitle>Hangman</PageTitle>
 <html lang="en">
-    <body style="margin-top: 1rem; background-color: gray">
-        <div class="card mx-auto" style="width: 25%;">
-            <h4 class="text-center" style="margin-top: .25rem">Hangman</h4>
-        </div>
-    </body>
+<body style="margin-top: 1rem">
+<div class="text-center h4">
+    Hangman
+</div>
+<div class="text-center">
+    Put picture here        
+</div>
+<div class="text-center">
+    @foreach (var l in letterList)
+    {
+        <button id="@l" class="btn btn-light btn-lg" style="margin: .1rem" disabled="@letters[l]" @onclick="() => OnPress(l)">@l</button>
+        if (l == 'P' || l == 'L')
+        {
+            <br>
+        }
+    }
+</div>
+
+<div class="text-center">Chosen Letter: @choice</div>
+<div class="text-center"><button id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">Reset Buttons</button></div>
+</body>
 </html>
+
+
+
+@code
+{
+    char choice;
+    bool disabled = false;
+
+
+    Dictionary<char, bool> letters = new Dictionary<char, bool>();
+    char[] letterList = new char[] {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+
+    void SetUpLists()
+    {
+        foreach (var l in letterList)
+        {
+            letters.Add(l, false);
+        }
+    }
+    Task OnInitialize()
+    {
+        return Task.CompletedTask;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        SetUpLists();
+        await OnInitialize();
+    }
+
+    private void OnPress(char letter)
+    {
+        choice = letter;
+        letters[letter] = true;
+    }
+
+    private void ResetButtons()
+    {
+        foreach (var l in letterList)
+        {
+            letters[l] = false;
+        }
+        choice = '\0';
+    }
+}
+
