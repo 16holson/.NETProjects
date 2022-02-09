@@ -10,6 +10,19 @@
     Put picture here        
 </div>
 <div class="text-center">
+    @for (var i = 0; i < wordLength; i++)
+    {
+        <span>&#160;&#160 @choice &#160;&#160;</span>
+    }
+</div>
+<p style="margin-bottom: -1.5rem; margin-top: -1.5rem"></p>
+<div class="text-center">
+    @for (var i = 0; i < wordLength; i++)
+    {
+        <span> ___&#160;</span>
+    }
+</div>
+<div class="text-center">
     @foreach (var l in letterList)
     {
         <button id="@l" class="btn btn-light btn-lg" style="margin: .1rem" disabled="@letters[l]" @onclick="() => OnPress(l)">@l</button>
@@ -31,6 +44,8 @@
 {
     char choice;
     bool disabled = false;
+    string randWord;
+    int wordLength = 5;
 
 
     Dictionary<char, bool> letters = new Dictionary<char, bool>();

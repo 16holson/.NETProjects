@@ -16,4 +16,14 @@
     <ProjectReference Include="..\Shared\Hangman.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="Pages\FetchData.razor" />
+    <Content Remove="Pages\Counter.razor" />
+    <Content Remove="Pages\NewUser.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="words.txt" />
+  </ItemGroup>
+
 </Project>
