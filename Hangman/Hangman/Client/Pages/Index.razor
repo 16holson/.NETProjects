@@ -24,7 +24,7 @@
             <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
         </label>
     </div>
-    <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
+    <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="ConfirmPassword">@account</button>
     <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="SignIn">@sign</button>
     <hr>
 
@@ -72,7 +72,7 @@
         }
     }
 
-    private async Task CreateAccount()
+    private async Task ConfirmPassword()
     {
         if (display == "inline")
         {
@@ -109,4 +109,5 @@
     {
         NavigationManager.NavigateTo("/hangman");
     }
+
 }
