@@ -5,34 +5,48 @@
 
 <PageTitle>Index</PageTitle>
 
-<div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
+<body style="margin-top: 1rem;">
+<div class="card mx-auto" style="width: 25%;">
+    <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
+    <div class="card-body">
+    <div class="form-group">
+        <label>
+            <input @bind="userInput" class="form-control" id="email" name="userInput" aria-describedby="emailHelp" placeholder="Enter Username" autofocus/>
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            <input @bind="passwordInput" style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
+        </label>
+    </div>
+    <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
+    <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="SignIn">@sign</button>
+    <hr>
+
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
+    </div>
 </div>
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
-<hr>
-
-<ul id="messagesList">
-    @foreach (var message in messages)
-    {
-        <li>@message</li>
-    }
-</ul>
-
+</body>
 @code {
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
     private string? userInput;
-    private string? messageInput;
+    private string? passwordInput;
+    private string? password2Input;
+    private String display = "none";
+    private String account = "Create Account";
+    private String sign = "Sign in";
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,9 +54,9 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string, string>("ReceiveMessage", (user, password) =>
         {
-            var encodedMsg = $"{user}: {message}";
+            var encodedMsg = $"{user}: {password}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
@@ -50,11 +64,32 @@
         await hubConnection.StartAsync();
     }
 
-    private async Task Send()
+    private async Task SignIn()
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+        }
+    }
+
+    private async Task CreateAccount()
+    {
+        if (display == "inline")
+        {
+            display = "none";
+            account = "Create Account";
+            sign = "Sign in";
+        }
+        else
+        {
+            display = "inline";
+            account = "Sign In";
+            sign = "Sign Up";
+        }
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
         }
     }
 
@@ -67,5 +102,11 @@
         {
             await hubConnection.DisposeAsync();
         }
+    }
+    //---------------------------------------------------------------------------login code -------------------------------------------------------//
+    
+    private void HangManPage()
+    {
+        NavigationManager.NavigateTo("/hangman");
     }
 }
