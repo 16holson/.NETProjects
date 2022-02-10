@@ -6,20 +6,27 @@
 <div class="text-center h4">
     Hangman
 </div>
-<div class="text-center">
-    Put picture here        
+<div class="text-center" style="margin-bottom: 3rem">
+    Put picture here
 </div>
 <div class="text-center">
-    @for (var i = 0; i < wordLength; i++)
+    @foreach (var l in randWord)
     {
-        <span>&#160;&#160 @choice &#160;&#160;</span>
+        if (wordList[l])
+        {
+            <span>&nbsp;&nbsp;@l&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        }
+        else
+        {
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        }
     }
 </div>
 <p style="margin-bottom: -1.5rem; margin-top: -1.5rem"></p>
 <div class="text-center">
-    @for (var i = 0; i < wordLength; i++)
+    @for (var i = 0; i < randWord.Length; i++)
     {
-        <span> ___&#160;</span>
+        <span> ___&nbsp;</span>
     }
 </div>
 <div class="text-center">
@@ -35,19 +42,21 @@
 
 <div class="text-center">Chosen Letter: @choice</div>
 <div class="text-center"><button id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">Reset Buttons</button></div>
+<div class="text-center">
+    @if (count >= wordList.Count)
+    {
+        <p>Congrats You Won</p>
+    }
+</div>
 </body>
 </html>
-
-
 
 @code
 {
     char choice;
-    bool disabled = false;
-    string randWord;
-    int wordLength = 5;
-
-
+    int count = 0;
+    string randWord = "HANNAH";
+    Dictionary<char, bool> wordList = new Dictionary<char, bool>();
     Dictionary<char, bool> letters = new Dictionary<char, bool>();
     char[] letterList = new char[] {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
 
@@ -56,6 +65,10 @@
         foreach (var l in letterList)
         {
             letters.Add(l, false);
+        }
+        foreach (var l in randWord)
+        {
+            wordList.Add(l, false);
         }
     }
     Task OnInitialize()
@@ -72,6 +85,14 @@
     {
         choice = letter;
         letters[letter] = true;
+        foreach (var l in wordList)
+        {
+            if (l.Key.Equals(letter))
+            {
+                wordList[letter] = true;
+                count++;
+            }
+        }
     }
 
     private void ResetButtons()
@@ -80,7 +101,14 @@
         {
             letters[l] = false;
         }
+        foreach (var l in wordList)
+        {
+            wordList[l.Key] = false;
+        }
         choice = '\0';
+        count = 0;
     }
+
+    
 }
 

@@ -26,4 +26,9 @@
     <None Remove="words.txt" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Pages\lexicon.cs" />
+    <Compile Remove="Pages\lexicons.cs" />
+  </ItemGroup>
+
 </Project>
