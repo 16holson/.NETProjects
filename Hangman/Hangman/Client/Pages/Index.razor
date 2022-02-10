@@ -1,59 +1,72 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Text
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
 <PageTitle>Index</PageTitle>
 
 <body style="margin-top: 1rem;">
-<div class="card mx-auto" style="width: 25%;">
-    <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
-    <div class="card-body">
-    <div class="form-group">
-        <label>
-            <input @bind="userInput" class="form-control" id="email" name="userInput" aria-describedby="emailHelp" placeholder="Enter Username" autofocus/>
-        </label>
-    </div>
-    <div class="form-group">
-        <label>
-            <input @bind="passwordInput" style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
-        </label>
-    </div>
-    <div class="form-group">
-        <label>
-            <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
-        </label>
-    </div>
-    <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
-    <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="SignIn">@sign</button>
-    <hr>
+    <div class="card mx-auto" style="width: 25%;">
+        <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
+        <div class="card-body">
+        <div class="form-group">
+            <label>
+                <input @bind="userInput" class="form-control" id="email" name="userInput" aria-describedby="emailHelp" placeholder="Enter Username" autofocus/>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input @bind="passwordInput" style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
+            </label>
+        </div>
+        <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
+        <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
+        <hr>
 
-    <ul id="messagesList">
-        @foreach (var message in messages)
-        {
-            <li>@message</li>
-        }
-    </ul>
+        <ul id="messagesList">
+            @foreach (var message in messages)
+            {
+                <li>@message</li>
+            }
+        </ul>
+        </div>
     </div>
-</div>
-
 </body>
+
 @code {
+    /// <summary>
+    /// Attributes
+    /// </summary>
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
-    private string? userInput;
-    private string? passwordInput;
-    private string? password2Input;
+    private string? userInput = "";
+    private string? passwordInput = "";
+    private string? password2Input = "";
+    private string? saltyHashPassword = "";
+    private string? dbPassword = "testPassword";
+    private string? salt = "";
     private String display = "none";
     private String account = "Create Account";
     private String sign = "Sign in";
 
+
+    /// <summary>
+    /// Set up hub connection upon initialization
+    /// It directs hub actions to Hangman.Server.NotificationHub
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
             .Build();
-
+        // Receives message from the hub's SendMessage function, then ads it to the messages List, re-renders the page
         hubConnection.On<string, string>("ReceiveMessage", (user, password) =>
         {
             var encodedMsg = $"{user}: {password}";
@@ -61,18 +74,106 @@
             StateHasChanged();
         });
 
+        // Receives message from the hub's Authenticate function
+        hubConnection.On<string, string, string>("LoginConfirmation", (user, testSalt, password) =>
+        {
+            var encodedMsg = $"Welcome back, {user}! Your account salt is: {testSalt}. Your hashed password from the db is: {password}.";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, string, string>("NewAccountConfirmation", (user, testSalt, password) =>
+        {
+            var encodedMsg = $"Welcome, {user}! Your account salt is: {testSalt}. Your hashed password is: {password}.";
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+        // Starts waiting for hub to initiate contact again
         await hubConnection.StartAsync();
     }
 
-    private async Task SignIn()
+    /// <summary>
+    /// Searches db for existing user name
+    /// Gets salt for existing user
+    /// hashes and salts password entered
+    /// compares result to the saved hash in the db
+    /// </summary>
+    /// <returns></returns>
+    private async Task Authenticate()
     {
+        // TODO: Call hub with user name, will receive passwordhash and salt back if user exists
+        // TODO: If no match was made: print a message to user indicating login was invalid
+
+        // Use salt from db to hash password
+        if(ValidatePassword(salt))
+        {
+            HangManPage();
+        }
+        // TODO: Check whether the hashed password is the same as the one received back from the db
+        // TODO: If password doesn't match: print a message to user indicating login was invalid
+        // TODO: If password does match: redirect to Hangman page
+
+        // TODO: calls hub's "SendMessage" function with userInput and passwordInput as arguments
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+            await hubConnection.SendAsync("Authenticate", userInput, salt , dbPassword);
         }
     }
 
-    private async Task CreateAccount()
+    /// <summary>
+    /// Submits user new salt and hashed password to the hub, where it will be added to the db
+    /// </summary>
+    /// <returns></returns>
+    private async Task NewAccount()
+    {
+        // verify the two passwords match
+        if (passwordInput.Equals(password2Input))
+        {
+            // If passwords match, then salt and hash the password
+            if (hubConnection is not null)
+            {
+                await hubConnection.SendAsync("NewAccountConfirmation", userInput, salt, saltyHashPassword);
+            }
+        }
+        else
+        {
+            string errorMsg = "Your passwords didn't match. Try again.";
+            messages.Add(errorMsg);
+            StateHasChanged();
+        } 
+        
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    /// <summary>
+    /// Waits for contact from the hub
+    /// </summary>
+    /// <returns></returns>
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+    //-----------------------------------------------------------------------Non-Async functions-------------------------------------------------------//
+
+    /// <summary>
+    /// Directs user to the hangman page
+    /// </summary>
+    private void HangManPage()
+    {
+        NavigationManager.NavigateTo("/hangman");
+    }
+
+    /// <summary>
+    /// Displays the password confirmation box when creating a new account
+    /// Hides the Sign in button
+    /// </summary>
+    private void CreateAccount()
     {
         if (display == "inline")
         {
@@ -86,27 +187,17 @@
             account = "Sign In";
             sign = "Sign Up";
         }
-
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
-        }
     }
 
-    public bool IsConnected =>
-        hubConnection?.State == HubConnectionState.Connected;
-
-    public async ValueTask DisposeAsync()
+    /// <summary>
+    /// Validates the password for an exissting user
+    /// </summary>
+    private bool ValidatePassword(string dbSalt)
     {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
+        // TODO: Use salt from db with passwordInput
+        // TODO: salt and hash the combination
+        // TODO: compare result with the db hashed password
+        return false;
     }
-    //---------------------------------------------------------------------------login code -------------------------------------------------------//
-    
-    private void HangManPage()
-    {
-        NavigationManager.NavigateTo("/hangman");
-    }
+
 }

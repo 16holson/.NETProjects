@@ -16,9 +16,5 @@
     <ProjectReference Include="..\Shared\Hangman.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\NewFolder\" />
-  </ItemGroup>
-
 
 </Project>
