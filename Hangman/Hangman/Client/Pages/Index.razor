@@ -1,6 +1,9 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.IO;
 @inject NavigationManager NavigationManager
+@inject HttpClient Http
+
 @implements IAsyncDisposable
 
 <PageTitle>Index</PageTitle>
@@ -37,7 +40,9 @@
             <li>@message</li>
         }
     </ul>
-    
+
+
+
 </div>
 
 </body>
@@ -50,6 +55,11 @@
     private String display = "none";
     private String account = "Create Account";
     private String sign = "Sign in";
+
+    private string? response;
+
+    List<string> filelist = new List<string>();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,6 +75,12 @@
         });
 
         await hubConnection.StartAsync();
+
+        //response = await Http.GetStringAsync(@"Asset\Word");
+       // response = await Http.GetStringAsync(@"random_words.txt");
+       response = await Http.GetStringAsync("random_words.txt");
+
+
     }
 
     private async Task SignIn()

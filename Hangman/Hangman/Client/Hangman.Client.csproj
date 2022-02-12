@@ -20,6 +20,7 @@
     <Content Remove="Pages\FetchData.razor" />
     <Content Remove="Pages\Counter.razor" />
     <Content Remove="Pages\NewUser.razor" />
+    <Content Remove="wwwroot\random_words.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,10 @@
   <ItemGroup>
     <Compile Remove="Pages\lexicon.cs" />
     <Compile Remove="Pages\lexicons.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\random_words.txt" />
   </ItemGroup>
 
 </Project>

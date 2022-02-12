@@ -1,13 +1,17 @@
 ﻿@page "/hangman"
+@inject HttpClient Http
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.IO;
 
 <PageTitle>Hangman</PageTitle>
 <html lang="en">
 <body style="margin-top: 1rem">
+   
 <div class="text-center h4">
     Hangman
 </div>
 <div class="text-center" style="margin-bottom: 3rem">
-    Put picture here
+    <img src="@currentImage" />
 </div>
 <div class="text-center">
     @foreach (var l in randWord)
@@ -46,8 +50,11 @@
     @if (count >= wordList.Count)
     {
         <p>Congrats You Won</p>
-    }
+    } 
+    
 </div>
+
+
 </body>
 </html>
 
@@ -55,10 +62,14 @@
 {
     char choice;
     int count = 0;
+    int mistakes = 1;
     string randWord = "HANNAH";
+
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
     Dictionary<char, bool> letters = new Dictionary<char, bool>();
     char[] letterList = new char[] {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+    string currentImage = "HangmanBlank.png";
+
 
     void SetUpLists()
     {
@@ -71,29 +82,50 @@
             wordList.Add(l, false);
         }
     }
+
     Task OnInitialize()
     {
+
         return Task.CompletedTask;
     }
     protected override async Task OnInitializedAsync()
     {
+
         SetUpLists();
+
+
         await OnInitialize();
+
+
     }
 
     private void OnPress(char letter)
     {
         choice = letter;
         letters[letter] = true;
+        bool correct = false;
+
         foreach (var l in wordList)
         {
             if (l.Key.Equals(letter))
             {
                 wordList[letter] = true;
                 count++;
-            }
+                correct = true;
+            } 
+        }
+
+        if (!correct) {
+            if (mistakes <= 5) {
+                currentImage = $"strike{mistakes}.png";
+                ++mistakes;
+            } else if (mistakes == 6) {
+                currentImage = $"dead.png";
+        }
         }
     }
+
+ 
 
     private void ResetButtons()
     {
@@ -107,6 +139,20 @@
         }
         choice = '\0';
         count = 0;
+    }
+
+    private async void PullRandWord(string file) {
+
+        file = await Http.GetStringAsync("random_words.txt");
+
+        string[] spliter = file.Split("\n");
+        var rand = new Random();
+
+        int wordSelect = rand.Next(0, 10001);
+
+        string word = spliter[wordSelect];
+        randWord = word.Replace("\"", "");
+
     }
 
     
