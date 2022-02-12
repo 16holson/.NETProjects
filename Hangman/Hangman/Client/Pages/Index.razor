@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
-@using System.IO;
+@using System.Security.Cryptography
+@using System.Text
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
@@ -50,11 +51,13 @@
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
     private string? userInput;
-    private string? passwordInput;
+    private static string? passwordInput;
     private string? password2Input;
     private String display = "none";
     private String account = "Create Account";
     private String sign = "Sign in";
+    private String salt;
+    private string hashedSaltPass = "test";
 
     private string? response;
 
@@ -63,13 +66,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, password) =>
+        hubConnection.On<string, string, string>("ReceiveMessage", (user, hashedPassword, salts) =>
         {
-            var encodedMsg = $"{user}: {password}";
+            var encodedMsg = $"{user}: {hashedPassword}: {salts}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
@@ -85,10 +89,40 @@
 
     private async Task SignIn()
     {
+        
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+            salt = CreateSalt();
+            hashedSaltPass = ComputeHash(Convert.FromBase64String(passwordInput), Convert.FromBase64String(salt));   
+            await hubConnection.SendAsync("SendMessage", userInput, hashedSaltPass, salt);
         }
+    }
+
+    private static string CreateSalt()
+    {
+        var saltBytes = new byte[32];
+        var random = RandomNumberGenerator.Create();
+        random.GetBytes(saltBytes);
+        return Convert.ToBase64String(saltBytes);
+    }
+
+    private static string ComputeHash(byte[] bytesToHash, byte[] salt)
+    {
+        // HashAlgorithm algorithm = new SHA256Managed();
+        // byte[] plainTextWithSaltBytes =
+        //     new byte[bytesToHash.Length + salt.Length];
+        // for (int i = 0; i < bytesToHash.Length; i++)
+        // {
+        //     plainTextWithSaltBytes[i] = bytesToHash[i];
+        // }
+        // for (int i = 0; i < salt.Length; i++)
+        // {
+        //     plainTextWithSaltBytes[bytesToHash.Length + i] = salt[i];
+        // }
+        // return Convert.ToBase64String(algorithm.ComputeHash(plainTextWithSaltBytes));
+
+        var hmac = new HMACSHA256(salt);
+        return Convert.ToBase64String(hmac.ComputeHash(bytesToHash));
     }
 
     private async Task CreateAccount()
@@ -108,7 +142,7 @@
 
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+            await hubConnection.SendAsync("SendMessage", userInput, hashedSaltPass, salt);
         }
     }
 
