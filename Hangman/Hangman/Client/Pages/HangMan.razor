@@ -54,15 +54,14 @@
 }
 
     <div class="text-center">Chosen Letter: @choice</div>
+    <div>Random Word: @randWord</div>
     <div class="text-center"><button id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">Reset Buttons</button></div>
-    <div class="text-center">
-        @if (count >= wordList.Count)
-        {
-            <p>Congrats You Won</p>
-        } 
-
-
-    </div>
+        <div class="text-center">
+            @if (count >= wordList.Count)
+            {
+                <p>Congrats You Won</p>
+            }
+        </div>
 
 </body>
 </html>
@@ -72,7 +71,7 @@
     char choice;
     int count = 0;
     int mistakes = 1;
-    //string randWord = "HANNAH";
+    string distinctLetters;
     string randWord = "";
 
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
@@ -83,11 +82,12 @@
 
     void SetUpLists()
     {
+        distinctLetters = new String(randWord.Distinct().ToArray());
         foreach (var l in letterList)
         {
             letters.Add(l, false);
         }
-        foreach (var l in randWord)
+        foreach (var l in distinctLetters)
         {
             wordList.Add(l, false);
         }
@@ -95,7 +95,6 @@
 
     Task OnInitialize()
     {
-
         return Task.CompletedTask;
     }
 
@@ -160,23 +159,23 @@
     //and removes any quotations and leading/trailing blank spaces, sets all characters to uppercase
     //Once a word is chosen the lists are created via function call
     private async void PullRandWord(string file) {
-
-
+    
+    
         string[] spliter = file.Split("\n");
         var rand = new Random();
-
+    
         int wordSelect = rand.Next(0, 10001);
-
+    
         string word = spliter[wordSelect];
         randWord = word.Replace("\"", "");
         randWord = randWord.Trim();
-
+    
         randWord = randWord.ToUpper();
-
+    
         Console.WriteLine(randWord);
-
+    
         SetUpLists();
-
+    
     }
 
     
