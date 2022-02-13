@@ -13,47 +13,56 @@
 <div class="text-center" style="margin-bottom: 3rem">
     <img src="@currentImage" />
 </div>
-<div class="text-center">
-    @foreach (var l in randWord)
-    {
-        if (wordList[l])
-        {
-            <span>&nbsp;&nbsp;@l&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        }
-        else
-        {
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        }
-    }
-</div>
-<p style="margin-bottom: -1.5rem; margin-top: -1.5rem"></p>
-<div class="text-center">
-    @for (var i = 0; i < randWord.Length; i++)
-    {
-        <span> ___&nbsp;</span>
-    }
-</div>
-<div class="text-center">
-    @foreach (var l in letterList)
-    {
-        <button id="@l" class="btn btn-light btn-lg" style="margin: .1rem" disabled="@letters[l]" @onclick="() => OnPress(l)">@l</button>
-        if (l == 'P' || l == 'L')
-        {
-            <br>
-        }
-    }
-</div>
 
-<div class="text-center">Chosen Letter: @choice</div>
-<div class="text-center"><button id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">Reset Buttons</button></div>
-<div class="text-center">
-    @if (count >= wordList.Count)
-    {
-        <p>Congrats You Won</p>
-    } 
-    
-</div>
+@if (@randWord == "") {
+        <p>Loading...</p>
+} else {
 
+    <div class="text-center">
+
+
+        @foreach (var l in randWord)
+        {
+            if (wordList[l])
+            {
+                <span>&nbsp;&nbsp;@l&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            }
+            else
+            {
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            }
+        }
+    </div>
+
+    <p style="margin-bottom: -1.5rem; margin-top: -1.5rem"></p>
+    <div class="text-center">
+        @for (var i = 0; i < randWord.Length; i++)
+        {
+            <span> ___&nbsp;</span>
+        }
+    </div>
+    <div class="text-center">
+        @foreach (var l in letterList)
+        {
+            <button id="@l" class="btn btn-light btn-lg" style="margin: .1rem" disabled="@letters[l]" @onclick="() => OnPress(l)">@l</button>
+            if (l == 'P' || l == 'L')
+            {
+                <br>
+            }
+        }
+    </div>
+}
+
+    <div class="text-center">Chosen Letter: @choice</div>
+    <div class="text-center"><button id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">Reset Buttons</button></div>
+    <div class="text-center">
+        @if (count >= wordList.Count)
+        {
+            <p>Congrats You Won</p>
+        } 
+
+
+    </div>
 
 </body>
 </html>
@@ -63,7 +72,8 @@
     char choice;
     int count = 0;
     int mistakes = 1;
-    string randWord = "HANNAH";
+    //string randWord = "HANNAH";
+    string randWord = "";
 
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
     Dictionary<char, bool> letters = new Dictionary<char, bool>();
@@ -88,11 +98,12 @@
 
         return Task.CompletedTask;
     }
+
+
     protected override async Task OnInitializedAsync()
     {
-
-        SetUpLists();
-
+        var response = await Http.GetStringAsync("random_words.txt");
+        PullRandWord(response);
 
         await OnInitialize();
 
@@ -101,18 +112,22 @@
 
     private void OnPress(char letter)
     {
+
         choice = letter;
         letters[letter] = true;
         bool correct = false;
 
         foreach (var l in wordList)
         {
+
             if (l.Key.Equals(letter))
             {
                 wordList[letter] = true;
                 count++;
                 correct = true;
             } 
+
+
         }
 
         if (!correct) {
@@ -121,11 +136,11 @@
                 ++mistakes;
             } else if (mistakes == 6) {
                 currentImage = $"dead.png";
-        }
+            }
         }
     }
 
- 
+
 
     private void ResetButtons()
     {
@@ -141,9 +156,11 @@
         count = 0;
     }
 
+    //Takes in a text file as a string, splits the string into a string array, picks a random string
+    //and removes any quotations and leading/trailing blank spaces, sets all characters to uppercase
+    //Once a word is chosen the lists are created via function call
     private async void PullRandWord(string file) {
 
-        file = await Http.GetStringAsync("random_words.txt");
 
         string[] spliter = file.Split("\n");
         var rand = new Random();
@@ -152,6 +169,13 @@
 
         string word = spliter[wordSelect];
         randWord = word.Replace("\"", "");
+        randWord = randWord.Trim();
+
+        randWord = randWord.ToUpper();
+
+        Console.WriteLine(randWord);
+
+        SetUpLists();
 
     }
 
