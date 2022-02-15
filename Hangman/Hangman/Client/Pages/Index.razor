@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
-@using System.Security.Cryptography
 @using System.Text
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
@@ -8,132 +7,170 @@
 <PageTitle>Index</PageTitle>
 
 <body style="margin-top: 1rem;">
-<div class="card mx-auto" style="width: 25%;">
-    <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
-    <div class="card-body">
-        <div class="form-group text-center">
+    <div class="card mx-auto" style="width: 25%;">
+        <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
+        <div class="card-body">
+        <div class="form-group">
             <label>
                 <input @bind="userInput" class="form-control" id="email" name="userInput" aria-describedby="emailHelp" placeholder="Enter Username" autofocus/>
             </label>
         </div>
-        <div class="form-group text-center">
+        <div class="form-group">
             <label>
                 <input @bind="passwordInput" style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
             </label>
         </div>
-    
-        <div class="form-group text-center">
+        <div class="form-group">
             <label>
-                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
+                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @confirmPasswordDisplay" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
             </label>
         </div>
-        <div class="form-group text-center">
-            <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
-            <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="SignIn">@sign</button>
+        <div class=btn-link
+            <label>
+                <button name="createAccountBtn" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
+            </label>
+            <label>
+                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
+            </label>
+        </div>
+        <hr>
+
+        <ul id="messagesList">
+            @foreach (var message in messages)
+            {
+                <li>@message</li>
+            }
+        </ul>
         </div>
     </div>
-    <hr>
-    <ul id="messagesList">
-        @foreach (var message in messages)
-        {
-            <li>@message</li>
-        }
-    </ul>
-    
-</div>
-
 </body>
+
 @code {
+    /// <summary>
+    /// Attributes
+    /// </summary>
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
-    private string? userInput;
-    private static string? passwordInput;
-    private string? password2Input;
-    private String display = "none";
+    private string? userInput = "";
+    private string? passwordInput = "";
+    private string? password2Input = "";
+    private String confirmPasswordDisplay = "none";
     private String account = "Create Account";
     private String sign = "Sign in";
-    private String salt;
-    private string hashedSaltPass = "test";
+    private int numCreateAccntBtnClicks = 0;
+    private bool isAuthenticated = false;
 
+    /// <summary>
+    /// Set up hub connection upon initialization
+    /// It directs hub actions to Hangman.Server.NotificationHub
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnInitializedAsync()
     {
-        
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
             .Build();
 
-        hubConnection.On<string, string, string>("ReceiveMessage", (user, hashedPassword, salts) =>
+        // Receives message from the hub's SendMessage function, then ads it to the messages List, re-renders the page
+        hubConnection.On<string, string>("ReceiveMessage", (user, password) =>
         {
-            var encodedMsg = $"{user}: {hashedPassword}: {salts}";
+            var encodedMsg = $"{user}: {password}";
             messages.Add(encodedMsg);
             StateHasChanged();
         });
 
+        // Receives message from the hub's Authenticate function
+        hubConnection.On<string, string, bool>("LoginConfirmation", (user, password, isAuthenticated) =>
+        {
+            var encodedMsg = "";
+            if (isAuthenticated)
+            {
+                encodedMsg = $"Welcome back, {user}! Your account password is: {password}. Your authentication status is: {isAuthenticated}.";
+            }
+            else
+            {
+                encodedMsg = "Login failed.";
+            }
+            this.isAuthenticated = isAuthenticated;
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+
+        // Received message from the hub's NewAccount function
+        hubConnection.On<string, string, bool>("NewAccountConfirmation", (user, password, isAuthenticated) =>
+        {
+            var encodedMsg = "";
+            if (isAuthenticated)
+            {
+                encodedMsg = $"Welcome, {user}! Your hashed password is: {password}. Your authentication status is: {isAuthenticated}";
+            }
+            else
+            {
+                encodedMsg = $"Your authentication status is: {isAuthenticated}. There is already an account with this user name.";
+            }
+            this.isAuthenticated = isAuthenticated;
+            messages.Add(encodedMsg);
+            StateHasChanged();
+        });
+        // Starts waiting for hub to initiate contact again
         await hubConnection.StartAsync();
     }
 
-    private async Task SignIn()
-    {
-        
+    /// <summary>
+    /// Sends username and password to hub to be validated
+    /// isAuthenticated will be updated to reflect authentication state upon completion
+    /// </summary>
+    /// <returns></returns>
+    private async Task Authenticate()
+    {        
+        // Call hub with user name and password, will receive authentication status back. 
         if (hubConnection is not null)
         {
-            salt = CreateSalt();
-            hashedSaltPass = ComputeHash(Convert.FromBase64String(passwordInput), Convert.FromBase64String(salt));   
-            await hubConnection.SendAsync("SendMessage", userInput, hashedSaltPass, salt);
+            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+            await hubConnection.SendAsync("Authenticate", userInput, passwordInput);
+            if(isAuthenticated)
+            {
+                HangManPage();
+            }
         }
     }
 
-    private static string CreateSalt()
+    /// <summary>
+    /// Submits new user name and password to the hub, where it will be salted, hashed and added to the db as a new user
+    /// </summary>
+    /// <returns></returns>
+    private async Task NewAccount()
     {
-        var saltBytes = new byte[32];
-        var random = RandomNumberGenerator.Create();
-        random.GetBytes(saltBytes);
-        return Convert.ToBase64String(saltBytes);
-    }
-
-    private static string ComputeHash(byte[] bytesToHash, byte[] salt)
-    {
-        // HashAlgorithm algorithm = new SHA256Managed();
-        // byte[] plainTextWithSaltBytes =
-        //     new byte[bytesToHash.Length + salt.Length];
-        // for (int i = 0; i < bytesToHash.Length; i++)
-        // {
-        //     plainTextWithSaltBytes[i] = bytesToHash[i];
-        // }
-        // for (int i = 0; i < salt.Length; i++)
-        // {
-        //     plainTextWithSaltBytes[bytesToHash.Length + i] = salt[i];
-        // }
-        // return Convert.ToBase64String(algorithm.ComputeHash(plainTextWithSaltBytes));
-
-        var hmac = new HMACSHA256(salt);
-        return Convert.ToBase64String(hmac.ComputeHash(bytesToHash));
-    }
-
-    private async Task CreateAccount()
-    {
-        if (display == "inline")
+        // verify the two passwords match
+        if (passwordInput.Equals(password2Input))
         {
-            display = "none";
-            account = "Create Account";
-            sign = "Sign in";
+            // If passwords match, then go to the server to try to create an account
+            if (hubConnection is not null)
+            {
+                await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+                await hubConnection.SendAsync("NewAccount", userInput, passwordInput);
+                if(isAuthenticated)
+                {
+                    HangManPage();
+                }
+            }
         }
         else
         {
-            display = "inline";
-            account = "Sign In";
-            sign = "Sign Up";
-        }
-
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("SendMessage", userInput, hashedSaltPass, salt);
-        }
+            string errorMsg = "Your passwords didn't match. Try again.";
+            messages.Add(errorMsg);
+            StateHasChanged();
+        } 
     }
 
+    // Delegate to determine connection state with the hub
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
 
+    /// <summary>
+    /// Waits for contact from the hub, then closes the async task?
+    /// </summary>
+    /// <returns></returns>
     public async ValueTask DisposeAsync()
     {
         if (hubConnection is not null)
@@ -141,10 +178,33 @@
             await hubConnection.DisposeAsync();
         }
     }
-    //---------------------------------------------------------------------------login code -------------------------------------------------------//
-    
+    //-----------------------------------------------------------------------Non-Async functions-------------------------------------------------------//
+
+    /// <summary>
+    /// Directs user to the hangman page
+    /// </summary>
     private void HangManPage()
     {
         NavigationManager.NavigateTo("/hangman");
     }
+
+    /// <summary>
+    /// Displays the password confirmation box when creating a new account
+    /// Hides the Sign in button
+    /// </summary>
+    private async Task CreateAccount()
+    {
+        if (numCreateAccntBtnClicks == 0)
+        {
+            numCreateAccntBtnClicks++;
+            confirmPasswordDisplay = "inline";
+        }
+        else
+        {
+            numCreateAccntBtnClicks--;
+            // confirmPasswordDisplay = "none";
+            await NewAccount();
+        }
+    }
+
 }
