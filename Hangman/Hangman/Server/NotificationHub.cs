@@ -19,16 +19,19 @@ namespace Hangman.Server
 
         /// <summary>
         /// Receives user name and password
-        /// Returns the user, the salt (in string format) and the hashed and salted password (in string format)
+        /// Checks authenticates the user in the db and returns a message with the authentication status
         /// </summary>
         /// <param name="user"></param>
         /// <param name="salt"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public async Task Authenticate(string user, string salt, string dbPassword)
+        public async Task Authenticate(string user, string password)
         {
-            // TODO: Check db for user. If user exists, return salt and hashed password
-            await Clients.All.SendAsync("LoginConfirmation", user, salt, dbPassword );
+            // TODO: Check db for user. If user exists, validate the password and return authentication status
+            // If user doesn't exist, or password is wrong, return false authentication status
+            string dbPassword = "someHashedPassword";
+            bool isAuthenticated = true;
+            await Clients.All.SendAsync("LoginConfirmation", user, password, isAuthenticated);
         }
 
         /// <summary>
@@ -36,19 +39,22 @@ namespace Hangman.Server
         /// Creates salt for hashing a new user's password.
         /// Hashes the password input with the salt
         /// The saltyHashPassword and the salt should be used to create user's the db record
+        /// Returns isAuthenticated status, to denote whether the new user record was created successfully
         /// </summary>
         /// <param name="user"></param>
         /// <param name="salt"></param>
         /// <param name="hashedPassword"></param>
         /// <returns></returns>
-        public async Task NewAccount(string user, string salt, string unhashedPassword)
+        public async Task NewAccount(string user, string password)
         {
-            // TODO: Check db for user. If user exists, return salt and hashed password
+            // TODO: Check db for user. If user exists, return user already exists message
             var salty = SaltyHash.GenerateSalt();
-            var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(unhashedPassword), salty);
-            salt = BitConverter.ToString(salty);
+            var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(password), salty);
+            // salt = BitConverter.ToString(salty);
             string saltyHashPassword = BitConverter.ToString(hashedPassword);
-            await Clients.All.SendAsync("NewAccountConfirmation", user, salt, saltyHashPassword);
+            // TODO: Put in Try Catch block. If anything is caught, isAuthenticated = false;
+            bool isAuthenticated = true;
+            await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
         }
     }
 }

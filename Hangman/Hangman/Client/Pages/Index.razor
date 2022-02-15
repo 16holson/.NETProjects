@@ -22,11 +22,17 @@
         </div>
         <div class="form-group">
             <label>
-                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @display" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
+                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @confirmPasswordDisplay" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
             </label>
         </div>
-        <button class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
-        <button type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
+        <div class=btn-link
+            <label>
+                <button name="createAccountBtn" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
+            </label>
+            <label>
+                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
+            </label>
+        </div>
         <hr>
 
         <ul id="messagesList">
@@ -48,12 +54,11 @@
     private string? userInput = "";
     private string? passwordInput = "";
     private string? password2Input = "";
-    private string? saltyHashPassword = "";
-    private string? dbPassword = "testPassword";
-    private string? salt = "";
-    private String display = "none";
+    private String confirmPasswordDisplay = "none";
     private String account = "Create Account";
     private String sign = "Sign in";
+    private int numCreateAccntBtnClicks = 0;
+    private bool isAuthenticated = false;
 
 
     /// <summary>
@@ -66,6 +71,7 @@
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
             .Build();
+
         // Receives message from the hub's SendMessage function, then ads it to the messages List, re-renders the page
         hubConnection.On<string, string>("ReceiveMessage", (user, password) =>
         {
@@ -75,16 +81,35 @@
         });
 
         // Receives message from the hub's Authenticate function
-        hubConnection.On<string, string, string>("LoginConfirmation", (user, testSalt, password) =>
+        hubConnection.On<string, string, bool>("LoginConfirmation", (user, password, isAuthenticated) =>
         {
-            var encodedMsg = $"Welcome back, {user}! Your account salt is: {testSalt}. Your hashed password from the db is: {password}.";
+            var encodedMsg = "";
+            if (isAuthenticated)
+            {
+                encodedMsg = $"Welcome back, {user}! Your account password is: {password}. Your authentication status is: {isAuthenticated}.";
+            }
+            else
+            {
+                encodedMsg = "Login failed.";
+            }
+            this.isAuthenticated = isAuthenticated;
             messages.Add(encodedMsg);
             StateHasChanged();
         });
 
-        hubConnection.On<string, string, string>("NewAccountConfirmation", (user, testSalt, password) =>
+        // Received message from the hub's NewAccount function
+        hubConnection.On<string, string, bool>("NewAccountConfirmation", (user, password, isAuthenticated) =>
         {
-            var encodedMsg = $"Welcome, {user}! Your account salt is: {testSalt}. Your hashed password is: {password}.";
+            var encodedMsg = "";
+            if (isAuthenticated)
+            {
+                encodedMsg = $"Welcome, {user}! Your hashed password is: {password}. Your authentication status is: {isAuthenticated}";
+            }
+            else
+            {
+                encodedMsg = $"Your authentication status is: {isAuthenticated}. There is already an account with this user name.";
+            }
+            this.isAuthenticated = isAuthenticated;
             messages.Add(encodedMsg);
             StateHasChanged();
         });
@@ -93,36 +118,26 @@
     }
 
     /// <summary>
-    /// Searches db for existing user name
-    /// Gets salt for existing user
-    /// hashes and salts password entered
-    /// compares result to the saved hash in the db
+    /// Sends username and password to hub to be validated
+    /// isAuthenticated will be updated to reflect authentication state upon completion
     /// </summary>
     /// <returns></returns>
     private async Task Authenticate()
-    {
-        // TODO: Call hub with user name, will receive passwordhash and salt back if user exists
-        // TODO: If no match was made: print a message to user indicating login was invalid
-
-        // Use salt from db to hash password
-        if(ValidatePassword(salt))
-        {
-            HangManPage();
-        }
-        // TODO: Check whether the hashed password is the same as the one received back from the db
-        // TODO: If password doesn't match: print a message to user indicating login was invalid
-        // TODO: If password does match: redirect to Hangman page
-
-        // TODO: calls hub's "SendMessage" function with userInput and passwordInput as arguments
+    {        
+        // Call hub with user name and password, will receive authentication status back. 
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
-            await hubConnection.SendAsync("Authenticate", userInput, salt , dbPassword);
+            await hubConnection.SendAsync("Authenticate", userInput, passwordInput);
+            if(isAuthenticated)
+            {
+                HangManPage();
+            }
         }
     }
 
     /// <summary>
-    /// Submits user new salt and hashed password to the hub, where it will be added to the db
+    /// Submits new user name and password to the hub, where it will be salted, hashed and added to the db as a new user
     /// </summary>
     /// <returns></returns>
     private async Task NewAccount()
@@ -130,10 +145,15 @@
         // verify the two passwords match
         if (passwordInput.Equals(password2Input))
         {
-            // If passwords match, then salt and hash the password
+            // If passwords match, then go to the server to try to create an account
             if (hubConnection is not null)
             {
-                await hubConnection.SendAsync("NewAccountConfirmation", userInput, salt, saltyHashPassword);
+                await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+                await hubConnection.SendAsync("NewAccount", userInput, passwordInput);
+                if(isAuthenticated)
+                {
+                    HangManPage();
+                }
             }
         }
         else
@@ -142,14 +162,14 @@
             messages.Add(errorMsg);
             StateHasChanged();
         } 
-        
     }
 
+    // Delegate to determine connection state with the hub
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
 
     /// <summary>
-    /// Waits for contact from the hub
+    /// Waits for contact from the hub, then closes the async task?
     /// </summary>
     /// <returns></returns>
     public async ValueTask DisposeAsync()
@@ -173,31 +193,19 @@
     /// Displays the password confirmation box when creating a new account
     /// Hides the Sign in button
     /// </summary>
-    private void CreateAccount()
+    private async Task CreateAccount()
     {
-        if (display == "inline")
+        if (numCreateAccntBtnClicks == 0)
         {
-            display = "none";
-            account = "Create Account";
-            sign = "Sign in";
+            numCreateAccntBtnClicks++;
+            confirmPasswordDisplay = "inline";
         }
         else
         {
-            display = "inline";
-            account = "Sign In";
-            sign = "Sign Up";
+            numCreateAccntBtnClicks--;
+            // confirmPasswordDisplay = "none";
+            await NewAccount();
         }
-    }
-
-    /// <summary>
-    /// Validates the password for an exissting user
-    /// </summary>
-    private bool ValidatePassword(string dbSalt)
-    {
-        // TODO: Use salt from db with passwordInput
-        // TODO: salt and hash the combination
-        // TODO: compare result with the db hashed password
-        return false;
     }
 
 }
