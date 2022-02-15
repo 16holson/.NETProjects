@@ -1,4 +1,6 @@
 ﻿@page "/counter"
+@using Hangman.Shared
+@inject HttpClient Http
 
 <PageTitle>Counter</PageTitle>
 
@@ -8,8 +10,36 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<div>
+    <br />
+    <p> test area</p>
+    <p>@response</p>
+</div>
+
 @code {
     private int currentCount = 0;
+
+    private string response;
+
+
+    protected override async Task OnInitializedAsync() {
+
+        var getresponse = await Http.GetStringAsync("Asset/Word");
+
+        response = getresponse;
+
+
+        //var file = await Http.GetStringAsync(@"\assets\random_words.txt");
+        ////var file = System.IO.File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}{@"\assets\random_words.txt"}");
+
+        //string[] splits = file.Split("\n");
+        //var rand = new Random();
+
+        //int wordselect = rand.Next(0, 10001);
+
+        //response = splits[wordselect];
+        //response = response.Replace("\"", string.Empty);
+    }
 
     private void IncrementCount()
     {
