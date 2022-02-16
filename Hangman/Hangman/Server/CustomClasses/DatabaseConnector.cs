@@ -4,13 +4,14 @@ namespace Hangman.Server.CustomClasses
 {
     public class DatabaseConnector
     {
-		static void ProcessFile(string folderPath)
+		static void ProcessFile()
 		{
+			string folderPath = "../../../assets";
 			//the file pattern is *output.accdb
-			var file = Directory.GetFiles(@folderPath, "*output.accdb").FirstOrDefault();
+			var file = Directory.GetFiles(@folderPath, "*HangmanDB.accdb").FirstOrDefault();
+			string connectionstring = null;
 			if (File.Exists(file))
 			{
-				string connectionstring = null;
 				connectionstring = @"Driver={Microsoft Access Driver 
 						  (*.mdb, *.accdb)};DBQ=" + file;
 				OdbcConnection odbcConnection = new OdbcConnection(connectionstring);
