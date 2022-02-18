@@ -4,9 +4,9 @@ namespace Hangman.Server.CustomClasses
 {
     public class DatabaseConnector
     {
-		static void ProcessFile()
+		public static void ProcessFile()
 		{
-			string folderPath = "../../../assets";
+			string folderPath = "./assets/";
 			//the file pattern is *output.accdb
 			var file = Directory.GetFiles(@folderPath, "*HangmanDB.accdb").FirstOrDefault();
 			string connectionstring = null;
@@ -18,6 +18,10 @@ namespace Hangman.Server.CustomClasses
 				try
 				{
 					odbcConnection.Open();
+					if (odbcConnection is null)
+                    {
+						Console.WriteLine("odbcConnection failed to connect to .accdb file.");
+                    }
 					List<string> tableNames = new List<string>();
 					var schema = odbcConnection.GetSchema("Tables");
 
