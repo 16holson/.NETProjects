@@ -22,6 +22,8 @@
     <Content Remove="Pages\Counter.razor" />
     <Content Remove="Pages\NewUser.razor" />
     <Content Remove="wwwroot\random_words.txt" />
+    <Content Remove="wwwroot\congrats.jpg" />
+    <Content Remove="wwwroot\lose.png" />
   </ItemGroup>
 
   <ItemGroup>
