@@ -33,6 +33,5 @@ namespace Hangman.Client.CustomClasses
                 return hash.ComputeHash(data);
             }
         }
-
     }
 }

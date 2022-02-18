@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Hangman.Server;
 using Hangman.Server.Controllers;
+using DataAccessLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastController>();
+//builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+//builder.Services.AddTransient<IUserData, UserData>();
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

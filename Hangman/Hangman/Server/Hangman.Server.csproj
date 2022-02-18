@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataAccessLibrary\DataAccessLibrary.csproj" />
     <ProjectReference Include="..\Client\Hangman.Client.csproj" />
     <ProjectReference Include="..\Shared\Hangman.Shared.csproj" />
   </ItemGroup>
