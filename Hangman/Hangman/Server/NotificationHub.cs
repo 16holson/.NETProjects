@@ -28,7 +28,8 @@ namespace Hangman.Server
         public async Task Authenticate(string user, string password)
         {
             // TODO: Check db for user. If user exists, validate the password and return authentication status
-            DatabaseConnector.ProcessFile();
+            var msg = DatabaseConnector.ProcessFile();
+            await Clients.All.SendAsync("ReceiveMessage", user, msg);
             // If user doesn't exist, or password is wrong, return false authentication status
             string dbPassword = "someHashedPassword";
             bool isAuthenticated = true;
