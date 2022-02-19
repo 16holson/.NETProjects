@@ -9,33 +9,32 @@
 <PageTitle>Index</PageTitle>
 
 <body style="margin-top: 1rem;">
-    <div class="card mx-auto" style="width: 25%;">
+    <div class="card mx-auto" style="width: 25%">
         <h4 class="text-center" style="margin-top: .25rem">@sign</h4>
         <div class="card-body">
-        <div class="form-group">
+        <div class="form-group text-center">
             <label>
                 <input @bind="userInput" class="form-control" id="email" name="userInput" aria-describedby="emailHelp" placeholder="Enter Username" autofocus/>
             </label>
         </div>
-        <div class="form-group">
+        <div class="form-group text-center">
             <label>
-                <input @bind="passwordInput" style="margin-top: 1rem; margin-bottom: .5rem" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
+                <input @bind="passwordInput" style="margin-top: 1rem;" type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
             </label>
         </div>
-        <div class="form-group">
-            <label>
-                <input @bind="password2Input" input style="margin-top: 1rem; margin-bottom: .5rem; display: @confirmPasswordDisplay" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
-            </label>
-        </div>
-        <div class=btn-link
-            <label>
-                <button name="createAccountBtn" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="CreateAccount">@account</button>
-            </label>
-            <label>
-                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
-            </label>
-        </div>
-        <ul id="messagesList">
+            <div class="form-group text-center">
+                <label>
+                    <input @bind="password2Input" input style="margin-bottom: 1rem; margin-top: .5rem; display: @confirmPasswordDisplay" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
+                </label>
+            </div>
+            <div style="display: flex; justify-content: center; position: center">
+                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">Sign In</button>
+                <label style="vertical-align: middle; position: absolute; right: 2%;" class="float-end">
+                    <input style="vertical-align: middle; margin-left: .5rem" @onclick="CreateAccount" class="form-check-input float-end" type="checkbox" id="createAccountCheck" name="createAccountCheck" value="Create Account">
+                    Create Account
+                </label>
+            </div>
+            <ul id="messagesList">
             @foreach (var message in messages)
             {
                 <li>@message</li>
@@ -55,7 +54,6 @@
     private string? passwordInput = "";
     private string? password2Input = "";
     private String confirmPasswordDisplay = "none";
-    private String account = "Create Account";
     private String sign = "Sign in";
     private int numCreateAccntBtnClicks = 0;
     private bool isAuthenticated = false;
@@ -134,12 +132,20 @@
         // Call hub with user name and password, will receive authentication status back. 
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
-            await hubConnection.SendAsync("Authenticate", userInput, passwordInput);
-            if(isAuthenticated)
+            if (confirmPasswordDisplay == "inline")
             {
-                HangManPage();
+                NewAccount();
             }
+            else
+            {
+                await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
+                await hubConnection.SendAsync("Authenticate", userInput, passwordInput);
+                if(isAuthenticated)
+                {
+                    HangManPage();
+                }  
+            }
+            
         }
     }
 
@@ -205,13 +211,15 @@
         if (numCreateAccntBtnClicks == 0)
         {
             numCreateAccntBtnClicks++;
+            sign = "Sign Up";
             confirmPasswordDisplay = "inline";
         }
         else
         {
             numCreateAccntBtnClicks--;
-            // confirmPasswordDisplay = "none";
-            await NewAccount();
+            sign = "Sign In";
+            confirmPasswordDisplay = "none";
+            //await NewAccount();
         }
     }
 
