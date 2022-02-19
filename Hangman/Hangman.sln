@@ -9,7 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangman.Client", "Hangman\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangman.Shared", "Hangman\Shared\Hangman.Shared.csproj", "{06A56041-CDE3-4660-96DB-60DCF215EDEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{B303F759-A99F-45F6-9E02-48D2D019E5DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{B303F759-A99F-45F6-9E02-48D2D019E5DE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{71FDACAB-86B8-4D9F-9AA7-3616629B2FC2} = {71FDACAB-86B8-4D9F-9AA7-3616629B2FC2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

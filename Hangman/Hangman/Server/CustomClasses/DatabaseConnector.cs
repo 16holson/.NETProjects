@@ -16,7 +16,7 @@ namespace Hangman.Server.CustomClasses
 			if(File.Exists(file))
             {
 				ConnectionString = @"Driver={Microsoft Access Driver 
-						  (*.mdb, *.accdb)};DBQ=" + file;
+						  (*.mdb, *.accdb)};DBQ=" + file ;
 			}
 		}
 
