@@ -1,6 +1,10 @@
 ﻿using Hangman.Server.CustomClasses;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
+using DataAccessLibrary;
+using DataAccessLibrary.Models;
+
+
 
 namespace Hangman.Server
 {
@@ -55,6 +59,15 @@ namespace Hangman.Server
             // TODO: Put in Try Catch block. If anything is caught, isAuthenticated = false;
             bool isAuthenticated = true;
             await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
+        }
+
+        public async Task<List<UserModel>> GetUsers()
+        {
+            string sql = "select * from dbo.Users";
+
+            UserData _db;
+
+            return _db.LoadData<UserModel, dynamic>(sql, new { });
         }
     }
 }
