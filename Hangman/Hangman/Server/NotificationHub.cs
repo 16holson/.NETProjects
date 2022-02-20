@@ -56,5 +56,7 @@ namespace Hangman.Server
             bool isAuthenticated = true;
             await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
         }
+
+
     }
 }
