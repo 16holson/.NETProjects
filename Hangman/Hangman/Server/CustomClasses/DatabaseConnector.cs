@@ -43,6 +43,28 @@ namespace Hangman.Server.CustomClasses
 		}
 
 		/// <summary>
+		/// Check if the username and password combo is valid
+		/// </summary>
+		/// <param name="userName"></param>
+		/// <param name="password"></param>
+		/// <returns>
+		/// true if username exists and password matches records in db
+		/// </returns>
+		public bool ValidateUser(string userName, string password) 
+		{ 
+			using (OdbcConnection odbcConnection = new OdbcConnection(ConnectionString))
+            {
+				User user = FindUser(userName);
+				if (user.Username != "UserNotFound")
+                {
+					string hash = SaltyHash.ComputeSha256Hash(password, user.Salt).ToString();
+					return (user.HashedPass == hash) ;
+				}
+            }
+			return false; 
+		}
+
+		/// <summary>
 		/// Inserts a user into the Users table in the HangmanDB.accdb file
 		/// </summary>
 		/// <param name="userName"></param>

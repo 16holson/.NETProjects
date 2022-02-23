@@ -35,6 +35,19 @@ namespace Hangman.Server.CustomClasses
         }
 
         /// <summary>
+        /// Throughway for passing in 2 strings
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="salt"></param>
+        /// <returns>string of the hashed strings</returns>
+        public static string ComputeSha256Hash(string data, string salt)
+        {
+            byte[] byteData = ConvertToBytes(data);
+            byte[] byteSalt = ConvertToBytes(salt);
+            return ConvertToString(ComputeSha256Hash(byteData, byteSalt));
+        }
+
+        /// <summary>
         /// Accepts a byte array and returns a string
         /// </summary>
         /// <param name="data"></param>

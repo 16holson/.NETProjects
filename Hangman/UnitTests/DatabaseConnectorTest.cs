@@ -10,7 +10,7 @@ namespace UnitTests
         public void TestInstantiation()
         {
             // Arrange
-            string filepath = "../../../../Hangman/Server/assets";
+            string filepath = "../../Hangman/Server/assets";
             string filename = "HangmanDB.accdb";
             // Create new DatabaseConnector object
             DatabaseConnector dbConnector = new DatabaseConnector(filepath, filename);
