@@ -1,11 +1,17 @@
 ﻿using Hangman.Server.CustomClasses;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
+using System.IO;
 
 namespace Hangman.Server
 {
-    public class NotificationHub : Hub
-    {
+    public class NotificationHub : Hub {
+        //private static string currentDir = Directory.GetCurrentDirectory();
+        private static string DATABASE_FILE_PATH = Directory.GetCurrentDirectory() + @"\assets";
+        private const string DATABASE_FILE_NAME = "HangmanDB.accdb";
+        private DatabaseConnector dbConnector = new DatabaseConnector(DATABASE_FILE_PATH, DATABASE_FILE_NAME);
+
+
         /// <summary>
         /// Receives two strings from client. Returns the same strings received.
         /// </summary>
@@ -50,10 +56,19 @@ namespace Hangman.Server
             // TODO: Check db for user. If user exists, return user already exists message
             var salty = SaltyHash.GenerateSalt();
             var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(password), salty);
-            // salt = BitConverter.ToString(salty);
             string saltyHashPassword = BitConverter.ToString(hashedPassword);
-            // TODO: Put in Try Catch block. If anything is caught, isAuthenticated = false;
-            bool isAuthenticated = true;
+            bool isAuthenticated = false;
+
+            try {
+
+                if (dbConnector.InsertUser(user, saltyHashPassword, SaltyHash.ConvertToString(salty)) > 0) {
+                    isAuthenticated = true;
+                }                
+            }
+            catch (Exception e) {
+                isAuthenticated = false;    
+            }
+
             await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
         }
 
