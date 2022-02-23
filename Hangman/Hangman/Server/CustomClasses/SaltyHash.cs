@@ -34,5 +34,25 @@ namespace Hangman.Server.CustomClasses
             }
         }
 
+        /// <summary>
+        /// Accepts a byte array and returns a string
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string ConvertToString(byte[] data)
+        {
+            return BitConverter.ToString(data);
+        }
+
+        /// <summary>
+        /// Accepts a string and returns a byte[]
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static byte[] ConvertToBytes(string data)
+        {
+            return Encoding.UTF8.GetBytes(data);
+        }
+
     }
 }
