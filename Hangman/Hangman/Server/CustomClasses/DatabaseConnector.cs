@@ -69,6 +69,40 @@ namespace Hangman.Server.CustomClasses
         }
 
 		/// <summary>
+		/// Function that finds and returns a user by their user name
+		/// The function should only every return one user, because usernames are unique
+		/// If the user wasn't found, it will return a User with the username UserNotFound
+		/// </summary>
+		/// <param name="userName"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public User FindUser(string userName)
+		{
+			using (OdbcConnection odbcConnection = new OdbcConnection(ConnectionString))
+			{
+				string queryString = "SELECT * FROM Users WHERE username='" + userName + "'";
+				User userReturned = new User("UserNotFound", "NoPassword", "NoSalt");
+				OdbcCommand odbcCommand = new OdbcCommand(queryString, odbcConnection);
+				try
+				{
+					odbcConnection.Open();
+					OdbcDataReader dataReader = odbcCommand.ExecuteReader();
+					while (dataReader.Read())
+                    {
+						userReturned = new User(dataReader[1].ToString(), dataReader[2].ToString(), dataReader[3].ToString());
+						Int32.TryParse(dataReader[4].ToString(), out userReturned.Score);
+                    }
+					dataReader.Close();
+					return userReturned;
+				}
+				catch (Exception ex)
+				{
+					throw new Exception(ex.Message, ex);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Example function from the tutorial I was following
 		/// returns a list of the rows in the .accdb file
 		/// </summary>
