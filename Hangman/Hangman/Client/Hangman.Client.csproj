@@ -24,6 +24,7 @@
     <Content Remove="wwwroot\random_words.txt" />
     <Content Remove="wwwroot\congrats.jpg" />
     <Content Remove="wwwroot\lose.png" />
+    <Content Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
