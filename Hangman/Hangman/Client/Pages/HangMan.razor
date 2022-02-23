@@ -56,7 +56,24 @@
     <div class="text-center h2" style="display: @newGameDisplay; width: 100%">
         <p>@results</p>
     </div>
-        <div class="text-center"><button style="display: @newGameDisplay" id="reset" class="btn btn-primary btn-lg" @onclick="ResetButtons">New Game</button></div>
+    <div class="text-center" >
+        <button id="reset" style="display: @newGameDisplay" class="btn btn-primary btn-lg" @onclick="ResetButtons">New Game</button>
+        <br><br>
+        <table style="display: @newGameDisplay">
+            <caption class="text-center" style="caption-side: top">High Scores</caption>
+            <tr>
+                <th>User</th>
+                <th>Score</th>
+            </tr>
+            @for (int i = 0; i < 10; i++) //Change to foreach loop with array of users/scores
+            {
+                <tr>
+                    <td>Enter User</td>
+                    <td>Enter Score</td>
+                </tr>
+            }
+        </table>    
+    </div>
     </body>
 </html>
 
