@@ -123,6 +123,36 @@ namespace Hangman.Server.CustomClasses
 				}
 			}
 		}
+		
+		/// <summary>
+		/// Returns a Dictionary of top10 users/scores
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public Dictionary<string, string> GetHighScores()
+		{
+			string query = "SELECT TOP 10 username, score FROM Users ORDER BY score ASC";
+			Dictionary<string, string> top10 = new Dictionary<string, string>();
+			using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+			{
+				OdbcCommand command = new OdbcCommand(query, connection);
+				try
+				{
+					connection.Open();
+					OdbcDataReader reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						top10.Add(reader[0].ToString(), reader[1].ToString());
+					}
+					reader.Close();
+					return top10;
+				}
+				catch(Exception ex)
+				{
+					throw new Exception(ex.Message, ex);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Example function from the tutorial I was following
