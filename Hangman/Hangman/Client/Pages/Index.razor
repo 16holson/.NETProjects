@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Text
+@using System.Runtime.CompilerServices
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
@@ -27,19 +28,16 @@
                     <input @bind="password2Input" input style="margin-bottom: 1rem; margin-top: .5rem; display: @confirmPasswordDisplay" type="password" class="form-control" id="confirmPassword" name="password" placeholder="Confirm Password"/>
                 </label>
             </div>
+            <div class="text-center" style="color: red; margin-bottom: .5rem">
+                @incorrectText
+            </div>
             <div style="display: flex; justify-content: center; position: center">
                 <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">Sign In</button>
-                <label style="vertical-align: middle; position: relative; right: 2%; margin-left: .5rem" class="float-end">
-                    <input style="vertical-align: middle; margin-left: .5rem" @onclick="CreateAccount" class="form-check-input float-end" type="checkbox" id="createAccountCheck" name="createAccountCheck" value="Create Account">
+                <label style="vertical-align: middle; position: relative; right: 1%; margin-left: 1rem" class="float-end">
+                    <input style="vertical-align: middle;" @onclick="CreateAccount" class="form-check-input float-end" type="checkbox" id="createAccountCheck" name="createAccountCheck" value="Create Account">
                     Create Account
                 </label>
             </div>
-            <ul id="messagesList">
-            @foreach (var message in messages)
-            {
-                <li>@message</li>
-            }
-        </ul>
         </div>
     </div>
 </body>
@@ -51,6 +49,7 @@
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
     private string? userInput = "";
+    private string? incorrectText = "";
     private string? passwordInput = "";
     private string? password2Input = "";
     private String confirmPasswordDisplay = "none";
@@ -82,34 +81,30 @@
         // Receives message from the hub's Authenticate function
         hubConnection.On<string, string, bool>("LoginConfirmation", (user, password, isAuthenticated) =>
         {
-            var encodedMsg = "";
             if (isAuthenticated)
             {
-                encodedMsg = $"Welcome back, {user}! Your account password is: {password}. Your authentication status is: {isAuthenticated}.";
+                HangManPage();
             }
             else
             {
-                encodedMsg = "Login failed.";
+                incorrectText = "Incorrect username or password";
             }
             this.isAuthenticated = isAuthenticated;
-            messages.Add(encodedMsg);
             StateHasChanged();
         });
 
         // Received message from the hub's NewAccount function
         hubConnection.On<string, string, bool>("NewAccountConfirmation", (user, password, isAuthenticated) =>
         {
-            var encodedMsg = "";
             if (isAuthenticated)
             {
-                encodedMsg = $"Welcome, {user}! Your hashed password is: {password}. Your authentication status is: {isAuthenticated}";
+                HangManPage();
             }
             else
             {
-                encodedMsg = $"Your authentication status is: {isAuthenticated}. There is already an account with this user name.";
+                incorrectText = "User already exists";
             }
             this.isAuthenticated = isAuthenticated;
-            messages.Add(encodedMsg);
             StateHasChanged();
         });
         // Starts waiting for hub to initiate contact again
@@ -118,8 +113,6 @@
         //response = await Http.GetStringAsync(@"Asset\Word");
        // response = await Http.GetStringAsync(@"random_words.txt");
        response = await Http.GetStringAsync("random_words.txt");
-
-
     }
 
     /// <summary>
@@ -138,14 +131,8 @@
             }
             else
             {
-                await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
                 await hubConnection.SendAsync("Authenticate", userInput, passwordInput);
-                if(isAuthenticated)
-                {
-                    HangManPage();
-                }  
             }
-            
         }
     }
 
@@ -161,18 +148,12 @@
             // If passwords match, then go to the server to try to create an account
             if (hubConnection is not null)
             {
-                await hubConnection.SendAsync("SendMessage", userInput, passwordInput);
                 await hubConnection.SendAsync("NewAccount", userInput, passwordInput);
-                if(isAuthenticated)
-                {
-                    HangManPage();
-                }
             }
         }
         else
         {
-            string errorMsg = "Your passwords didn't match. Try again.";
-            messages.Add(errorMsg);
+            incorrectText = "Your passwords didn't match. Try again.";
             StateHasChanged();
         } 
     }
@@ -208,6 +189,7 @@
     /// </summary>
     private async Task CreateAccount()
     {
+        incorrectText = "";
         if (numCreateAccntBtnClicks == 0)
         {
             numCreateAccntBtnClicks++;
