@@ -5,7 +5,6 @@
 @using System.Runtime.CompilerServices
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.IO;
-@using System.Runtime.CompilerServices
 
 <PageTitle>Hangman</PageTitle>
 <html lang="en">
@@ -155,6 +154,16 @@
 
         await hubConnection.StartAsync();
 
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
+            .Build();
+
+        hubConnection.On<Dictionary<string, string>>("ReceiveHighScores", (highScores) =>
+        {
+            this.highScores = highScores;
+            StateHasChanged();
+        });
+        await hubConnection.StartAsync();
         response = await Http.GetStringAsync("random_words.txt");
         PullRandWord(response);
 
