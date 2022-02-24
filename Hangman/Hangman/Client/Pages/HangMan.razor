@@ -28,6 +28,9 @@
         <div class="text-center h4">
             Hangman
         </div>
+        <div>
+            <label>Current Score: @displayScore</label>
+        </div>
         <div class="text-center" style="margin-bottom: 3rem">
             <img src="@currentImage" />
         </div>
@@ -100,6 +103,7 @@
 {
     int count = 0;
     int mistakes = 1;
+    int displayScore = 0;
     string distinctLetters;
     string randWord = "";
     string newGameDisplay = "none";
@@ -211,6 +215,7 @@
             if (mistakes <= 5) {
                 currentImage = $"strike{mistakes}.png";
                 ++mistakes;
+                ++displayScore;
             } else if (mistakes == 6)
             {
                 currentImage = $"dead.png";
@@ -240,6 +245,7 @@
         tableDisplay = "none";
         currentImage = "HangmanBlank.png";
         mistakes = 1;
+        displayScore = 0;
         randWord = "";
         letters.Clear();
         wordList.Clear();
@@ -277,7 +283,7 @@
         GetScore();
         if (mistakes - 1 < score || score == -1)
         {
-            await hubConnection.SendAsync("UpdateUserScore", Username, mistakes-1);
+            await hubConnection.SendAsync("UpdateUserScore", Username, displayScore);
             StateHasChanged();
         }
         
