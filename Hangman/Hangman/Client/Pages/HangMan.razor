@@ -1,6 +1,8 @@
-﻿@page "/hangman"
+﻿@page "/hangman/{Username}"
+@inject NavigationManager NavigationManager
 @inject HttpClient Http
-
+@using System.Text
+@using System.Runtime.CompilerServices
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.IO;
 
@@ -53,6 +55,10 @@
             </div>
         }
     <div>Random Word: @randWord</div>
+    <div><p>Username: @Username</p></div> 
+
+
+
     <div class="text-center h2" style="display: @newGameDisplay; width: 100%">
         <p>@results</p>
     </div>
@@ -88,11 +94,19 @@
     string lostGame = "block";
     string results;
 
+    private HubConnection? hubConnection;
+
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
     Dictionary<char, bool> letters = new Dictionary<char, bool>();
     char[] letterList = new char[] {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
     string currentImage = "HangmanBlank.png";
-    
+
+    private int? score = 8;
+
+    [Parameter]
+    public string Username { get; set; }
+
+
     void SetUpLists()
     {
         distinctLetters = new String(randWord.Distinct().ToArray());
@@ -110,12 +124,33 @@
     {
         return Task.CompletedTask;
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
+            .Build();
+
+        hubConnection.On<int>("UserScoreReturned", (userScore) => {
+            score = userScore;
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+
         response = await Http.GetStringAsync("random_words.txt");
         PullRandWord(response);
+
         await OnInitialize();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 
     private async void OnPress(char letter)
@@ -172,17 +207,28 @@
     private async void PullRandWord(string file) {
         string[] spliter = file.Split("\n");
         var rand = new Random();
-    
+
         int wordSelect = rand.Next(0, 10001);
-    
+
         string word = spliter[wordSelect];
         randWord = word.Replace("\"", "");
         randWord = randWord.Trim();
-    
+
         randWord = randWord.ToUpper();
-    
+
         Console.WriteLine(randWord);
         SetUpLists();
+    }
+
+    //Pulls the current users score from the database
+    private async void GetScore(){
+        await hubConnection.SendAsync("PullUserScore", Username);
+        //OnStateChanged();
+    }
+
+    //Updates the users score based on passed in values
+    private async void UpdateScore(){
+        await hubConnection.SendAsync("UpdateUserScore", Username, score);
     }
 }
 

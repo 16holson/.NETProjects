@@ -34,7 +34,7 @@
                 @incorrectText
             </div>
             <div style="display: flex; justify-content: center; position: center">
-                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">Sign In</button>
+                <button name="signInBtn" type="submit" class="btn btn-primary" disabled="@(!IsConnected)" @onclick="Authenticate">@sign</button>
                 <label style="vertical-align: middle; position: relative; right: 1%; margin-left: 1rem" class="float-end">
                     <input style="vertical-align: middle;" @onclick="CreateAccount" class="form-check-input float-end" type="checkbox" id="createAccountCheck" name="createAccountCheck" value="Create Account">
                     Create Account
@@ -59,7 +59,10 @@
     private int numCreateAccntBtnClicks = 0;
     private bool isAuthenticated = false;
     private string? response;
+    private string? username = "";
     List<string> filelist = new List<string>();
+
+
 
     /// <summary>
     /// Set up hub connection upon initialization
@@ -86,6 +89,7 @@
             if (isAuthenticated)
             {
                 HangManPage();
+
             }
             else
             {
@@ -113,8 +117,8 @@
         await hubConnection.StartAsync();
 
         //response = await Http.GetStringAsync(@"Asset\Word");
-       // response = await Http.GetStringAsync(@"random_words.txt");
-       response = await Http.GetStringAsync("random_words.txt");
+        // response = await Http.GetStringAsync(@"random_words.txt");
+        response = await Http.GetStringAsync("random_words.txt");
     }
 
     /// <summary>
@@ -182,7 +186,10 @@
     /// </summary>
     private void HangManPage()
     {
-        NavigationManager.NavigateTo("/hangman");
+
+            NavigationManager.NavigateTo($"/hangman/{userInput}");
+
+        
     }
 
     /// <summary>

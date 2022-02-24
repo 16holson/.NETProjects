@@ -86,5 +86,40 @@ namespace Hangman.Server
             }
 
         }
+
+        /// <summary>
+        /// Pulls the passed in users score from the database and returns it to the calling page
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task PullUserScore(string username) {
+
+            try {
+                var user = dbConnector.FindUser(username);
+
+                await Clients.All.SendAsync("UserScoreReturned", user.Score);
+
+            }
+            catch (Exception e) {
+                throw new Exception(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Takes in a username and score and updates the user's score in the database
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="score"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public void UpdateUserScore(string username, int score) {
+            try {
+                dbConnector.InsertScore(username, score);
+            }
+            catch (Exception e) {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

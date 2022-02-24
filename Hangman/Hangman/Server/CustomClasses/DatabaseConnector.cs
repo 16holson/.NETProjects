@@ -96,6 +96,27 @@ namespace Hangman.Server.CustomClasses
         }
 
 		/// <summary>
+		/// Updates a user score based on passed in parameter
+		/// </summary>
+		/// <param name="userName"></param>
+		/// <param name="score"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public void InsertScore(string userName, int score) {
+			using (OdbcConnection odbcConnection = new OdbcConnection(ConnectionString)) {
+				OdbcCommand command = odbcConnection.CreateCommand();
+				command.CommandText = "UPDATE Users SET score = " + score + " WHERE username = '" + userName + "'";
+				try {
+					odbcConnection.Open();
+					command.ExecuteNonQuery();
+				}
+				catch (Exception ex) {
+					throw new Exception(ex.Message, ex);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Function that finds and returns a user by their user name
 		/// The function should only every return one user, because usernames are unique
 		/// If the user wasn't found, it will return a User with the username UserNotFound
