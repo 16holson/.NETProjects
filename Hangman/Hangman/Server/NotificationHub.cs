@@ -50,27 +50,39 @@ namespace Hangman.Server
         /// <param name="salt"></param>
         /// <param name="hashedPassword"></param>
         /// <returns></returns>
-        public async Task NewAccount(string user, string password)
-        {
-            // TODO: Check db for user. If user exists, return user already exists message
-            var salty = SaltyHash.GenerateSalt();
-            var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(password), salty);
-            string saltyHashPassword = BitConverter.ToString(hashedPassword);
+        public async Task NewAccount(string user, string password) {
+
+
             bool isAuthenticated = false;
 
-            try {
+            //Checks if user already exists within the database
+            if ((dbConnector.FindUser(user)).Username == "UserNotFound") {
 
-                if (dbConnector.InsertUser(user, saltyHashPassword, SaltyHash.ConvertToString(salty)) > 0) {
-                    isAuthenticated = true;
-                }                
-            }
-            catch (Exception e) {
-                isAuthenticated = false;    
+                var salty = SaltyHash.GenerateSalt();
+                var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(password), salty);
+                string saltyHashPassword = BitConverter.ToString(hashedPassword);
+                
+
+                try {
+                    //Inserts the new user into the database
+                    if (dbConnector.InsertUser(user, saltyHashPassword, SaltyHash.ConvertToString(salty)) > 0) {
+                        isAuthenticated = true;
+                    }
+                }
+                catch (Exception e) {
+                    isAuthenticated = false;
+                }
+
+                //Responds to the server if the user was successful in being inserted into the database
+                await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
+
+
+            } else {
+
+                //Responds to the server if the user already exists in the database
+                await Clients.All.SendAsync("NewAccountConfirmation", user, password, isAuthenticated);
             }
 
-            await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
         }
-
-
     }
 }
