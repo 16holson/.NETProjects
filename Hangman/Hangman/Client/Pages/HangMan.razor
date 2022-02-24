@@ -5,6 +5,7 @@
 @using System.Runtime.CompilerServices
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.IO;
+@using System.Runtime.CompilerServices
 
 <PageTitle>Hangman</PageTitle>
 <html lang="en">
@@ -65,18 +66,19 @@
     <div class="text-center" >
         <button id="reset" style="display: @newGameDisplay" class="btn btn-primary btn-lg" @onclick="ResetButtons">New Game</button>
         <br><br>
-        <table style="display: @newGameDisplay">
-            <caption class="text-center" style="caption-side: top">High Scores</caption>
+        <table style="display: @tableDisplay; margin-right: auto; margin-left: auto;">
             <tr>
+                <th>Rank</th>
                 <th>User</th>
                 <th>Score</th>
             </tr>
-            @for (int i = 0; i < 10; i++) //Change to foreach loop with array of users/scores
+            @foreach(var h in highScores)
             {
                 <tr>
-                    <td>Enter User</td>
-                    <td>Enter Score</td>
-                </tr>
+                    <td>@incrementRank()</td>
+                    <td>@h.Key</td>
+                    <td>@h.Value</td>
+                    </tr>
             }
         </table>    
     </div>
@@ -85,19 +87,23 @@
 
 @code
 {
+    int rank = 1;
     int count = 0;
     int mistakes = 1;
     string distinctLetters;
     string randWord = "";
     string newGameDisplay = "none";
+    string tableDisplay = "none";
     string response;
     string lostGame = "block";
     string results;
+    private HubConnection? hubConnection;
 
     private HubConnection? hubConnection;
 
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
     Dictionary<char, bool> letters = new Dictionary<char, bool>();
+    Dictionary<string, string> highScores = new Dictionary<string, string>();
     char[] letterList = new char[] {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
     string currentImage = "HangmanBlank.png";
 
@@ -127,6 +133,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
+            .Build();
+
+        hubConnection.On<Dictionary<string, string>>("ReceiveHighScores", (highScores) =>
+        {
+            this.highScores = highScores;
+            StateHasChanged();
+        });
+
 
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
@@ -143,6 +159,10 @@
         PullRandWord(response);
 
         await OnInitialize();
+    }
+    private async void loadHighScores()
+    {
+        await hubConnection.SendAsync("HighScores");
     }
 
     public async ValueTask DisposeAsync()
@@ -176,6 +196,8 @@
             } else if (mistakes == 6) {
                 currentImage = $"dead.png";
                 newGameDisplay = "inline";
+                tableDisplay = "inline-block";
+                loadHighScores();
                 lostGame = "none";
                 results = "You Lost";
             }
@@ -185,6 +207,8 @@
             lostGame = "none";
             currentImage = "congrats.png";
             newGameDisplay = "inline";
+            tableDisplay = "inline-block";
+            loadHighScores();
             results = "";
         }
     }
@@ -193,8 +217,10 @@
         lostGame = "block";
         count = 0;
         newGameDisplay = "none";
+        tableDisplay = "none";
         currentImage = "HangmanBlank.png";
         mistakes = 1;
+        rank = 1;
         randWord = "";
         letters.Clear();
         wordList.Clear();
@@ -218,6 +244,10 @@
 
         Console.WriteLine(randWord);
         SetUpLists();
+    }
+    private int incrementRank()
+    {
+        return rank++;
     }
 
     //Pulls the current users score from the database
