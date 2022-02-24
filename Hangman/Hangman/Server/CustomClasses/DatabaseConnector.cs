@@ -136,7 +136,7 @@ namespace Hangman.Server.CustomClasses
 		/// <exception cref="Exception"></exception>
 		public Dictionary<string, string> GetHighScores()
 		{
-			string query = "SELECT TOP 10 username, score FROM Users ORDER BY score ASC";
+			string query = "SELECT TOP 10 username, score FROM Users WHERE score <> -1 ORDER BY score ASC";
 			Dictionary<string, string> top10 = new Dictionary<string, string>();
 			using (OdbcConnection connection = new OdbcConnection(ConnectionString))
 			{
@@ -150,6 +150,10 @@ namespace Hangman.Server.CustomClasses
 						top10.Add(reader[0].ToString(), reader[1].ToString());
 					}
 					reader.Close();
+					foreach (var t in top10)
+					{
+						Console.Write("User: " + t.Key + " Score: " + t.Value);
+					}
 					return top10;
 				}
 				catch(Exception ex)
