@@ -5,7 +5,6 @@
 @using System.Runtime.CompilerServices
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.IO;
-@using Microsoft.VisualBasic
 
 <PageTitle>Hangman</PageTitle>
 
@@ -72,7 +71,6 @@
             </div>
         }
 
-    <div>RandomWord: @randWord</div>
     <div class="text-center h2" style="display: @newGameDisplay; width: 100%">
         <p>@results</p>
     </div>
@@ -88,11 +86,7 @@
             @foreach (var h in highScores)
             {
                 <tr>
-<<<<<<< Updated upstream
                     <td></td>
-=======
-                    <td>@incrementRank() </td>
->>>>>>> Stashed changes
                     <td>@h.Key</td>
                     <td>@h.Value</td>
                 </tr>
