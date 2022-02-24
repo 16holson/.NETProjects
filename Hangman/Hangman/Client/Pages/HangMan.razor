@@ -54,9 +54,6 @@
                 }
             </div>
         }
-    <div>Random Word: @randWord</div>
-    <div><p>Username: @Username</p></div> 
-
 
 
     <div class="text-center h2" style="display: @newGameDisplay; width: 100%">
@@ -96,8 +93,6 @@
     string response;
     string lostGame = "block";
     string results;
-    private HubConnection? hubConnection;
-
     private HubConnection? hubConnection;
 
     Dictionary<char, bool> wordList = new Dictionary<char, bool>();
@@ -213,6 +208,7 @@
         }
         if (count >= wordList.Count)
         {
+            UpdateScore();
             lostGame = "none";
             currentImage = "congrats.png";
             newGameDisplay = "inline";
@@ -266,8 +262,15 @@
     }
 
     //Updates the users score based on passed in values
-    private async void UpdateScore(){
-        await hubConnection.SendAsync("UpdateUserScore", Username, score);
+    private async void UpdateScore()
+    {
+        GetScore();
+        if (mistakes - 1 < score || score == -1)
+        {
+            await hubConnection.SendAsync("UpdateUserScore", Username, mistakes-1);
+            StateHasChanged();
+        }
+        
     }
 }
 

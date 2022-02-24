@@ -121,5 +121,11 @@ namespace Hangman.Server
                 throw new Exception(e.Message);
             }
         }
+        public async Task HighScores()
+        {
+            Dictionary<string, string> highScores = new Dictionary<string, string>();
+            highScores = dbConnector.GetHighScores();
+            await Clients.All.SendAsync("ReceiveHighScores", highScores);
+        }
     }
 }

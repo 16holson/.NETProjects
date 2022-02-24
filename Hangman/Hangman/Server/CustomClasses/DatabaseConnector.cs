@@ -171,10 +171,6 @@ namespace Hangman.Server.CustomClasses
 						top10.Add(reader[0].ToString(), reader[1].ToString());
 					}
 					reader.Close();
-					foreach (var t in top10)
-					{
-						Console.Write("User: " + t.Key + " Score: " + t.Value);
-					}
 					return top10;
 				}
 				catch(Exception ex)
