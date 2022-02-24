@@ -5,8 +5,25 @@
 @using System.Runtime.CompilerServices
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.IO;
+@using Microsoft.VisualBasic
 
 <PageTitle>Hangman</PageTitle>
+
+<style>
+    table
+    {
+        counter-reset: rowNumber;
+    }
+    table tr:not(:first-child)
+    {
+        counter-increment: rowNumber;
+    }
+    table tr td:first-child::before
+    {
+        content: counter(rowNumber);
+    }
+</style>
+
 <html lang="en">
     <body style="margin-top: 1rem">
         <div class="text-center h4">
@@ -55,7 +72,7 @@
             </div>
         }
 
-
+    <div>RandomWord: @randWord</div>
     <div class="text-center h2" style="display: @newGameDisplay; width: 100%">
         <p>@results</p>
     </div>
@@ -63,18 +80,18 @@
         <button id="reset" style="display: @newGameDisplay" class="btn btn-primary btn-lg" @onclick="ResetButtons">New Game</button>
         <br><br>
         <table style="display: @tableDisplay; margin-right: auto; margin-left: auto;">
-            <tr>
+            <thead>
                 <th>Rank</th>
                 <th>User</th>
                 <th>Score</th>
-            </tr>
-            @foreach(var h in highScores)
+            </thead>
+            @foreach (var h in highScores)
             {
                 <tr>
-                    <td>@incrementRank()</td>
+                    <td></td>
                     <td>@h.Key</td>
                     <td>@h.Value</td>
-                    </tr>
+                </tr>
             }
         </table>    
     </div>
@@ -83,7 +100,6 @@
 
 @code
 {
-    int rank = 1;
     int count = 0;
     int mistakes = 1;
     string distinctLetters;
@@ -197,7 +213,8 @@
             if (mistakes <= 5) {
                 currentImage = $"strike{mistakes}.png";
                 ++mistakes;
-            } else if (mistakes == 6) {
+            } else if (mistakes == 6)
+            {
                 currentImage = $"dead.png";
                 newGameDisplay = "inline";
                 tableDisplay = "inline-block";
@@ -225,7 +242,6 @@
         tableDisplay = "none";
         currentImage = "HangmanBlank.png";
         mistakes = 1;
-        rank = 1;
         randWord = "";
         letters.Clear();
         wordList.Clear();
@@ -249,10 +265,6 @@
 
         Console.WriteLine(randWord);
         SetUpLists();
-    }
-    private int incrementRank()
-    {
-        return rank++;
     }
 
     //Pulls the current users score from the database
