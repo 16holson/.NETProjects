@@ -1,4 +1,5 @@
 ﻿using System.Data.Odbc;
+using System.Text;
 
 namespace Hangman.Server.CustomClasses
 {
@@ -57,7 +58,11 @@ namespace Hangman.Server.CustomClasses
 				User user = FindUser(userName);
 				if (user.Username != "UserNotFound")
                 {
-					string hash = SaltyHash.ComputeSha256Hash(password, user.Salt).ToString();
+
+					//Computes the hash of the sent in password with the users salt
+					var hash = SaltyHash.ComputeSha256Hash(password, user.Salt);
+
+					//Compares the new hash with the users hash and returns true or false
 					return (user.HashedPass == hash) ;
 				}
             }

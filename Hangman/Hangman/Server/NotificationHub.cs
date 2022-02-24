@@ -58,14 +58,16 @@ namespace Hangman.Server
             //Checks if user already exists within the database
             if ((dbConnector.FindUser(user)).Username == "UserNotFound") {
 
-                var salty = SaltyHash.GenerateSalt();
-                var hashedPassword = SaltyHash.ComputeSha256Hash(Encoding.UTF8.GetBytes(password), salty);
-                string saltyHashPassword = BitConverter.ToString(hashedPassword);
+                // Generates a salt in byte array format then converts it to a string
+                var salty = SaltyHash.ConvertToString(SaltyHash.GenerateSalt());
+
+                // Generates a hash combining the password and the salt
+                var hashedPassword = SaltyHash.ComputeSha256Hash(password, salty);
                 
 
                 try {
                     //Inserts the new user into the database
-                    if (dbConnector.InsertUser(user, saltyHashPassword, SaltyHash.ConvertToString(salty)) > 0) {
+                    if (dbConnector.InsertUser(user, hashedPassword, salty) > 0) {
                         isAuthenticated = true;
                     }
                 }
@@ -74,7 +76,7 @@ namespace Hangman.Server
                 }
 
                 //Responds to the server if the user was successful in being inserted into the database
-                await Clients.All.SendAsync("NewAccountConfirmation", user, saltyHashPassword, isAuthenticated);
+                await Clients.All.SendAsync("NewAccountConfirmation", user, hashedPassword, isAuthenticated);
 
 
             } else {
