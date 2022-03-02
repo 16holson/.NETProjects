@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WCS.Models.AwardCycle>
+
+@{
+    ViewData["Title"] = "Award Cycle Management";
+}
+
+<table class="table table-list">
+    <caption>Award Cycles<a asp-action="CreateAwardCycle" class="list-btn-new list-btn-caption">New Award Cycle</a></caption>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CycleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CycleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td class="text-right">
+                    <a asp-action="EditAwardCycle" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="DeleteAwardCycle" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

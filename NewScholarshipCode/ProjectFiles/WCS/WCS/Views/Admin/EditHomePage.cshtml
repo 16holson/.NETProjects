@@ -1,0 +1,19 @@
+﻿@model WCS.Models.EditHomePageViewModel
+@{
+    ViewData["Title"] = "Edit Login/App Page Message";
+}
+<div class="col-md-6">
+    <h2>Edit the Login Page Message</h2>
+    <div class="summernote" id="fpsetting">@Html.Raw(Model.HomePageSetting.SettingValue)</div>
+    <button class="list-btn-caption settings-edit-save" id="updateFrontPage" style="width: 100%;  margin: 0 !important;">Save</button>
+</div>
+
+<div class="col-md-6">
+    <h2>Edit Application Page Message</h2>
+    <div class="summernote" id="apsetting">@Html.Raw(Model.ApplicationPageSetting.SettingValue)</div>
+    <button class="list-btn-caption settings-edit-save" id="updateAppPage" style="width:100%; margin: 0 !important;">Save</button>
+</div>
+
+<script src="~/lib/summernote/summernote.js"></script>
+<script src="~/js/wcs.indexeditor.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/css/summernote.css" />

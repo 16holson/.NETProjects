@@ -1,0 +1,44 @@
+﻿@model IEnumerable<WCS.Models.Course>
+@{
+    ViewData["Title"] = "Course List";
+}
+<p style="margin: 20px 10px;">
+   
+</p>
+<table class="table table-list">
+    <caption>Courses <a asp-action="CreateCourse" class="list-btn-new list-btn-caption">Add Course</a></caption>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConcurrentCourse)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ConcurrentCourse)
+                </td>
+                <td class="text-right">
+                    <a asp-action="EditCourse" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/edit.svg" title="Edit" /></a>
+                    <a asp-action="DeleteCourse" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/trash.svg" title="Delete" /></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

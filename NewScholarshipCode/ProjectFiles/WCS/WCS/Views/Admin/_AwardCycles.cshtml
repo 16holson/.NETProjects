@@ -1,0 +1,63 @@
+﻿@model IEnumerable<WCS.Models.AwardCycle>
+<div class="table-admin-head">
+    <table class="table table-list table-list-awardcycles">
+        <caption>Award Cycles<a asp-action="CreateAwardCycle" class="list-btn-new list-btn-caption">New Award Cycle</a></caption>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CycleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="table-admin-body">
+    <table class="table table-list table-list-awardcycles">
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CycleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td class="text-right">
+                        <img class="form-btn btn-cycle-edit" id="@item.Id" src="~/images/form/edit.svg" title="Edit this Award Cycle" />
+                        <img class="form-btn btn-cycle-delete" id="@item.Id" src="~/images/form/trash.svg" title="Delete this Award Cycle" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function (event) {
+        $(".btn-cycle-edit").click(function () {
+            location.href = "/Admin/EditAwardCycle/" + $(this).attr("id");
+        });
+
+        $(".btn-cycle-delete").click(function () {
+            if (confirm("Send this Award Cycle to the Recycle Bin?"))
+                location.href = "/Admin/DeleteAwardCycle/" + $(this).attr("id");
+        });
+    });
+</script>

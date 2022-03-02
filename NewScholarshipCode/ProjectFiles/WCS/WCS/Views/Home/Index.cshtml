@@ -1,0 +1,107 @@
+﻿@model WCS.Models.HomeViewModels.MessageViewModel
+@{
+    ViewData["Title"] = "Weber State CS Scholarships";
+}
+<div class="row">
+    <div class="col-md-7">
+        @if (Model != null && Model.Body != null)
+        {
+            <div class="alert alert-danger text-center">
+                <h4>@Model.Title</h4>
+                <strong>@Model.Body</strong>
+            </div>
+        }
+        <section>
+            <div class="homepage-message">
+                @Html.Raw(ViewBag.HomePage)
+            </div>
+        </section>
+    </div>
+    <div class="col-md-5">
+        <div class="appmessages">
+            <div class="appstatus">
+                <span class="appstatus-title">
+                    Scholarship applications are
+                </span>
+                <span class="appstatus-status @Model.ApplicationStatus.ToLower()">
+                    @Html.DisplayFor(i => Model.ApplicationStatus)
+                </span>
+            </div>
+            <div class="appdates">
+                @if (Model.ApplicationStatus.ToLower() == "open")
+                {
+                    <span class="appdates-title">
+                        The deadline for applications is
+                    </span>
+                    <span class="appdates-date">
+                        @Html.DisplayFor(i => Model.ApplicationCloses)
+                    </span>
+                }
+                else if (Model.ApplicationOpens != null)
+                {
+                    <span class="appdates-title">
+                        The next application period will be open
+                    </span>
+                    <br />
+                    <span class="appdates-date">
+                        @Html.DisplayFor(i => Model.ApplicationOpens)
+                    </span>
+                    <span class="appdates-title"> to </span>
+                    <span class="appdates-date">
+                        @Html.DisplayFor(i => Model.ApplicationCloses)
+                    </span>
+                }
+                else
+                {
+                    <span class="appdates-title">
+                        The next application period is
+                    </span>
+                    <br />
+                    <span class="appdates-date">
+                        unknown at this time
+                    </span>
+                }
+            </div>
+        </div>
+        <section class="login-container">
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <h4 style="font-weight: 600;">Log in with your CS Scholarships account.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label asp-for="RememberMe">
+                            <input asp-for="RememberMe" />
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default" style="font-size: 120%;">Log in</button>
+                </div>
+                <div class="form-group">
+                    <p>
+                        <a asp-action="ForgotPassword" asp-controller="Account">Forgot your password?</a>
+                    </p>
+                    <p>
+                        <a asp-action="Register" asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
+                    </p>
+                </div>
+                <input type="hidden" asp-for="ApplicationStatus" />
+                <input type="hidden" asp-for="ApplicationOpens" />
+                <input type="hidden" asp-for="ApplicationCloses" />
+            </form>
+            <div style="font-size: 8px;">&copy;2018 Jeffrey Hart, Benjamin Burge, Jose Perdomo</div>
+        </section>
+    </div>
+</div>

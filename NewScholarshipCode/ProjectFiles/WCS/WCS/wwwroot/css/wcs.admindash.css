@@ -1,0 +1,75 @@
+﻿.admin-dash-box {
+    height: 300px;
+}
+
+.admin-dash-container {
+    padding-bottom: 20px;
+}
+
+.admin-dash-inner {
+    border: 2px solid gray;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.report-select {
+    width: 78%;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-report-view {
+    margin-top: -11px;
+    width: 21%;
+}
+
+.list-admin-actions li {
+    background-color: whitesmoke !important;
+    margin: 0;
+    padding: 5px;
+    border: 0;
+}
+
+.list-admin-actions a {
+    height: 100%;
+    width: 100%;
+    border-color: var(--dark-blue) !important;
+}
+
+.table-admin-head {
+    height: 114px;
+}
+
+.table-admin-body {
+    overflow-y: auto;
+    height: calc(100% - 114px);
+}
+
+.table-list-awardcycles {
+    border: none;
+}
+
+    .table-list-awardcycles caption {
+        border: none;
+    }
+
+    .table-list-awardcycles th:nth-child(2), .table-list-awardcycles td:nth-child(2) {
+        width: 100px;
+    }
+
+    .table-list-awardcycles th:nth-child(3), .table-list-awardcycles td:nth-child(3) {
+        width: 100px;
+    }
+
+    .table-list-awardcycles th:nth-child(4), .table-list-awardcycles td:nth-child(4) {
+        width: 100px;
+    }
+
+    .table-list-awardcycles th:nth-child(5) {
+        width: 75px;
+    }
+
+    .table-list-awardcycles td:nth-child(5) {
+        width: 65px;
+    }

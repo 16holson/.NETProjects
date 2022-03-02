@@ -1,0 +1,175 @@
+﻿@model WCS.Models.StudentProfile
+@inject WCS.Data.WcsContext _context
+@if (Model != null)
+{
+    string profileMenu = "profileMenu" + Model.Id;
+    string profile = "profile" + Model.Id;
+
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th class="text-center">W Number</th>
+                <th class="text-center">D.O.B</th>
+                <th class="text-center">Gender</th>
+                <th class="text-center">GPA</th>
+                <th class="text-center">Major GPA</th>
+                <th class="text-center">ACT Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">@Model.WNumber</td>
+                <td class="text-center">@Model.BirthDate.ToShortDateString()</td>
+                <td class="text-center">@Model.Gender</td>
+                <td class="text-center">@Model.OverallGPA</td>
+                <td class="text-center">@Model.MajorGPA</td>
+                <td class="text-center">@Model.ActScore</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-group" id="@profileMenu" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="@profileMenu-header collapsed panel-heading profile-panel-heading" role="tab" data-toggle="collapse"
+                 data-target="#@profile" aria-controls="@profile" data-parent="#@profileMenu">Student Information</div>
+            <div class="panel-collapse collapse in" role="tabpanel" id="@profile">
+                <div class="panel-body">
+                    @* Data Section *@
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.CurrentMajor" class="form-label"></label>:
+                            @Model.CurrentMajor
+                        </div>
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.FutureMajor" class="form-label"></label>:
+                            @Model.FutureMajor
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.CurrentAcademicLevel" class="form-label"></label>:
+                            @Model.CurrentAcademicLevel
+                        </div>
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.UltimateDegreeGoal" class="form-label"></label>:
+                            @Model.UltimateDegreeGoal
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.HighSchool" class=" form-label"></label>:
+                            @Model.HighSchool
+                        </div>
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.LastUniversity" class="form-label"></label>:
+                            @Model.LastUniversity
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.FirstWsuSemester" class="form-label"></label>:
+                            @Model.FirstWsuSemester
+                        </div>
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.FirstWsuYear" class=" form-label"></label>:
+                            @Model.FirstWsuYear
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12" style="word-break: keep-all">
+                            <label asp-for="PastCourses" class="form-label"></label>:
+                            @{
+                                string courseList = "";
+                                foreach (string course in Model.StudentCourses)
+                                {
+                                    courseList = courseList + course + ", ";
+                                }
+                                if (!courseList.Equals(""))
+                                {
+                                    <text>@courseList.Substring(0, courseList.Length - 2)</text>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label asp-for="PassedApTests" class="form-label"></label>:
+                            @if (Model.PassedApTests != null && !Model.PassedApTests.Equals(""))
+                            {
+                                var tests = Model.PassedApTests.Replace(",", ", ");
+                                <text>@tests</text>
+                            }
+                            else
+                            {
+                                <span>N/A</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.ClubAndOrganizationHistory" class="form-label"></label>:
+                            @Model.ClubAndOrganizationHistory
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.ScholarshipAidHistory" class="form-label"></label>:
+                            @Model.ScholarshipAidHistory
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.AchievementsHistory" class="form-label"></label>:
+                            @Model.AchievementsHistory
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="@Model.AwardsHistory" class="form-label"></label>:
+                            @Model.AwardsHistory
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label asp-for="@Model.CsInterest" class="form-label"></label>:
+                            @Model.CsInterest
+                        </div>
+                    </div>
+                    @if (Model.ScholarshipAwards != null && Model.ScholarshipAwards.Count > 0)
+                    {
+                        <div class="row">
+                            <div class="col-lg-12 award-history">
+                                <div class="award-history-title">CS Scholarships Award History</div>
+                                <table class="table table-list-award-history">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Scholarship Name</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (ScholarshipAward award in Model.ScholarshipAwards)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(i => award.DateAwarded)</td>
+                                                <td>@award.Scholarship.Name</td>
+                                                <td>$ @award.TotalAwardMoney</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        <strong>Hmm... Something went wrong!</strong>
+        <p>We were unable to retrieve a student profile for the selected user.</p>
+    </div>
+}

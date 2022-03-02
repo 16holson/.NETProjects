@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-WCS-521FBC39-3A6A-4B59-8F11-25382470FAD7</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\StudentViewModels\**" />
+    <Content Remove="Models\StudentViewModels\**" />
+    <EmbeddedResource Remove="Models\StudentViewModels\**" />
+    <None Remove="Models\StudentViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180621161330_IRecycleAdd.cs" />
+    <Compile Remove="Data\Migrations\20180621161330_IRecycleAdd.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621162226_IRecycleAdd.cs" />
+    <Compile Remove="Data\Migrations\20180621162226_IRecycleAdd.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621162956_IRecycleUpdate1.cs" />
+    <Compile Remove="Data\Migrations\20180621162956_IRecycleUpdate1.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621170750_IRecycleUpdate2.cs" />
+    <Compile Remove="Data\Migrations\20180621170750_IRecycleUpdate2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621192851_IRecycleUpdate3.cs" />
+    <Compile Remove="Data\Migrations\20180621192851_IRecycleUpdate3.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621204151_IRecycleUpdate4.cs" />
+    <Compile Remove="Data\Migrations\20180621204151_IRecycleUpdate4.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621204742_IRecycleUpdate4.cs" />
+    <Compile Remove="Data\Migrations\20180621204742_IRecycleUpdate4.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621204828_IRecycleUpdate4.cs" />
+    <Compile Remove="Data\Migrations\20180621204828_IRecycleUpdate4.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621205037_IRecycleUpdate4.cs" />
+    <Compile Remove="Data\Migrations\20180621205037_IRecycleUpdate4.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180621205901_IRecycleUpdate4.cs" />
+    <Compile Remove="Data\Migrations\20180621205901_IRecycleUpdate4.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180622153011_IRecycleUpdate5.cs" />
+    <Compile Remove="Data\Migrations\20180622153011_IRecycleUpdate5.Designer.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\summernote\lang\summernote-ar-AR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-bg-BG.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ca-ES.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-cs-CZ.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-da-DK.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-de-DE.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-el-GR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-es-ES.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-es-EU.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-fa-IR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-fi-FI.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-fr-FR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-gl-ES.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-he-IL.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-hr-HR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-hu-HU.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-id-ID.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-it-IT.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ja-JP.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ko-KR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-lt-LT.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-lt-LV.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-mn-MN.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-nb-NO.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-nl-NL.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-pl-PL.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-pt-BR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-pt-PT.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ro-RO.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ru-RU.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-sk-SK.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-sl-SI.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-sr-RS-Latin.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-sr-RS.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-sv-SE.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ta-IN.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-th-TH.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-tr-TR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-uk-UA.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-vi-VN.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-zh-CN.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-zh-TW.js" />
+    <None Include="wwwroot\lib\summernote\plugin\databasic\summernote-ext-databasic.js" />
+    <None Include="wwwroot\lib\summernote\plugin\hello\summernote-ext-hello.js" />
+    <None Include="wwwroot\lib\summernote\plugin\specialchars\summernote-ext-specialchars.js" />
+  </ItemGroup>
+
+</Project>

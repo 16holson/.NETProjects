@@ -1,0 +1,21 @@
+﻿@model StudentFormPack
+@using WCS.Models
+@using Newtonsoft.Json
+
+<div class="form">
+    <section>
+        <div class="form-ratings-title">Application Ratings</div>
+        @foreach (StudentRatingPack ratingpack in Model.StudentRatingPacks)
+        {
+            <div class="form-rating" id="@JsonConvert.SerializeObject(ratingpack)"></div>
+        }
+    </section>
+    <hr/>
+    <section>
+        <div class="form-ratings-title">Application Responses</div>
+        @foreach (StudentResponsePack responsepack in Model.StudentResponsePacks)
+        {
+            @Html.Partial("_FormFieldReadOnly", responsepack)
+        }
+    </section>
+</div>

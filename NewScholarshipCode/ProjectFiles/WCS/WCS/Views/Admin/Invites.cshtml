@@ -1,0 +1,50 @@
+﻿@model IEnumerable<WCS.Models.Invite>
+
+<table class="table table-list">
+    <caption>Admin/Judge Account Invitations<a class="btn list-btn-new list-btn-caption" asp-action="CreateInvite">New Invitation</a></caption>
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FullName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmailAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExpirationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td class="text-right">
+                <a asp-action="EditInvite" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/edit.svg" title="Edit" /></a>
+                <a asp-action="DeleteInvite" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/trash.svg" title="Delete" /></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
