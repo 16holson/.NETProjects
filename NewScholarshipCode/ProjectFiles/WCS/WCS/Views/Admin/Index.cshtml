@@ -1,0 +1,62 @@
+﻿@model AdminDashViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<div class="row">
+    <div class="col-md-4">
+        <div class="admin-dash-inner dashboard-card">
+            <div class="dashboard-card-header">
+                Administrator Actions
+            </div>
+            <div class="dashboard-card-body">
+                <ul class="list-group list-admin-actions">
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="UserList">User Management</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="Invites">Invitation Management</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="CourseList">Course List Management</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="Scholarships">Scholarship Management</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="Forms">Scholarship Form Management</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="EditHomePage">Edit Login/App Page Message</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="EditEmailSettings">Edit Email/SMTP Settings</a></li>
+                    <li class="list-group-item"><a class="btn btn-default" asp-action="RecycleBin">Recycle Bin</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-8 admin-dash-box admin-dash-container">
+        <div class="dashboard-card">
+            @Html.Partial("_AwardCycles", @Model.AwardCycles)
+        </div>
+    </div>
+    <div class="col-md-8 admin-dash-container">
+        <div class="admin-dash-inner dashboard-card">
+            <div class="dashboard-card-header">
+                Scholarship Award Reports
+            </div>
+            <div class="dashboard-card-body">
+                <select class="report-select">
+                    <option value="0">Select an Award Cycle. . .</option>
+                    @foreach(AwardCycle cycle in Model.AwardCycles.Where(c => c.Status != CycleStatus.NotStarted && c.Status != CycleStatus.Open && c.Status != CycleStatus.Recycled))
+                    {
+                        <option value="@cycle.Id">@cycle.CycleName</option>
+                    }
+                </select>
+                <button class="btn btn-default btn-report-view">
+                    View Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="~/css/wcs.admindash.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/wcs.dashboard.css" asp-append-version="true" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".btn-report-view").click(function () {
+            var id = $(".report-select").val();
+            if (parseInt(id) > 0) {
+                window.open("/Admin/Report/" + id, "_blank");
+            }
+        });
+    });
+</script>

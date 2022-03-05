@@ -1,0 +1,20 @@
+@using Microsoft.AspNetCore.Identity
+@using WCS.Models
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage User Account">
+                    @{ var user = await UserManager.GetUserAsync(User);}
+                    @user.FirstName @user.LastName
+                </a>
+            </li>
+            <li>
+                <a asp-action="Logout" asp-controller="Account" class="navbar-link weberNavLogOutBtn">Log out</a>
+            </li>
+        </ul>
+}

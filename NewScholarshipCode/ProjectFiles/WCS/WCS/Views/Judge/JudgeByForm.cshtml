@@ -1,0 +1,74 @@
+﻿@model JudgeByFormViewModel
+@using WCS.Models
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "WCS - Judge By Form";
+}
+<div class="row">
+    <div class="col-md-9 judge-cycle-header">
+        <div class="judge-cycle-inner clearfix">
+            <span class="award-cycle-name">@Model.AwardCycle.CycleName</span>
+            [ @Html.DisplayFor(i => Model.AwardCycle.StartDate) to @Html.DisplayFor(i => Model.AwardCycle.EndDate) ]
+        </div>
+    </div>
+    <div class="col-md-3 judge-cycle-header">
+        <div class="award-btn judge-btn" title="Click to toggle rating style" onclick="switchMethod()">
+            Students <img class="img-judge-swap" src="~/images/swap_right.svg" /> <span class="judge-btn-selected">Forms</span>
+        </div>
+    </div>
+    <div class="col-md-5 judge-list-container">
+        <div class="judge-list-header clearfix">
+            <img class="judge-list-expander" src="~/images/enlarge.svg" />
+            <select class="form-links-select" id="formlinks" onchange="navigate()" title="Change Form For Judging">
+                @if (Model.SelectedForm != null)
+                {
+                    <option>@Model.SelectedForm.Form.Title</option>
+                }
+                @foreach (FormPack formPack in Model.FormPacks)
+                {
+                    string action = "JudgeByForm/" + formPack.Form.Id;
+                    <option value="@Url.Action(action, "Judge")">
+                        (@formPack.RatedCount/@formPack.AppliedCount) @formPack.Form.Title
+                    </option>
+                }
+            </select><button class="btn btn-primary judge-list-button-toggle" data-toggle="button" id="filterStudents" title="Toggle Unrated Only View">Unrated <small id="allUnrated" style="color: yellow; margin-left: 5px;">0 / 0</small></button>
+        </div>
+        @await Html.PartialAsync("_StudentList", Model.StudentPacks)
+    </div>
+    <div class="col-md-7 judge-view-container">
+        <div class="judge-view-inner">
+            @foreach (StudentPack studentPack in Model.StudentPacks)
+            {
+                @if (studentPack.Student != null && studentPack.TotalApplicationsCount > 0)
+                {
+                    string packId = "studentpack" + studentPack.Student.Id;
+                    <div class="student-pack" id="@packId">
+                        <div class="student-profile-container">
+                            <div class="student-pack-title">@studentPack.Student.FullName</div>
+                            @await Html.PartialAsync("_StudentProfile", studentPack.Student)
+                            <div class="student-rating" id="@JsonConvert.SerializeObject(studentPack.StudentRating)"></div>
+                        </div>
+                        @foreach (StudentFormPack pack in studentPack.StudentFormPacks)
+                        {
+                            string panelId = "form" + pack.StudentForm.Id;
+                            string ratedClass = "";
+                            if (pack.IsRatedFull) { ratedClass = "form-rated"; }
+                            <div class="panel panel-default form-container @ratedClass">
+                                <div id="@panelId">
+                                    @await Html.PartialAsync("_FormForJudging", pack)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script src="~/js/wcs.judging.js" asp-append-version="true"></script>
+<script src="~/js/wcs.judgebyform.js" asp-append-version="true"></script>
+<script type="text/javascript">
+    function switchMethod() {
+        location.href = "/Judge/JudgeByStudent";
+    }
+</script>

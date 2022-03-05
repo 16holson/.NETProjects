@@ -1,0 +1,61 @@
+﻿@model WCS.Models.RecycleBinViewModel
+
+@{
+    ViewData["Title"] = "Recycle Bin";
+}
+
+@if (Model.StatusMessage != null)
+{
+    <div class="recycle-status-message">
+        <p>@Html.Raw(@Model.StatusMessage)</p>
+    </div>
+}
+
+<table class="table table-list" style="margin-top: 30px;">
+    <caption>Recycle Bin <span style="float:right; margin-right: 30px;">@Model.RecycledItems.Count()</span></caption>
+    <thead>
+        <tr>
+            <th>
+                Item Type
+            </th>
+            <th>
+                Item Name
+            </th>
+            <th>
+                Date Recycled
+            </th>
+            <th>
+                Recycled By
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RecycledItems)
+        {
+        <tr>
+            <td class="recycle-item-type @item.ItemType">
+                @Html.DisplayFor(modelItem => item.ItemType)
+            </td>
+            <td>
+                @Html.Raw(item.ItemName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecycledDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecycledBy)
+            </td>
+            <td class="text-right">
+                <a asp-action="Restore" asp-route-id="@item.Id"><img src="~/images/restore.svg" class="form-btn" title="Restore This Item"/></a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    setTimeout(function () {
+        $(".recycle-status-message").fadeOut();
+    }, 3000);
+</script>

@@ -1,0 +1,91 @@
+﻿@model List<Scholarship>
+@using WCS.Models
+@inject UserManager<User> _userManager
+@{
+    bool userIsAdmin = await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), "Administrator");
+}
+<div class="list-scholarships">
+    <div class="list-scholarships-head">
+        <table class="table table-list table-list-scholarships">
+            <caption>
+                Scholarships & Funds
+                @if (userIsAdmin)
+                {
+                    <button class="list-btn-new list-btn-caption" onclick="scholarshipEditorStart()">Edit Scholarships</button>
+                }
+            </caption>
+            <thead>
+                <tr>
+                    <th class="tls-col-remaining">Remaining</th>
+                    <th class="tls-col-total">Total</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="list-scholarships-body">
+        <table class="table table-list table-list-scholarships">
+            <tbody>
+                @foreach (Scholarship scholarship in Model)
+                {
+                    string alternate = "";
+                    string neg = "";
+                    if (Model.IndexOf(scholarship) % 2 == 0)
+                    {
+                        alternate = "even";
+                    }
+                    if (scholarship.FundingRemaining == 0)
+                    {
+                        neg = "zero";
+                    }
+                    else if (scholarship.FundingRemaining < 0)
+                    {
+                        neg = "negative";
+                    }
+                    <tr class="tls-row-scholarship @alternate" id="@scholarship.Id" title="Click to toggle funding sources">
+                        <td class="tls-col-remaining @neg"><strong>$ @scholarship.FundingRemaining</strong></td>
+                        <td class="tls-col-total"><strong>$ @scholarship.FundingTotal</strong></td>
+                        <td>@scholarship.Name</td>
+                    </tr>
+
+                    @foreach (ScholarshipFund fund in scholarship.ScholarshipFunds)
+                    {
+                        string last = "";
+                        neg = "";
+                        if (scholarship.ScholarshipFunds.Last().Equals(fund))
+                        {
+                            last = "last";
+                        }
+                        if (fund.Remaining == 0)
+                        {
+                            neg = "zero";
+                        }
+                        else if (fund.Remaining < 0)
+                        {
+                            neg = "negative";
+                        }
+
+                        <tr class="tls-row-fund fund-@scholarship.Id @last" style="display: none;">
+                            <td class="tls-col-remaining @neg">$ @fund.Remaining</td>
+                            <td class="tls-col-total">$ @fund.Amount</td>
+                            <td><strong>Funding Source:</strong> @fund.Name</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".tls-row-scholarship").on({
+            click: function (event) {
+                target = $(event.target);
+                while (!$(target).hasClass("tls-row-scholarship"))
+                    target = $(target).parent();
+
+                $(".fund-" + $(target).attr("id")).fadeToggle(1);
+            }
+        });
+    })
+</script>

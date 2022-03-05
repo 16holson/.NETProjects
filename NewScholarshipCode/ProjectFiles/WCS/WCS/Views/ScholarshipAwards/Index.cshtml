@@ -1,0 +1,50 @@
+﻿@model ScholarshipAwardsViewModel
+@using WCS.Models
+@inject UserManager<User> _userManager
+@{
+    bool userIsAdmin = await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), "Administrator");
+}
+@{
+    ViewData["Title"] = "Scholarship Awards";
+}
+<div class="row">
+    @{
+        var num = 9;
+        var style = "";
+        if (!userIsAdmin)
+        {
+            num = 12;
+            style = "award-cycle-header-judge";
+        }
+    }
+    <div class="col-md-@num award-cycle-header @style">
+        <div class="award-cycle-inner">
+            Awards for <span class="award-cycle-name">@Model.AwardCycle.CycleName</span>
+            [ @Html.DisplayFor(i => Model.AwardCycle.StartDate) to @Html.DisplayFor(i => Model.AwardCycle.EndDate) ]
+        </div>
+    </div>
+    @if (userIsAdmin)
+    {
+        <div class="col-md-3 award-cycle-header">
+            <div class="award-btn btn-close-cycle" title="Close the current award cycle" onclick="closeAwardCycle()">Close Award Cycle</div>
+        </div>
+    }
+    <div class="col-md-8">
+        @Html.Partial("_ScholarshipList", Model.Scholarships)
+    </div>
+    <div class="col-md-4">
+        @Html.Partial("_StudentRatings", Model.StudentRatingsListPack)
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @Html.Partial("_ScholarshipAwardsList", Model.AwardsListModel)
+    </div>
+</div>
+<link rel="stylesheet" href="~/css/wcs.scholarships.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/wcs.scholarshipawards.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/wcs.scholarships.js" asp-append-version="true"></script>
+@if (userIsAdmin)
+{
+    <script type="text/javascript" src="~/js/wcs.scholarships.admin.js" asp-append-version="true"></script>
+}

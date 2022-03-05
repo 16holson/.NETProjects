@@ -1,0 +1,127 @@
+﻿@model WCS.Models.ReportViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta lang="en-us" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.7" />
+    <title>Scholarship Awards Report</title>
+</head>
+<body>
+    <div class="report-container">
+        @if (Model == null)
+        {
+            <h2>Please include a valid Award Cycle Id to view the awards report.</h2>
+        }
+        else
+        {
+            <div class="report-title"><em>@Model.AwardCycle.CycleName Recipients</em></div>
+            <br/>
+            @foreach (Scholarship ship in Model.Scholarships)
+            {
+                <table class="table-scholarships">
+                    <caption><em>@ship.Name</em></caption>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Scholarship Fund</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ScholarshipAward award in ship.ScholarshipAwards)
+                        {
+                            var wnum = "";
+                            if (!string.IsNullOrWhiteSpace(award.StudentProfile.WNumber))
+                            {
+                                wnum = "<br/><span style='font-weight: normal !important'>W" + award.StudentProfile.WNumber.ToUpper().Replace("W", "") + "</span>";
+                            }
+
+                            <tr class="student-line">
+                                <td>@award.StudentProfile.FullName@Html.Raw(wnum)</td>
+                                <td>
+                                    @foreach (ScholarshipAwardMoney money in award.AwardMonies)
+                                    {
+                                        if (award.AwardMonies.Count > 1)
+                                        {
+                                            <span>
+                                                @money.ScholarshipFund.Name ($@money.Amount)
+                                                @if (award.AwardMonies.Last() != money)
+                                                {
+                                                    <br />
+                                                }
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>@money.ScholarshipFund.Name</span>
+                                        }
+                                    }
+                                </td>
+                                <td>$@award.TotalAwardMoney</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+    <style>
+
+        body {
+            font-family: 'Times New Roman', Arial, Helvetica, sans-serif !important;
+            word-break: break-word !important;
+        }
+
+        .report-container {
+            padding: 2% 5%;
+            width: 8.5in;
+            margin: auto;
+        }
+
+        .report-title {
+            font-size: 18pt;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .table-scholarships {
+            vertical-align: top;
+            width: 100%;
+            font-size: 12pt;
+            margin-bottom: 20pt;
+        }
+
+            .table-scholarships caption {
+                font-size: 18pt;
+                color: black;
+                font-weight: bold;
+            }
+
+            .table-scholarships th {
+                text-decoration: underline;
+                font-weight: bold;
+                padding-bottom: 5px;
+            }
+
+                .table-scholarships th:nth-child(1) {
+                    width: 35%;
+                }
+
+                .table-scholarships th:nth-child(2) {
+                    width: 45%;
+                }
+
+            .table-scholarships td {
+                padding-right: 10px;
+                vertical-align: text-top;
+                font-weight: bold;
+                padding-bottom: 10px;
+            }
+    </style>
+</body>
+</html>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />

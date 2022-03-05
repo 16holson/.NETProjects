@@ -1,0 +1,45 @@
+﻿@model IEnumerable<WCS.Models.Scholarship>
+
+@{
+    ViewData["Title"] = "Manage Scholarships";
+}
+
+<table class="table table-list">
+    <caption>Scholarships<button class="list-btn-new list-btn-caption" onclick="scholarshipEditorStart()">Edit Active Scholarships</button></caption>
+    <thead>
+        <tr>
+            <th style="word-break: normal; width: 50px;">
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th>
+                Scholarship Name
+            </th>
+            <th style="text-align:center; width: 150px;">
+                Award Count
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center" style="vertical-align: middle;">
+                    @{
+                        var itemactive = (item.Active ? "Scholarship is ACTIVE" : "Scholarship is NOT ACTIVE") + " (Click to Toggle)";
+                        var itemimg = item.Active ? "../images/form/switch_on.svg" : "../images/form/switch_off.svg";
+                    }
+                    <a asp-action="ScholarshipToggleActive" asp-route-id="@item.Id"><img class="form-btn-active" id="@item.Id" title="@itemactive" src="@itemimg" /></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td style="text-align:center;">
+                    @item.ScholarshipAwards.Count()
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<link rel="stylesheet" href="~/css/wcs.scholarships.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/wcs.scholarships.js" asp-append-version="true"></script>

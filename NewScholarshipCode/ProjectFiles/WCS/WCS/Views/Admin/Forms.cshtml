@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WCS.Models.Form>
+@{
+    ViewData["Title"] = "Scholarship Form Management";
+}
+@using WCS.Models
+@inject WCS.Data.WcsContext context;
+@{ 
+    var cycleId = Assistant.GetCurrentAwardCycle(context).Id;
+}
+<div class="formdesigner-container" style="display: none;"></div>
+<table class="table table-list">
+    <caption>Scholarship Forms<button onclick="addForm()" class="list-btn-new list-btn-caption">New Scholarship Form</button></caption>
+    <thead>
+        <tr>
+            <th class="text-center" style="word-break: normal; width: 50px;">
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th class="table-data-75 text-center">
+                Reqs
+            </th>
+            <th class="table-data-75 text-center">
+                Criteria
+            </th>
+            <th class="table-data-75 text-center">
+                Fields
+            </th>
+            <th class="table-data-75 text-center">
+                Cycle Applied
+            </th>
+            <th class="table-data-75 text-center">
+                Total Applied
+            </th>
+            <th class="table-data-100"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center" style="vertical-align: middle;">
+                    @{
+                        var itemactive = (item.Active ? "Form is ACTIVE" : "Form is NOT ACTIVE") + " (Click to Toggle)";
+                        var itemimg = item.Active ? "../images/form/switch_on.svg" : "../images/form/switch_off.svg";
+                    }
+                    <a asp-action="FormToggleActive" asp-route-id="@item.Id"><img class="form-btn-active" id="@item.Id" title="@itemactive" src="@itemimg" style="margin: auto;"/></a>
+                </td>
+                <td style="vertical-align: middle;">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
+                    @Html.DisplayFor(modelItem => item.FormRequirements.Count)
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
+                    @Html.DisplayFor(modelItem => item.FormCriteria.Count)
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
+                    @Html.DisplayFor(modelItem => item.FormFields.Count)
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
+                    @{ 
+                        var cycleCount = item.StudentForms.Count(f => f.AwardCycleId == cycleId);
+                    }
+                    @Html.DisplayFor(modelItem => cycleCount)
+                </td>
+                <td class="text-center" style="vertical-align: middle;">
+                    @Html.DisplayFor(modelItem => item.StudentForms.Count)
+                </td>
+                <td class="text-right" style="vertical-align: middle;">
+                    <img src="~/images/form/edit.svg" class="form-btn form-btn-edit" title="Edit this form with Form Designer" id="@item.Id" />
+                    <img src="~/images/form/copy.svg" class="form-btn form-btn-copy" title="Clone this Form" id="@item.Id" />
+                    <img src="~/images/form/trash.svg" class="form-btn form-btn-delete" title="Delete this form (Caution)" id="@item.Id" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<link rel="stylesheet" href="~/css/wcs.formdesigner.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/wcs.formdesigner.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/js/wcs.formdesigner.component.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/js/wcs.formdesigner.data.js" asp-append-version="true"></script>

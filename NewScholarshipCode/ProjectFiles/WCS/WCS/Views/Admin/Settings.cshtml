@@ -1,0 +1,39 @@
+﻿@model IEnumerable<WCS.Models.Setting>
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h2>Settings</h2>
+
+<p>
+    <a asp-action="CreateSetting">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.SettingName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SettingValue)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SettingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SettingValue)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<WCS.Models.User>
+@inject UserManager<User> userManager
+@{
+    ViewData["Title"] = "User Management";
+}
+<table class="table table-list">
+    <caption>User Administration</caption>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastLogin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @{
+                        var color = "black";
+                        if (item.Role.Equals("Administrator"))
+                        {
+                            color = "DarkGreen";
+                        }
+                        else if (item.Role.Equals("Judge"))
+                        {
+                            color = "OrangeRed";
+                        }
+                        <span style="color:@color;">@item.Role</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLogin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td class="table-list-links text-right">
+                    <a asp-action="EditUser" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/edit.svg" title="Edit" /></a>
+                    <a asp-action="DeleteUser" asp-route-id="@item.Id"><img class="form-btn" src="~/images/form/trash.svg" title="Delete" /></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

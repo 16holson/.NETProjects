@@ -1,0 +1,69 @@
+﻿@model List<StudentPack>
+@if (Model != null)
+{
+    <div class="table-container">
+        <div class="table-head-container">
+            <table class="table table-list table-list-students">
+                <thead>
+                    <tr>
+                        <th class="student-list-row-name">Name</th>
+                        <th class="text-center student-list-row-rated">Rated</th>
+                        <th class="text-center student-list-row-status">Status</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body-container">
+            <table class="table table-list table-list-students">
+                <tbody class="student-list-body">
+                    @foreach (StudentPack pack in Model)
+                    {
+                        string rowId = "student" + pack.Student.Id;
+                        <tr class="student-list-row" id="@rowId">
+                            <td class="student-list-row-name">
+                                @pack.Student.FullName
+                            </td>
+                            <td class="text-center student-list-row-rated">
+                                <span class="ratedcount">@pack.RatedApplicationsCount</span> /
+                                <span class="totalcount">@pack.TotalApplicationsCount</span>
+                            </td>
+                            <td class="text-center student-list-row-status">
+                                @{
+                                    if (pack.StudentRating.Id == 0 && pack.Student.Gender == "Male")
+                                    {
+                                        <img src="~/images/student_male_red.svg" class="student-profile-icon" title="You have NOT rated this student's Past Performance" />
+                                    }
+                                    else if (pack.StudentRating.Id == 0 && pack.Student.Gender == "Female")
+                                    {
+                                        <img src="~/images/student_female_red.svg" class="student-profile-icon" title="You have NOT rated this student's Past Performance" />
+                                    }
+                                    else if (pack.Student.Gender == "Male")
+                                    {
+                                        <img src="~/images/student_male_green.svg" class="student-profile-icon" title="You have rated this student's Past Performance" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/student_female_green.svg" class="student-profile-icon" title="You have rated this student's Past Performance" />
+                                    }
+
+                                    if (pack.RatedApplicationsCount == 0)
+                                    {
+                                        <img src="~/images/document_red.svg" class="student-list-status-icon" title="This student has unrated applications" />
+                                    }
+                                    else if (pack.RatedApplicationsCount < pack.TotalApplicationsCount)
+                                    {
+                                        <img src="~/images/document_orange.svg" class="student-list-status-icon" title="This student has unrated applications" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/document_green.svg" class="student-list-status-icon" title="You have rated all applications from this student" />
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

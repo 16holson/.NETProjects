@@ -1,0 +1,187 @@
+﻿.list-awards {
+    padding: 5px;
+    margin-top: 20px;
+}
+
+.table-list-awards th:nth-child(1) {
+    width: 90px;
+}
+
+.table-list-awards th:nth-child(3) {
+    width: 200px;
+}
+
+.table-list-awards th:nth-child(4) {
+    width: 100px;
+}
+
+.table-list-awards th:nth-child(5) {
+    width: 60px;
+    text-align: center;
+}
+
+.award-row-scholarship {
+    font-weight: 600;
+    background: #dde6f3 !important;
+}
+
+    .award-row-scholarship.even {
+        background: #cbd9ee !important;
+    }
+
+    .award-row-scholarship td:nth-child(2) {
+        color: var(--dark-purple) !important;
+    }
+
+    .award-row-scholarship td:nth-child(3) {
+        color: #0058ac !important;
+    }
+
+    .award-row-scholarship td:nth-child(4) {
+        color: var(--dark-green) !important;
+    }
+
+    .award-row-scholarship td:nth-child(5) {
+        background: #fef6da !important;
+    }
+
+    .award-row-scholarship:hover {
+        cursor: pointer;
+        background: #aac1e4 !important;
+    }
+
+.award-row-funding {
+    background: whitesmoke !important;
+    font-weight: 600;
+}
+
+    .award-row-funding .fundbox {
+        text-align: right;
+        margin-right: 20px;
+        color: #5b83d7;
+        background-color: whitesmoke;
+    }
+
+    .award-row-funding td:nth-child(3) {
+        color: var(--dark-green);
+        background: white;
+    }
+
+.btn-award {
+    height: 16px;
+    width: 18px;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+    .btn-award:hover {
+        height: 14px;
+    }
+
+/* Award Editor */
+
+.award-editor-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 2;
+    background-color: rgba(50, 90, 190, 0.30);
+    padding: 0;
+}
+
+.award-editor-inner {
+    max-width: 900px;
+    min-width: 500px;
+    max-height: 70vh;
+    margin: 20vh auto;
+    background-color: whitesmoke;
+    border: 4px solid #5b8bd7;
+    overflow: auto;
+}
+
+.award-editor-header {
+    width: 100%;
+    height: 46px;
+    padding: 5px 15px;
+    border-bottom: 2px solid gray;
+    background-color: lightgray;
+    text-align: center;
+}
+
+.award-editor-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-left: 10px;
+    color: var(--dark-purple);
+    text-shadow: 1px 1px #49cdff;
+}
+
+.award-container {
+    height: calc(100% - 50px);
+    overflow: auto !important;
+    padding: 20px;
+}
+
+.award-student-container {
+    margin-bottom: 10px;
+}
+
+.award-scholarship-container {
+    margin-bottom: 10px;
+}
+
+.award-select-title {
+    font-weight: 600;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.award-select-list {
+    padding-left: 5px;
+    font-size: 18px;
+    width: calc(100% - 130px);
+    float: right;
+}
+
+.table-list-awardfunds caption {
+    font-size: 20px;
+    color: var(--dark-blue);
+}
+
+.table-list-awardfunds th:nth-child(1), .table-list-awardfunds td:nth-child(1) {
+    font-weight: 600;
+}
+
+.table-list-awardfunds th:nth-child(2), .table-list-awardfunds td:nth-child(2) {
+    width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.table-list-awardfunds th:nth-child(3), .table-list-awardfunds td:nth-child(3) {
+    width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.table-list-awardfunds th:nth-child(4), .table-list-awardfunds td:nth-child(4) {
+    width: 100px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.fund-input {
+    width: 80px;
+    padding-left: 5px;
+}
+
+.award-btn-save, .award-btn-cancel {
+    float: right;
+    width: 100px;
+}
+
+.award-btn-save {
+    margin-right: 0 !important;
+}

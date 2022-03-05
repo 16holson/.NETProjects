@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WCS.Models
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.7" />
+    <title>@ViewData["Title"] - WCS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery/dist/jquery-ui.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="weberHeader">
+        <div class="container">
+            <img src="~/images/wsu-logo-wcs.svg" alt="Weber State University Logo" class="weberLogo" />
+        </div>
+    </div>
+    <nav class="navbar weberNavBar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @* This Home will always redirect the user to their dashboard page if they are logged in. *@
+                @*<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WCS</a>*@
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @{
+                        if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            if (await UserManager.IsInRoleAsync(user, "Student"))
+                            {
+                                <li><a asp-area="" asp-controller="Student" asp-action="Index" title="Apply for Scholarships">Scholarships</a></li>
+                                <li><a asp-area="" asp-controller="Student" asp-action="EditStudentProfile">Profile Information</a></li>
+                            }
+                            if (await UserManager.IsInRoleAsync(user, "Judge"))
+                            {
+                                <li><a asp-area="" asp-controller="Judge" asp-action="Index" title="View/Rate Student Applications">Applications</a></li>
+                                <li><a asp-area="" asp-controller="ScholarshipAwards" asp-action="Index" title="View Scholarship Awards">Awards</a></li>
+                            }
+                            if (await UserManager.IsInRoleAsync(user, "Administrator"))
+                            {
+                                <li><a asp-area="" asp-controller="Admin" asp-action="Index" title="Perform Administrator Actions">Admin Dashboard</a></li>
+                                <li><a asp-area="" asp-controller="Judge" asp-action="Index" title="View/Rate Student Applications">Applications</a></li>
+                                <li><a asp-area="" asp-controller="ScholarshipAwards" asp-action="Index" title="Manage Scholarship Awards">Awards</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        }
+                    }
+                </ul>
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

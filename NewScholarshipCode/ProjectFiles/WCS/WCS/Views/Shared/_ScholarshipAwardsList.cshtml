@@ -1,0 +1,96 @@
+﻿@model WCS.Models.ScholarshipAwardsListModel
+@using WCS.Models
+@if (Model.AllowEdit)
+{
+    @inject UserManager<User> userManager
+    User currentUser = await userManager.GetUserAsync(User);
+    Model.AllowEdit = await userManager.IsInRoleAsync(currentUser, "Administrator");
+}
+
+<div class="list-awards">
+    <table class="table table-list table-list-awards">
+        <caption>
+            Scholarship Awards
+            @if (Model.AllowEdit)
+            {
+                <button class="list-btn-new list-btn-caption" onclick="initAwardEditor()">Award a Scholarship</button>
+            }
+        </caption>
+        <thead>
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Scholarship Name
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    Total Award
+                </th>
+                @if (Model.AllowEdit)
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var award in Model.Awards)
+            {
+                string even = "";
+                if (Model.Awards.IndexOf(award) % 2 != 0)
+                {
+                    even = "even";
+                }
+                <tr class="award-row-scholarship @even" id="@award.Id" title="Click to toggle funding sources">
+                    <td>
+                        @Html.DisplayFor(i => award.DateAwarded)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => award.Scholarship.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => award.StudentProfile.FullName)
+                    </td>
+                    <td>
+                        $ @Html.DisplayFor(i => award.TotalAwardMoney)
+                    </td>
+                    @if (Model.AllowEdit)
+                    {
+                        <td class="notrow" title="Admin Functions">
+                            <img src="~/images/form/edit.svg" id="@award.StudentProfileId" class="btn-award btn-award-edit" title="Edit this award" />
+                            <img src="~/images/form/cancel.svg" id="@award.Id" class="btn-award btn-award-remove" title="remove this award" />
+                        </td>
+                    }
+                </tr>
+
+                @foreach (var money in award.AwardMonies)
+                {
+                    <tr class="award-row-funding" id="@award.Id" style="display: none;">
+                        <td></td>
+                        <td colspan="2" class="fundbox">
+                            @Html.DisplayFor(i => money.ScholarshipFund.Name)
+                        </td>
+                        <td>
+                            $ @Html.DisplayFor(i => money.Amount)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<link rel="stylesheet" href="~/css/wcs.scholarshipawards.css" />
+<script type="text/javascript">
+    $(document).ready(function (event) {
+        $(".award-row-scholarship").click(function () {
+            $("#" + $(this).attr("id") + ".award-row-funding").fadeToggle(1);
+        });
+
+        $(".notrow").click(function (event) {
+            event.stopPropagation();
+        });
+    });
+</script>

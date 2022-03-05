@@ -1,0 +1,80 @@
+﻿@model IEnumerable<WCS.Models.StudentFormPack>
+@using WCS.Models
+@using Newtonsoft.Json
+@inject WCS.Data.WcsContext context
+@{
+    ViewData["Title"] = "Student Controller";
+    bool applyHR = false; //Fancy bool for applying HR between forms
+}
+<div class="row">
+    <div class="form-instructions col-md-5">
+        <div class="form-instructions-deadline">
+            Application Deadline:
+            <span class="deadline-date">@Assistant.GetCurrentApplicationCycle(context).EndDate.ToLongDateString()</span>
+        </div>
+        <div class="form-instructions-process">
+            @Html.Raw(ViewBag.HelpPageMessage)
+        </div>
+        <br />
+        <p><span style="font-weight: bold; color: darkred;">Notice: </span>Eligibility for scholarships is based on your answers to the questions in addition to information found in your student profile.</p>
+        <span class="text-success">You can review and edit your profile information by clicking on the "Profile Information" link above.</span>
+    </div>
+    <div class="col-md-7 form-list-container">
+        <h2 class="form-header text-center">Available Scholarships</h2>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (StudentFormPack pack in Model)
+            {
+                if (pack.StudentForm.Id != 0 && applyHR)
+                {
+                    applyHR = false;
+                    <hr />
+                }
+                else if (pack.StudentForm.Id == 0)
+                {
+                    applyHR = true;
+                }
+                string panelId = "form" + pack.Form.Id;
+                <div class="panel panel-default form-container">
+                    <div class="accordion-header collapsed panel-heading clearfix" role="tab" data-toggle="collapse"
+                         data-target="#@panelId" aria-controls="@panelId" data-parent="#accordion">
+                        @{
+                            string applytext;
+
+                            if (pack.StudentForm.Id == 0)
+                            {
+                                applytext = "Click To <strong>Apply</strong> For This Scholarship";
+
+                            }
+                            else
+                            {
+                                applytext = "<span class='form-title-submitted'>Application Submitted</span> - Click to <strong>Edit</strong>";
+                            }
+                        }
+                        @{ if (pack.StudentForm.Id == 0)
+                            { <img class="form-title-icon" src="~/images/shield.svg" /> }
+                            else
+                            { <img class="form-title-icon" src="~/images/shield_green.svg" />} }
+                        <span class="form-title panel-title">
+                            @Html.Raw(pack.Form.Title)
+                        </span><br /><span class="form-title-apply">@Html.Raw(applytext)</span>
+                    </div>
+                    <div class="panel-collapse collapse accordion-container" role="tabpanel" id="@panelId">
+                        <div class="form" id="@pack.Form.Id">
+                            <input type="hidden" class="studentform-data" value="@JsonConvert.SerializeObject(pack.StudentForm)" />
+                            <div class="form-description">@Html.Raw(pack.Form.Description)</div>
+                            <hr />
+                            <div style="font-size: 75%;"><span class="form-field-required">*</span> denotes a required field</div>
+                            @foreach (StudentResponsePack responsepack in pack.StudentResponsePacks)
+                            {
+                                @Html.Partial("_FormFieldPartial", responsepack)
+                            }
+                            <hr />
+                            <button class="form-btn-save" id="@pack.Form.Id">Save Application</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="~/js/wcs.studentapplications.js" asp-append-version="true"></script>

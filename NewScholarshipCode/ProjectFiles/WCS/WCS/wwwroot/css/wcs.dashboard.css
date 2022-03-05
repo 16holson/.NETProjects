@@ -1,0 +1,23 @@
+﻿.dashboard-card {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    height: 100%;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.dashboard-card-body{
+    padding: 5px 10px 5px 10px;
+}
+
+.dashboard-card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.10);
+    padding: 5px 0px 5px 0px;
+    text-align: center;
+    font-size: medium;
+    font-weight: 600;
+}

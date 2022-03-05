@@ -1,0 +1,160 @@
+﻿@using WCS.Models
+@model StudentRatingsListPack
+<div class="list-studentratings">
+    <div class="studentratings-head">
+        <table class="table table-list table-list-studentratings">
+            <caption style="font-size: 18px !important;">
+                <span class="studentratings-title">Student Application Ratings</span>
+                <br />
+                <div class="studentratings-selector-container">
+                    <select class="studentratings-selector">
+                        @foreach (FormRatingsListPack pack in Model.FormRatingsListPacks)
+                        {
+                            <option value="@pack.Form.Id">
+                                @pack.Form.Title
+                            </option>
+                        }
+                    </select>
+                </div>
+            </caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Rating</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="studentratings-body">
+        @foreach (FormRatingsListPack formpack in Model.FormRatingsListPacks)
+        {
+            <table class="table table-list table-list-studentratings ratingstable" id="form-@formpack.Form.Id" hidden>
+                <tbody>
+                    @foreach (StudentRatingListItemPack studentpack in formpack.StudentRatingListItemPacks)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(i => studentpack.StudentProfile.Id)</td>
+                            <td title="View This Student's Profile" class="profileLink" id="@studentpack.StudentProfile.Id">@Html.DisplayFor(i => studentpack.StudentProfile.FullName)</td>
+                            <td title="View Rating Details" class="ratingsLink" id="@formpack.Form.Id-@studentpack.StudentProfile.Id">@Html.DisplayFor(i => studentpack.AverageRating)</td>
+                            @{
+                                if (studentpack.HasAward)
+                                {
+                                    <td><img class="btn-student-award has-award" id="@studentpack.StudentProfile.Id" src="~/images/star_gold.svg" title="Student has an award for this Award Cycle" /></td>
+                                }
+                                else
+                                {
+                                    <td><img class="btn-student-award" id="@studentpack.StudentProfile.Id" src="~/images/star_empty.svg" title="Student has NO award for this Award Cycle" /></td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@foreach (StudentProfile profile in Model.allStudentProfiles)
+{
+    <div id="profile-@profile.Id" class="popup-profile" style="display: none;">
+        <h2 id="studentName" class="popup-title">@profile.FullName</h2>
+        @await Html.PartialAsync("_StudentProfile", profile)
+    </div>
+}
+@foreach (FormRatingsListPack formpack in Model.FormRatingsListPacks)
+{
+    @foreach (StudentRatingListItemPack studentpack in formpack.StudentRatingListItemPacks)
+    {
+        <div class="popup-ratings" id="@formpack.Form.Id-@studentpack.StudentProfile.Id" style="display: none;">
+            <h2 class="popup-title">@studentpack.StudentProfile.FullName</h2>
+            <h4 class="popup-title">Ratings for @formpack.Form.Title</h4>
+            <table class="table table-list table-list-ratingsdetail" >
+                <thead>
+                    <tr>
+                        <th>Criteria</th>
+                        @foreach (User judge in Model.AllJudges)
+                        {
+                            <th class="text-center" style="height: auto;">@(judge.FirstName + " " + judge.LastName.Substring(0, 1) + ".")</th>
+                        }
+                        <th class="text-center">Average</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (formpack.Form.IncludeStudentRating)
+                    {
+                        <tr class="text-center">
+                            <td class="text-left">Past Performance</td>
+                            @for (int i = 0; i < Model.AllJudges.Count; i++)
+                            {
+                                var thing = studentpack.StudentRatings.FirstOrDefault(r => r.JudgeId == Model.AllJudges[i].Id);
+                                if (thing == null)
+                                {
+                                    <td class="text-danger">NR</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.DisplayFor(k => thing.Rating)</td>
+                                }
+
+                            }
+                            @if (studentpack.StudentRatings.Count > 0)
+                            {
+                                <td>@studentpack.StudentRatings.Average(a => a.Rating).ToString("0.00")</td>
+                            }
+                            else
+                            {
+                                <td>NR</td>
+                            }
+
+                        </tr>
+                    }
+                    @foreach (FormCriterion criteria in formpack.Form.FormCriteria)
+                    {
+                        <tr class="text-center">
+                            <td class="text-left">@criteria.Title</td>
+                            @for (int i = 0; i < Model.AllJudges.Count; i++)
+                            {
+                                var thing = studentpack.StudentFormRatings.FirstOrDefault(r => r.JudgeId == Model.AllJudges[i].Id && r.FormCriterionId == criteria.Id);
+                                if (thing == null)
+                                {
+                                    <td class="text-danger">NR</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.DisplayFor(k => thing.Rating)</td>
+                                }
+
+                            }
+                            @{
+                                var ratings = studentpack.StudentFormRatings.Where(r => r.FormCriterionId == criteria.Id);
+                                if (ratings.ToList().Count > 0)
+                                {
+                                    <td>
+                                        @ratings.Average(a => a.Rating).ToString("0.00")
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>NR</td>
+                                }
+                            }
+
+                        </tr>
+                    }
+                    <tr>
+                        @for (int i = 0; i < Model.AllJudges.Count; i++)
+                        {
+                            <td></td>
+                        }
+                        <td class="text-right">Grand Average</td>
+                        <td class="text-center" style="font-weight: bold; color: darkgreen;"><strong>@studentpack.AverageRating</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+}
+<link rel="stylesheet" href="~/css/wcs.studentratingslist.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/wcs.studentratings.js" asp-append-version="true"></script>

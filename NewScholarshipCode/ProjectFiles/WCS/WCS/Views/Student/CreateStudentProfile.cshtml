@@ -1,0 +1,342 @@
+﻿@model WCS.Models.StudentProfile
+
+@{
+    ViewData["Title"] = "CreateStudentProfile";
+}
+
+<h4>Create Your Profile</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12" style="margin: 0px 10px;">
+        <form asp-action="CreateStudentProfile" class="px-2">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row" id="personal">
+                <h4>Personal Information</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="WNumber" class="control-label"></label>
+                            <input asp-for="WNumber" class="form-control" />
+                            <span asp-validation-for="WNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="BirthDate" class="control-label"></label>
+                            <input asp-for="BirthDate" class="form-control" />
+                            <span asp-validation-for="BirthDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="Gender" class="control-label"></label>
+                              <select asp-for="Gender" class="form-control">
+                                  <option>Male</option>
+                                  <option>Female</option>
+                              </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="MaritalStatus" class="control-label"></label>
+                            <select asp-for="MaritalStatus" class="form-control">
+                                <option>Single</option>
+                                <option>Married</option>
+                                <option>Divorced</option>
+                            </select>
+                            <span asp-validation-for="MaritalStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Address2" class="control-label"></label>
+                            <input asp-for="Address2" class="form-control" />
+                            <span asp-validation-for="Address2" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="City" class="control-label"></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="State" class="control-label"></label>
+                            <input asp-for="State" class="form-control" />
+                            <span asp-validation-for="State" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            * <label asp-for="ZipCode" class="control-label"></label>
+                            <input asp-for="ZipCode" class="form-control" />
+                            <span asp-validation-for="ZipCode" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" id="academic">
+                <h4>Academic Information</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            * <label asp-for="OverallGPA" class="control-label"></label>
+                            <input asp-for="OverallGPA" class="form-control" data-toggle="popover" data-trigger="focus" data-placement="top"
+                                   data-content="Your Overall GPA can be found in WSU Cat Tracks." />
+                            <span asp-validation-for="OverallGPA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            * <label asp-for="MajorGPA" class="control-label"></label>
+                            <input asp-for="MajorGPA" class="form-control" data-toggle="popover" data-trigger="focus" data-placement="top"
+                                   data-content="Your Major GPA can be found in WSU Cat Tracks under." />
+                            <span asp-validation-for="MajorGPA" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="ActScore" class="control-label"></label>
+                            <select asp-for="ActScore" class="form-control">
+                                <option></option>
+                                @{
+                                    for (int i = 1; i < 37; i++)
+                                    {
+                                        <option>@i</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="ActScore" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" id="educational">
+                <h4>Educational Information</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CurrentMajor" class="control-label"></label>
+                            <select asp-for="CurrentMajor" class="form-control">
+                                <option></option>
+                                <option>CS</option>
+                                <option>WEB</option>
+                                <option>NTM</option>
+                                <option>Other</option>
+                                <option>Undeclared</option>
+                            </select>
+                            <span asp-validation-for="CurrentMajor" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FutureMajor" class="control-label"></label>
+                            <select asp-for="FutureMajor" class="form-control">
+                                <option></option>
+                                <option>CS</option>
+                                <option>WEB</option>
+                                <option>NTM</option>
+                                <option>Other</option>
+                                <option>Undeclared</option>
+                            </select>
+                            <span asp-validation-for="FutureMajor" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CurrentAcademicLevel" class="control-label"></label>
+                            <select asp-for="CurrentAcademicLevel" class="form-control">
+                                <option></option>
+                                <option>Freshman</option>
+                                <option>Sophomore</option>
+                                <option>Junior</option>
+                                <option>Senior</option>
+                            </select>
+                            <span asp-validation-for="CurrentAcademicLevel" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="UltimateDegreeGoal" class="control-label"></label>
+                            <select asp-for="UltimateDegreeGoal" class="form-control">
+                                <option></option>
+                                <option>Certificate</option>
+                                <option>Associate</option>
+                                <option>Bachelor</option>
+                                <option>Master</option>
+                                <option>Ph. D.</option>
+                            </select>
+                            <span asp-validation-for="UltimateDegreeGoal" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="HighSchool" class="control-label"></label>
+                            <input asp-for="HighSchool" class="form-control" />
+                            <span asp-validation-for="HighSchool" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="LastUniversity" class="control-label"></label>
+                            <input asp-for="LastUniversity" class="form-control" />
+                            <span asp-validation-for="LastUniversity" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FirstWsuSemester" class="control-label"></label>
+                            <select asp-for="FirstWsuSemester" class="form-control">
+                                <option></option>
+                                <option>Fall</option>
+                                <option>Spring</option>
+                                <option>Summer</option>
+                            </select>
+                            <span asp-validation-for="FirstWsuSemester" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FirstWsuYear" class="control-label"></label>
+                            <select asp-for="FirstWsuYear" class="form-control">
+                                <option>Never Attended</option>
+                                @{
+                                    int thisYear = DateTime.Now.Year;
+                                    <option>@thisYear</option>
+                                    for (int i = 1; i <= 20; i++)
+                                    {
+                                        int nextYear = thisYear - i;
+                                        <option>@nextYear</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="FirstWsuYear" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CurrentScheduleStatus" class="control-label"></label>
+                            <select asp-for="CurrentScheduleStatus" class="form-control">
+                                <option>Not Registered</option>
+                                <option>Full-Time</option>
+                                <option>Part-Time</option>
+                            </select>
+                            <span asp-validation-for="CurrentScheduleStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" id="course">
+                <h4>Course Information</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="StudentCourses" class="control-label"></label>
+                            <p class="hide-on-mobile"><small>To select multiple classes hold the ctrl key and click.</small></p>
+                            <select asp-for="StudentCourses" asp-items="Model.AvailableCourses" class="form-control" style="height: 155px;"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="PassedApTests" class="control-label"></label>
+                            <p class="hide-on-mobile"><small>To select multiple tests hold the ctrl key and click.</small></p>
+                            <select asp-for="ApTestList" multiple class="form-control" style="height: 155px;">
+                                <option>Biology</option>
+                                <option>Boolean Algebra</option>
+                                <option>Calculus AB</option>
+                                <option>Calculus BC</option>
+                                <option>Chemistry</option>
+                                <option>Computer Science A</option>
+                                <option>Computer Science AB</option>
+                                <option>Physics B</option>
+                                <option>Physics C Elec</option>
+                                <option>Physics C Mech</option>
+                                <option>Statistics</option>
+                            </select>
+                            <span asp-validation-for="PassedApTests" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" id="extracurricular">
+                <h4>Extracurricular Information</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="ClubAndOrganizationHistory" class="control-label"></label>
+                            <input asp-for="ClubAndOrganizationHistory" class="form-control" rows="4" />
+                            <span asp-validation-for="ClubAndOrganizationHistory" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="AwardsHistory" class="control-label"></label>
+                            <input asp-for="AwardsHistory" class="form-control" rows="4" />
+                            <span asp-validation-for="AwardsHistory" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CsInterest" class="control-label"></label>
+                            <input asp-for="CsInterest" class="form-control" rows="4" />
+                            <span asp-validation-for="CsInterest" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="ScholarshipAidHistory" class="control-label"></label>
+                            <input asp-for="ScholarshipAidHistory" class="form-control" rows="4" />
+                            <span asp-validation-for="ScholarshipAidHistory" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="AchievementsHistory" class="control-label"></label>
+                            <input asp-for="AchievementsHistory" class="form-control" rows="4" />
+                            <span asp-validation-for="AchievementsHistory" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" value="Create Profile" class="btn btn-default" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript" src="~/js/tooltip.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/wcs.studentprofile.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,70 @@
+﻿@using Newtonsoft.Json
+@using WCS.Models
+
+@model StudentResponsePack
+
+<div class="form-field" id="@Model.FormField.Id">
+    <input type="hidden" class="form-field-data" value="@JsonConvert.SerializeObject(Model.FormField)" />
+    <input type="hidden" class="form-response-data" value="@JsonConvert.SerializeObject(Model.FormResponse)" />
+    @if (Model.FormField.Required)
+    {
+        <span class="form-field-required">*</span>
+    }
+    <span class="form-field-title">@Model.FormField.Title</span>
+
+    @switch (Model.FormField.Type)
+    {
+        case "Number Box":
+            <input type="number" class="form-field-input form-input-number" id="@Model.FormField.Id" value="@Model.FormResponse.Response" />
+            break;
+
+        case "Text Box":
+            <input type="text" class="form-field-input form-input-textbox" id="@Model.FormField.Id" value="@Model.FormResponse.Response" />
+            break;
+
+        case "Text Area":
+            <div class="form-field-textarea">
+                <textarea class="form-field-input form-input-textarea" id="@Model.FormField.Id">@Model.FormResponse.Response</textarea>
+                @{
+                    dynamic taoptions = JsonConvert.DeserializeObject(Model.FormField.Options);
+                    string wordsmin;
+
+                    if (taoptions.MinWords < 1)
+                    {
+                        wordsmin = "Any";
+                    }
+                    else
+                    {
+                        wordsmin = taoptions.MinWords;
+                    }
+                }
+                <div class="form-field-wordcount"><span class="wordcount-label">Word Count: </span><span class="wordcount-count"></span>
+                <span class="wordcount-min-label">Suggested: <span class="wordcount-min">@wordsmin</span></span></div>
+            </div>
+            break;
+
+        case "Selection Box":
+            <select class="form-field-input form-input-selectionbox" id="@Model.FormField.Id">
+                <option>Make a Selection</option>
+                @{
+                    dynamic field = JsonConvert.DeserializeObject(Model.FormField.Options);
+
+                    @foreach (string item in field.Items)
+                    {
+
+                        if (Model.FormResponse.Response == item)
+                        {
+                            <option selected="selected">@item</option>
+                        }
+                        else
+                        {
+                            <option>@item</option>
+                        }
+
+                    }
+                }
+            </select>
+            break;
+    }
+    <span class="form-field-error"></span>
+</div>
