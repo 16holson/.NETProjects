@@ -14,6 +14,7 @@ namespace WCS
     {
         public static bool AllowStudentLogin { get; set; }
 
+<<<<<<< HEAD
         public static void Main(string[] args)
         {
             BuildWebHost(args).Run();
@@ -23,5 +24,15 @@ namespace WCS
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
+=======
+        public static void Main(string[] args) {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseDefaultServiceProvider(x => x.ValidateScopes = false);
+>>>>>>> tagedotnetupdates
     }
 }
