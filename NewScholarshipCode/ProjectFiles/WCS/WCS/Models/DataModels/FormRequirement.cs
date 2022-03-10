@@ -56,7 +56,7 @@ namespace WCS.Models
                 RecycledBy = $"{recycledBy.FullName} ({ recycledBy.UserName })"
             });
             FormId = null;
-            context.Database.ExecuteSqlCommand($"UPDATE dbo.FormRequirements SET FormId = null WHERE Id = { Id }");
+            context.Database.ExecuteSqlRaw($"UPDATE dbo.FormRequirements SET FormId = null WHERE Id = { Id }");
             Recycled = true;
             return Task.CompletedTask;
         }

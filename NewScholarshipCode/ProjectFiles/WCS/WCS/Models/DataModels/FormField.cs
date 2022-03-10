@@ -67,7 +67,7 @@ namespace WCS.Models
             });
             FormId = null;
             //Have to do a manual query to detach the field from the form, because EF is a little bitch about it
-            context.Database.ExecuteSqlCommand($"UPDATE dbo.FormFields SET FormId = null WHERE Id = { Id }");
+            context.Database.ExecuteSqlRaw($"UPDATE dbo.FormFields SET FormId = null WHERE Id = { Id }");
             Recycled = true;
             return Task.CompletedTask;
         }
