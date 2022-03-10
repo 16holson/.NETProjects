@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Builder;
-=======
->>>>>>> tagedotnetupdates
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
@@ -13,13 +9,10 @@ using WCS.Data;
 using WCS.Models;
 using WCS.Services;
 using Microsoft.AspNetCore.Rewrite;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Mvc;
-=======
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
->>>>>>> tagedotnetupdates
+using Microsoft.AspNetCore.Mvc;
 
 namespace WCS
 {
@@ -37,11 +30,8 @@ namespace WCS
         {
             services.AddDbContext<WcsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-<<<<<<< HEAD
-=======
 
 
->>>>>>> tagedotnetupdates
             //UseSqlServer(Configuration.GetConnectionString("ProdConnection")));
 
             services.AddIdentity<User, IdentityRole>(config =>
@@ -76,25 +66,14 @@ namespace WCS
             });
 
             // Configure SSL Settings
-<<<<<<< HEAD
             services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new RequireHttpsAttribute());
             });
-=======
->>>>>>> tagedotnetupdates
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-<<<<<<< HEAD
-            services.AddMvc().AddJsonOptions(
-            options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, WcsContext context)
-=======
             services.Configure<CookiePolicyOptions>(options => {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.None;
@@ -109,38 +88,16 @@ namespace WCS
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, WcsContext context)
->>>>>>> tagedotnetupdates
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-<<<<<<< HEAD
                 app.UseBrowserLink();
                 app.UseDatabaseErrorPage();
-=======
-                app.UseDatabaseErrorPage();
-
->>>>>>> tagedotnetupdates
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-<<<<<<< HEAD
-            }
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            app.UseAuthentication();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-=======
                 app.UseHsts();
             }
 
@@ -162,7 +119,6 @@ namespace WCS
             //    routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
             //});
 
->>>>>>> tagedotnetupdates
             // Redirect to Https if request sent to Http
             RewriteOptions options = new RewriteOptions().AddRedirectToHttps();
             app.UseRewriter(options);

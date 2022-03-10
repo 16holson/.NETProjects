@@ -22,11 +22,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-<<<<<<< HEAD
       "applicationUrl": "http://localhost:49822/"
-=======
-      "applicationUrl": "https://localhost:49822/"
->>>>>>> tagedotnetupdates
     }
   }
 }
