@@ -30,6 +30,9 @@ namespace WCS.Models.AccountViewModels
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Display(Name = "High School STEM Extracurriculars")]
+        public string StemExtracurriculars { get; set; }
+
         public string Role { get; set; }
 
         public string InviteCode { get; set; }
