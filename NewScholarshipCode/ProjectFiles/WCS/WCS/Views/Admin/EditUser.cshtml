@@ -46,9 +46,7 @@
                 <select asp-for="Role" class="form-control">
                     @{
                         var roles = roleManager.Roles.ToList();
-                        //var userRole = userManager.GetRolesAsync(Model).ToAsyncEnumerable().FirstOrDefault();
-                        var userRole = userManager.GetRolesAsync(Model); //MAY BREAK STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+                        var userRole = await userManager.GetRolesAsync(Model); //MAY BREAK STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         if (roles != null)
                         {
                             foreach (IdentityRole role in roles)
