@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WCS.Data;
 
@@ -11,9 +12,10 @@ using WCS.Data;
 namespace WCS.Data.Migrations
 {
     [DbContext(typeof(WcsContext))]
-    partial class WcsContextModelSnapshot : ModelSnapshot
+    [Migration("20220312002926_StemClubAndOrganizationHistory")]
+    partial class StemClubAndOrganizationHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -147,7 +147,10 @@ namespace WCS.Models
         #endregion
 
         #region Extracurricular
-        [Display(Name = "Clubs and/or Organizations")]
+        [Display(Name = "High School STEM Clubs and/or Organizations")]
+        public string StemClubAndOrganizationHistory { get; set; } 
+
+        [Display(Name = "Other Clubs and/or Organizations")]
         public string ClubAndOrganizationHistory { get; set; }
 
         [Display(Name = "Honors and/or Awards")]
