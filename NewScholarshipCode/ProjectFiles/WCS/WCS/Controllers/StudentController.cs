@@ -170,7 +170,7 @@ namespace WCS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditStudentProfile([Bind("Id,Prefix,BirthDate,Address,Address2,City,State,ZipCode,Gender," +
             "MaritalStatus,OverallGPA,MajorGPA,ActScore,CurrentMajor,FutureMajor,CurrentAcademicLevel,UltimateDegreeGoal,HighSchool," +
-            "LastUniversity,FirstWsuSemester,FirstWsuYear,CurrentScheduleStatus,ApTestList,ClubAndOrganizationHistory,AwardsHistory," +
+            "LastUniversity,FirstWsuSemester,FirstWsuYear,CurrentScheduleStatus,ApTestList,StemClubAndOrganizationHistory,ClubAndOrganizationHistory,AwardsHistory," +
             "CsInterest,ScholarshipAidHistory,AchievementsHistory, StudentCourses, WNumber")] StudentProfile profile)
         {
             if (ModelState.IsValid)
