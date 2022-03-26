@@ -20,17 +20,23 @@ namespace Speed.Shared.Models {
         private int position = -1;
 
         /// <summary>
+        /// rng for shuffling
+        /// </summary>
+        private static Random rng = new Random();
+
+        /// <summary>
         /// Constructor for the deck; Builds a deck of cards
         /// </summary>
         public Deck() {
-            buildDeck();
+            BuildDeck();
+            Shuffle();
         }
 
 
         /// <summary>
         /// Builds a new deck of 52 cards from the ground up.
         /// </summary>
-        public void buildDeck() {
+        public void BuildDeck() {
 
             cards = new List<Card>();
 
@@ -94,6 +100,21 @@ namespace Speed.Shared.Models {
 
         public object Current {
             get { return cards[position]; }
+        }
+
+        /// <summary>
+        /// Function to shuffle the deck of cards
+        /// </summary>
+        public void Shuffle()
+        {
+            int size = cards.Count();
+            while (size > 1) {
+                size--;
+                int swapSpot = rng.Next(size + 1);
+                Card a = cards[swapSpot];
+                cards[swapSpot] = cards[size];
+                cards[size] = a;
+            }
         }
     }
 }
