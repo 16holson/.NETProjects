@@ -28,5 +28,10 @@ namespace Speed.Shared.Models {
             return Value.ToString() + " of " + Suit.ToString();
         }
 
+        public bool Equals(Card other)
+        {
+            return Value.Equals(other.Value)
+                && Suit.Equals(other.Suit);
+        }
     }
 }
