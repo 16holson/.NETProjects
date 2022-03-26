@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speed.Server", "Speed\Server\Speed.Server.csproj", "{82DE7EDA-AD77-4ADC-BAC7-9756C1BA30B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speed.Server", "Speed\Server\Speed.Server.csproj", "{82DE7EDA-AD77-4ADC-BAC7-9756C1BA30B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speed.Client", "Speed\Client\Speed.Client.csproj", "{6171027B-ADEC-426E-9CDA-3CD33C3D295F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speed.Client", "Speed\Client\Speed.Client.csproj", "{6171027B-ADEC-426E-9CDA-3CD33C3D295F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speed.Shared", "Speed\Shared\Speed.Shared.csproj", "{7957DE16-0F8D-41B0-94BB-EB7D363C1124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speed.Shared", "Speed\Shared\Speed.Shared.csproj", "{7957DE16-0F8D-41B0-94BB-EB7D363C1124}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
