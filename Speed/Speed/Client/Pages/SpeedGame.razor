@@ -84,6 +84,8 @@
 
     public void createdeck() {
         Deck deck = new Deck();
+        deck.BuildDeck();
+        deck.Shuffle();
 
         foreach(Card card in deck) {
             Console.WriteLine(card.ToString());

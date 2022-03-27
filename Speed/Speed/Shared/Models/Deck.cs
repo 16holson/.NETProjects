@@ -20,25 +20,29 @@ namespace Speed.Shared.Models {
         private int position = -1;
 
         /// <summary>
+        /// helps keep track of which deck this is
+        /// -1 for main deck
+        /// </summary>
+        private int deckId = -1;
+
+        /// <summary>
         /// rng for shuffling
         /// </summary>
         private static Random rng = new Random();
 
         /// <summary>
-        /// Constructor for the deck; Builds a deck of cards
+        /// Constructor for the deck; 
         /// </summary>
         public Deck() {
-            BuildDeck();
-            Shuffle();
+            cards = new List<Card>();
         }
-
 
         /// <summary>
         /// Builds a new deck of 52 cards from the ground up.
         /// </summary>
         public void BuildDeck() {
 
-            cards = new List<Card>();
+            //cards = new List<Card>();
 
             foreach (CardSuit suit in (CardSuit[])Enum.GetValues(typeof(CardSuit))) {
 
@@ -100,6 +104,11 @@ namespace Speed.Shared.Models {
 
         public object Current {
             get { return cards[position]; }
+        }
+
+        public void addCard(Card card)
+        {
+            cards.Add(card);
         }
 
         /// <summary>
