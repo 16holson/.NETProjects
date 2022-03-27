@@ -94,8 +94,9 @@
     }
 
     public void createdeck() {
-        deck = new Deck();
-        deckEnumerator = deck.GetEnumerator();
+        Deck deck = new Deck();
+        deck.BuildDeck();
+        deck.Shuffle();
 
         foreach(Card card in deck) {
 
