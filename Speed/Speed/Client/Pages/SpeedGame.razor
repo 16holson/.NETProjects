@@ -3,6 +3,10 @@
 @implements IAsyncDisposable
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Speed.Shared.Models;
+@using System
+@using System.Collections
+@using System.Text
+
 
 
 <PageTitle>Speed!</PageTitle>
@@ -37,6 +41,9 @@
     <br />
 
     <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
+    <div>
+        <img src="@currentCard" width=250px height=400px onclick=/>
+    </div>
 
 }
 
@@ -47,6 +54,10 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
+    private Deck deck;
+    private IEnumerator deckEnumerator;
+
+    private string currentCard = "card_back.png";
 
     private string _hubUrl = string.Empty;
 
@@ -83,11 +94,18 @@
     }
 
     public void createdeck() {
-        Deck deck = new Deck();
+        deck = new Deck();
+        deckEnumerator = deck.GetEnumerator();
 
         foreach(Card card in deck) {
+
             Console.WriteLine(card.ToString());
         }
 
+    }
+    public void nextCard()
+    {
+        Card card = deck.DrawTopCard();
+        currentCard = "" + card.Value + card.Suit + ".png";
     }
 }

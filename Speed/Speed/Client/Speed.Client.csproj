@@ -1,10 +1,66 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\10Clubs.png" />
+    <None Include="wwwroot\10Diamonds.png" />
+    <None Include="wwwroot\10Hearts.png" />
+    <None Include="wwwroot\10Spades.png" />
+    <None Include="wwwroot\2Clubs.png" />
+    <None Include="wwwroot\2Diamonds.png" />
+    <None Include="wwwroot\2Hearts.png" />
+    <None Include="wwwroot\2Spades.png" />
+    <None Include="wwwroot\3Clubs.png" />
+    <None Include="wwwroot\3Diamonds.png" />
+    <None Include="wwwroot\3Hearts.png" />
+    <None Include="wwwroot\3Spades.png" />
+    <None Include="wwwroot\4Clubs.png" />
+    <None Include="wwwroot\4Diamonds.png" />
+    <None Include="wwwroot\4Hearts.png" />
+    <None Include="wwwroot\4Spades.png" />
+    <None Include="wwwroot\5Clubs.png" />
+    <None Include="wwwroot\5Diamonds.png" />
+    <None Include="wwwroot\5Hearts.png" />
+    <None Include="wwwroot\5Spades.png" />
+    <None Include="wwwroot\6Clubs.png" />
+    <None Include="wwwroot\6Diamonds.png" />
+    <None Include="wwwroot\6Hearts.png" />
+    <None Include="wwwroot\6Spades.png" />
+    <None Include="wwwroot\7Clubs.png" />
+    <None Include="wwwroot\7Diamonds.png" />
+    <None Include="wwwroot\7Hearts.png" />
+    <None Include="wwwroot\7Spades.png" />
+    <None Include="wwwroot\8Clubs.png" />
+    <None Include="wwwroot\8Diamonds.png" />
+    <None Include="wwwroot\8Hearts.png" />
+    <None Include="wwwroot\8Spades.png" />
+    <None Include="wwwroot\9Clubs.png" />
+    <None Include="wwwroot\9Diamonds.png" />
+    <None Include="wwwroot\9Hearts.png" />
+    <None Include="wwwroot\9Spades.png" />
+    <None Include="wwwroot\1Clubs.png" />
+    <None Include="wwwroot\1Diamonds.png" />
+    <None Include="wwwroot\1Hearts.png" />
+    <None Include="wwwroot\1Spades.png" />
+    <None Include="wwwroot\card_back.png" />
+    <None Include="wwwroot\11Clubs.png" />
+    <None Include="wwwroot\11Diamonds.png" />
+    <None Include="wwwroot\11Hearts.png" />
+    <None Include="wwwroot\11Spades.png" />
+    <None Include="wwwroot\13Clubs.png" />
+    <None Include="wwwroot\13Diamonds.png" />
+    <None Include="wwwroot\13Hearts.png" />
+    <None Include="wwwroot\13Spades.png" />
+    <None Include="wwwroot\12Clubs.png" />
+    <None Include="wwwroot\12Diamonds.png" />
+    <None Include="wwwroot\12Hearts.png" />
+    <None Include="wwwroot\12Spades.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
