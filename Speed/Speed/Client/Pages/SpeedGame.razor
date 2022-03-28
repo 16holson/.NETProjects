@@ -3,6 +3,7 @@
 @implements IAsyncDisposable
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Speed.Shared.Models;
+@using Speed.Shared.Models.Enums
 @using System
 @using System.Collections
 @using System.Text
@@ -12,7 +13,6 @@
 <PageTitle>Speed!</PageTitle>
 
 <h3>Speed</h3>
-
 
 
 @if (!isConnected) {
@@ -27,7 +27,7 @@
 
 } else {
     
-    <textarea style="width: 75%; height: 300px;">
+    @*<textarea style="width: 75%; height: 300px;">
         @messages
     </textarea>
 
@@ -38,15 +38,37 @@
     </div>
 
     <br />
-    <br />
+    <br />*@
+
+
 
     <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
-    <div>
-        <img src="@currentCard" width=250px height=400px onclick=/>
-    </div>
+
+    <table style="width:100%;height:auto">
+        <tr>
+             @*Top Player Area*@
+            <td></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td></td>
+        </tr>
+        <tr>
+            @*Play Area*@
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+        </tr>
+        <tr>
+            @*Bottom Player Area*@
+            <td></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
+            <td></td>
+        </tr>
+    </table>     
 
 }
-
 
 @code {
 
@@ -54,14 +76,11 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
+    private string _hubUrl = string.Empty;
     private Deck deck;
-    private IEnumerator deckEnumerator;
-
     private string currentCard = "card_back.png";
 
-    private string _hubUrl = string.Empty;
-
-
+    
     private async Task ConnectToHub() {
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
@@ -94,7 +113,7 @@
     }
 
     public void createdeck() {
-        Deck deck = new Deck();
+        deck = new Deck();
         deck.BuildDeck();
         deck.Shuffle();
 
@@ -107,6 +126,14 @@
     public void nextCard()
     {
         Card card = deck.DrawTopCard();
-        currentCard = "" + card.Value + card.Suit + ".png";
+        if(card == null)
+        {
+            currentCard = "card_back.png";
+        }
+        else
+        {
+            currentCard = "" + (int) card.Value + card.Suit + ".png";
+        }
+        
     }
 }
