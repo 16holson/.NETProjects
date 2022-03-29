@@ -1,88 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
-namespace Speed.Shared.Models
+namespace Speed.Shared.Models;
+
+/// <summary>
+/// Class that will manage the game, including:
+/// Deck
+/// Piles
+/// Functions
+/// </summary>
+public class GameEngine
 {
-    internal class GameEngine
+    #region Properties
+
+    public static Deck Deck { get; set; }                   // Main Deck to deal cards
+    public static List<Card> P1Draw { get; set; }           // Player 1's draw pile. 15 cards
+    public static List<Card> P2Draw { get; set; }           // Player 2's draw pile. 15 cards
+    public static List<Card> Mid1Draw { get; set; }         // First middle draw pile. 6 cards
+    public static List<Card> Mid2Draw { get; set; }         // Second middle draw pile. 6 cards
+    public static List<Card> Mid1Discard { get; set; }      // First empty pile to play on. 0 cards
+    public static List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
+    public static List<Card> P1Hand { get; set; }           // Player 1's Hand
+    public static List<Card> P2Hand { get; set; }           // Player 2's Hand
+    public IEnumerator DeckEnumerator;
+
+    #endregion
+
+    #region Constructor
+
+    public GameEngine()
     {
+        Deck = new Deck();
+        Deck.BuildDeck();
+        Shuffle(ref Deck.cards);
+        P1Draw = new List<Card>();
+        P2Draw = new List<Card>();
+        Mid1Draw = new List<Card>();
+        Mid2Draw = new List<Card>();
+        Mid1Discard = new List<Card>();
+        Mid2Discard = new List<Card>();
+        P1Hand = new List<Card>();              // Limited to 5 cards at once
+        P2Hand = new List<Card>();              // Limited to 5 cards at once
+        deal();
+    }
 
-        public void deal()
+    #endregion
+
+    #region methods
+
+    /// <summary>
+    /// Removes cards from Deck and disperses them to their appropriate hands and piles
+    /// </summary>
+    public void deal()
+    {
+        // add 5 cards to each player's hand
+        for (var i = 0; i < 5; i++)
         {
-            // add 5 cards to each player's hand
-            for (var i = 0; i < 5; i++)
-            {
-                p1Hand.addCard(deck.DrawTopCard());
-                p2Hand.addCard(deck.DrawTopCard());
-            }
+            P1Hand.Add(Deck.DrawTopCard());
+            P2Hand.Add(Deck.DrawTopCard());
+        }
 
-            // add 15 cards to each player's draw pile
-            for (var i = 0; i < 15; i++)
-            {
-                p1Draw.addCard(deck.DrawTopCard());
-                p2Draw.addCard(deck.DrawTopCard());
-            }
+        // add 15 cards to each player's draw pile
+        for (var i = 0; i < 15; i++)
+        {
+            P1Draw.Add(Deck.DrawTopCard());
+            P2Draw.Add(Deck.DrawTopCard());
+        }
 
-            // add 6 cards to each middle draw pile
-            for (var i = 0; i < 6; i++)
-            {
-                mid1Draw.addCard(deck.DrawTopCard());
-                mid2Draw.addCard(deck.DrawTopCard());
-            }
-
-
-            // Test all Decks and Hands
-
-            //// Player 1 Hand
-            //Console.WriteLine("Player 1's Hands contains: ");
-            //foreach (Card card in p1Hand.playerHand)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Player 2 Hand
-            //Console.WriteLine("Player 2's Hands contains: ");
-            //foreach (Card card in p2Hand.playerHand)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Player 1 Draw pile
-            //Console.WriteLine("Player 1's Draw pile contains: ");
-            //foreach (Card card in p1Draw.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Player 2 Draw pile
-            //Console.WriteLine("Player 2's Draw pile contains: ");
-            //foreach (Card card in p2Draw.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Middle Draw pile 1
-            //Console.WriteLine("Middle Draw pile 1 contains: ");
-            //foreach (Card card in mid1Draw.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Middle Draw pile 2
-            //Console.WriteLine("Middle Draw pile 2 contains: ");
-            //foreach (Card card in mid2Draw.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Middle Discard pile 1
-            //Console.WriteLine("Middle Discard pile 1 contains: ");
-            //foreach (Card card in mid1Discard.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
-            //// Middle Discard pile 2
-            //Console.WriteLine("Middle Discard pile 2 contains: ");
-            //foreach (Card card in mid2Discard.cards)
-            //{
-            //    Console.WriteLine(card.ToString());
-            //}
+        // add 6 cards to each middle draw pile
+        for (var i = 0; i < 6; i++)
+        {
+            Mid1Draw.Add(Deck.DrawTopCard());
+            Mid2Draw.Add(Deck.DrawTopCard());
         }
     }
+
+    /// <summary>
+    /// Function to shuffle a list of cards
+    /// </summary>
+    public void Shuffle(ref List<Card> cardPile)
+    {
+        Random rng = new Random();
+        int size = cardPile.Count();
+        while (size > 1)
+        {
+            size--;
+            int swapSpot = rng.Next(size + 1);
+            Card a = cardPile[swapSpot];
+            cardPile[swapSpot] = cardPile[size];
+            cardPile[size] = a;
+        }
+    }
+
+    #endregion
 }

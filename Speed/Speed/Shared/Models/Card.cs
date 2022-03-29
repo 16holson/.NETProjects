@@ -25,7 +25,7 @@ namespace Speed.Shared.Models {
         }
 
         public override string ToString() {
-            return Value.ToString() + " of " + Suit.ToString();
+            return Value.ToString() + Suit.ToString() + ".png";
         }
 
         public bool Equals(Card other)

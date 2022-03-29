@@ -40,7 +40,7 @@
     <br />
     <br />
 
-    <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
+    <button class="btn btn-primary form-group-append" @onclick="StartGame">Start Game!</button>
     <div>
         <img src="@currentCard" width=250px height=400px onclick=/>
     </div>
@@ -54,21 +54,11 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private static Deck deck = new Deck();          // Main Deck to deal cards
-    private static Deck p1Draw = new Deck();        // Player 1's draw pile. 15 cards
-    private static Deck p2Draw = new Deck();        // Player 2's draw pile. 15 cards
-    private static Deck mid1Draw = new Deck();      // First middle draw pile. 6 cards
-    private static Deck mid2Draw = new Deck();      // Second middle draw pile. 6 cards
-    private static Deck mid1Discard = new Deck();   // First empty pile to play on. 0 cards
-    private static Deck mid2Discard = new Deck();   // Second empty pile to play on. 0 cards
-    private static Hand p1Hand = new Hand();        // Player 1's Hand
-    private static Hand p2Hand = new Hand();        // Player 2's Hand
-    private IEnumerator deckEnumerator;
+    private static GameEngine gameEngine = new GameEngine();    // The brains of the operation
 
     private string currentCard = "card_back.png";
 
     private string _hubUrl = string.Empty;
-
 
     private async Task ConnectToHub() {
 
@@ -101,102 +91,17 @@
         }
     }
 
+    public async void StartGame()
+    {
+        //nothing yet
+    }
+
     /// <summary>
-    /// Creates a new deck, populates it, shuffles and deals
+    /// Used for printing a card to the console while troubleshooting
     /// </summary>
-    public void createdeck() {
-        deck = new Deck();
-        deck.BuildDeck();
-        deck.Shuffle();
-
-        // Testing the deck and shuffle
-        //foreach(Card card in deck) {
-
-        //    Console.WriteLine(card.ToString());
-        //}
-
-        deal();
-    }
-
-    public void nextCard()
+    public void AssignCardFace(ref Card card)
     {
-        Card card = deck.DrawTopCard();
-        currentCard = "" + card.Value + card.Suit + ".png";
+        currentCard = card.ToString();
     }
 
-    public void deal()
-    {
-        // add 5 cards to each player's hand
-        for (var i = 0; i < 5; i++)
-        {
-            p1Hand.addCard(deck.DrawTopCard());
-            p2Hand.addCard(deck.DrawTopCard());
-        }
-
-        // add 15 cards to each player's draw pile
-        for (var i = 0; i < 15; i++)
-        {
-            p1Draw.addCard(deck.DrawTopCard());
-            p2Draw.addCard(deck.DrawTopCard());
-        }
-
-        // add 6 cards to each middle draw pile
-        for (var i = 0; i < 6; i++)
-        {
-            mid1Draw.addCard(deck.DrawTopCard());
-            mid2Draw.addCard(deck.DrawTopCard());
-        }
-
-
-        // Test all Decks and Hands
-
-        //// Player 1 Hand
-        //Console.WriteLine("Player 1's Hands contains: ");
-        //foreach (Card card in p1Hand.playerHand)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Player 2 Hand
-        //Console.WriteLine("Player 2's Hands contains: ");
-        //foreach (Card card in p2Hand.playerHand)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Player 1 Draw pile
-        //Console.WriteLine("Player 1's Draw pile contains: ");
-        //foreach (Card card in p1Draw.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Player 2 Draw pile
-        //Console.WriteLine("Player 2's Draw pile contains: ");
-        //foreach (Card card in p2Draw.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Middle Draw pile 1
-        //Console.WriteLine("Middle Draw pile 1 contains: ");
-        //foreach (Card card in mid1Draw.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Middle Draw pile 2
-        //Console.WriteLine("Middle Draw pile 2 contains: ");
-        //foreach (Card card in mid2Draw.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Middle Discard pile 1
-        //Console.WriteLine("Middle Discard pile 1 contains: ");
-        //foreach (Card card in mid1Discard.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-        //// Middle Discard pile 2
-        //Console.WriteLine("Middle Discard pile 2 contains: ");
-        //foreach (Card card in mid2Discard.cards)
-        //{
-        //    Console.WriteLine(card.ToString());
-        //}
-    }
 }
