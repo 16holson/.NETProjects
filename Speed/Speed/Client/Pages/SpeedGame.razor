@@ -54,15 +54,15 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private Deck deck;          // Main Deck to deal cards
-    private Deck p1Draw;        // Player 1's draw pile. 15 cards
-    private Deck p2Draw;        // Player 2's draw pile. 15 cards
-    private Deck mid1Draw;      // First middle draw pile. 6 cards
-    private Deck mid2Draw;      // Second middle draw pile. 6 cards
-    private Deck mid1Discard;   // First empty pile to play on. 0 cards
-    private Deck mid2Discard;   // Second empty pile to play on. 0 cards
-    private Hand p1Hand;        // Player 1's Hand
-    private Hand p2Hand;        // Player 2's Hand
+    private static Deck deck = new Deck();          // Main Deck to deal cards
+    private static Deck p1Draw = new Deck();        // Player 1's draw pile. 15 cards
+    private static Deck p2Draw = new Deck();        // Player 2's draw pile. 15 cards
+    private static Deck mid1Draw = new Deck();      // First middle draw pile. 6 cards
+    private static Deck mid2Draw = new Deck();      // Second middle draw pile. 6 cards
+    private static Deck mid1Discard = new Deck();   // First empty pile to play on. 0 cards
+    private static Deck mid2Discard = new Deck();   // Second empty pile to play on. 0 cards
+    private static Hand p1Hand = new Hand();        // Player 1's Hand
+    private static Hand p2Hand = new Hand();        // Player 2's Hand
     private IEnumerator deckEnumerator;
 
     private string currentCard = "card_back.png";
@@ -126,18 +126,6 @@
 
     public void deal()
     {
-        p1Hand = new Hand();
-        p2Hand = new Hand();
-
-        p1Draw = new Deck();
-        p2Draw = new Deck();
-
-        mid1Draw = new Deck();
-        mid2Draw = new Deck();
-
-        mid1Discard = new Deck();
-        mid2Discard = new Deck();
-
         // add 5 cards to each player's hand
         for (var i = 0; i < 5; i++)
         {
