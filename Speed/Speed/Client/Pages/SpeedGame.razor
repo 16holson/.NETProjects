@@ -44,29 +44,34 @@
 
     <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
 
-    <table style="width:100%;height:auto">
-        <tr>
-             @*Top Player Area*@
-            <td></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td></td>
-        </tr>
-        <tr>
-            @*Play Area*@
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-        </tr>
-        <tr>
-            @*Bottom Player Area*@
-            <td></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td><img src="@currentCard" width=45% height=auto onclick=@nextCard/></td>
-            <td></td>
-        </tr>
-    </table>     
+        @*Top Player Area*@
+        <div class="text-center">
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+
+            @for(int i = 0; i < 5; i++)
+            {
+                <img src="card_back.png" width=7% height=auto onclick=@nextCard/>
+            }
+            <br />
+        </div>
+            
+        @*Play Area*@
+        <div class="text-center">
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard/>
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard/>
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+            <br />
+        </div>   
+        @*Bottom Player Area*@
+        <div class='text-center'>
+            @for(int i = 0; i < 5; i++)
+            {
+                <img src="card_back.png" width=7% height=auto onclick=@nextCard/>
+            }
+
+            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+        </div>
 
 }
 
