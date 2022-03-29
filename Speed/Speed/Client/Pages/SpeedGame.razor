@@ -6,6 +6,7 @@
 @using System
 @using System.Collections
 @using System.Text
+@using System.Text.Json;
 
 
 
@@ -41,8 +42,9 @@
     <br />
 
     <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
+    <button class="btn btn-primary form-group-append" @onclick="printDeck"> Print!</button>
     <div>
-        <img src="@currentCard" width=250px height=400px onclick=/>
+        <img src="@currentCard" width="250px" height="400px"/>
     </div>
 
 }
@@ -55,13 +57,14 @@
     private string messages = string.Empty;
     private string userMessage = string.Empty;
     private Deck deck;
-    private IEnumerator deckEnumerator;
+    private IEnumerator? deckEnumerator;
 
     private string currentCard = "card_back.png";
 
-    private string _hubUrl = string.Empty;
-
-
+    /// <summary>
+    /// Connects to the gamehub
+    /// </summary>
+    /// <returns></returns>
     private async Task ConnectToHub() {
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
@@ -74,9 +77,26 @@
             StateHasChanged();
         });
 
+        hubConnection.On<string, string>("ReceiveDeck", (user, deckStringJSON) => {
+            var cardList = JsonSerializer.Deserialize<List<Card>>(deckStringJSON);
+
+            if(deck is null) {
+                deck = new Deck();
+            }
+
+            this.deck.setCards(cardList);
+
+            Console.WriteLine("boof");
+            StateHasChanged();
+        });
+
         await hubConnection.StartAsync();
     }
 
+    /// <summary>
+    /// Sends a message to all connected clients
+    /// </summary>
+    /// <returns></returns>
     private async Task Send() {
         if (hubConnection != null) {
             await hubConnection.SendAsync("SendMessage", username, userMessage);
@@ -85,28 +105,75 @@
         }
     }
 
+    /// <summary>
+    /// Sends a deck of 
+    /// </summary>
+    /// <param name="deckStringJSON"></param>
+    /// <returns></returns>
+    private async Task SendDeck(string deckStringJSON) {
+        if (hubConnection != null) {
+            if(deck is not null){
+                await hubConnection.SendAsync("SendDeck", username, deckStringJSON);
+                Console.WriteLine("Sent Deck!");
+            }
+
+        }
+    }
+
     public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
+    /// <summary>
+    /// Used in signalR communication
+    /// </summary>
+    /// <returns></returns>
     public async ValueTask DisposeAsync() {
         if (hubConnection != null) {
             await hubConnection.DisposeAsync();
         }
     }
 
-    public void createdeck() {
-        Deck deck = new Deck();
+    /// <summary>
+    /// Creates a deck and sends that deck to the connected clients;
+    /// Serializes the deck as JSON for passing
+    /// </summary>
+    public async void createdeck() {
+        deck = new Deck();
         deck.BuildDeck();
         deck.Shuffle();
 
-        foreach(Card card in deck) {
+        var deckStringJSON = JsonSerializer.Serialize(deck);
 
-            Console.WriteLine(card.ToString());
+        await SendDeck(deckStringJSON);
+
+    }
+
+    /// <summary>
+    /// Prints out the deck of cards
+    /// </summary>
+    public void printDeck() {
+
+        if (this.deck is not null) {
+            this.deck.print();
+        } else {
+            Console.WriteLine("The deck null");
         }
 
     }
+
+
+    /// <summary>
+    /// Draws the top card off the top of the deck
+    /// </summary>
     public void nextCard()
     {
         Card card = deck.DrawTopCard();
         currentCard = "" + card.Value + card.Suit + ".png";
     }
+
+
+
 }
+
+
+
+
