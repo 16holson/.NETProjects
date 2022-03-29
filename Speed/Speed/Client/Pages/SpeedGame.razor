@@ -81,11 +81,14 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private string _hubUrl = string.Empty;
-    private Deck deck;
-    private string currentCard = "card_back.png";
+    private static GameEngine gameEngine = new GameEngine();    // The brains of the operation
 
-    
+
+    private string currentCard = "card_back.png";
+    private string _hubUrl = string.Empty;
+
+
+
     private async Task ConnectToHub() {
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
@@ -115,30 +118,19 @@
         if (hubConnection != null) {
             await hubConnection.DisposeAsync();
         }
+    public async void StartGame()
+    {
+        //nothing yet
     }
-
-    public void createdeck() {
-        deck = new Deck();
-        deck.BuildDeck();
-        deck.Shuffle();
-
-        foreach(Card card in deck) {
-
             Console.WriteLine(card.ToString());
         }
 
-    }
-    public void nextCard()
-    {
+    /// <summary>
+    /// Used for printing a card to the console while troubleshooting
+    /// </summary>
+        currentCard = card.ToString();
         Card card = deck.DrawTopCard();
-        if(card == null)
-        {
-            currentCard = "card_back.png";
-        }
-        else
-        {
-            currentCard = "" + (int) card.Value + card.Suit + ".png";
-        }
-        
+        currentCard = "" + card.Value + card.Suit + ".png";
     }
+
 }

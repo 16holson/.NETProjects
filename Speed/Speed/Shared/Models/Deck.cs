@@ -111,19 +111,5 @@ namespace Speed.Shared.Models {
             cards.Add(card);
         }
 
-        /// <summary>
-        /// Function to shuffle the deck of cards
-        /// </summary>
-        public void Shuffle()
-        {
-            int size = cards.Count();
-            while (size > 1) {
-                size--;
-                int swapSpot = rng.Next(size + 1);
-                Card a = cards[swapSpot];
-                cards[swapSpot] = cards[size];
-                cards[size] = a;
-            }
-        }
     }
 }
