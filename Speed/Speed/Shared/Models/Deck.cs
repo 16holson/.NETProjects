@@ -115,37 +115,5 @@ namespace Speed.Shared.Models {
             cards.Add(card);
         }
 
-        /// <summary>
-        /// Function to shuffle the deck of cards
-        /// </summary>
-        public void Shuffle()
-        {
-            int size = cards.Count();
-            while (size > 1) {
-                size--;
-                int swapSpot = rng.Next(size + 1);
-                Card a = cards[swapSpot];
-                cards[swapSpot] = cards[size];
-                cards[size] = a;
-            }
-        }
-
-        /// <summary>
-        /// Sets the deck to a new order of cards
-        /// Used to updates decks created by other clients and sent to current client
-        /// </summary>
-        /// <param name="_cards"></param>
-        public void setCards(List<Card> _cards) {
-            this.cards = _cards;
-        }
-
-        /// <summary>
-        /// Prints out the contents of the deck to the console
-        /// </summary>
-        public void print() {
-            foreach (Card card in cards) {
-                Console.WriteLine(card.ToString());
-            }
-        }
     }
 }

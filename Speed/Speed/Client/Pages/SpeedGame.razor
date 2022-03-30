@@ -41,8 +41,7 @@
     <br />
     <br />
 
-    <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
-    <button class="btn btn-primary form-group-append" @onclick="printDeck"> Print!</button>
+    <button class="btn btn-primary form-group-append" @onclick="StartGame">Start Game!</button>
     <div>
         <img src="@currentCard" width="250px" height="400px"/>
     </div>
@@ -56,8 +55,7 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private Deck deck;
-    private IEnumerator? deckEnumerator;
+    private static GameEngine gameEngine = new GameEngine();    // The brains of the operation
 
     private string currentCard = "card_back.png";
 
@@ -157,20 +155,18 @@
         } else {
             Console.WriteLine("The deck null");
         }
-
+    public async void StartGame()
+    {
+        //nothing yet
     }
-
 
     /// <summary>
-    /// Draws the top card off the top of the deck
+    /// Used for printing a card to the console while troubleshooting
     /// </summary>
-    public void nextCard()
+    public void AssignCardFace(ref Card card)
     {
-        Card card = deck.DrawTopCard();
-        currentCard = "" + card.Value + card.Suit + ".png";
+        currentCard = card.ToString();
     }
-
-
 
 }
 

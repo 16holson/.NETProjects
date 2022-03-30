@@ -12,13 +12,11 @@ namespace Speed.Shared.Models
     /// </summary>
     public class Hand
     {
-        private int playerID;
-        private List<Card> playerHand;
+        public List<Card> playerHand;
         private static int maxHandSize = 5;
 
-        public Hand(int iD)
+        public Hand()
         {
-            playerID = iD;
             playerHand = new List<Card>();
         }
 
