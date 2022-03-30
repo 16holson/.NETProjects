@@ -21,7 +21,7 @@ public class GameEngine
     public static List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
     public static List<Card> P1Hand { get; set; }           // Player 1's Hand
     public static List<Card> P2Hand { get; set; }           // Player 2's Hand
-    public IEnumerator DeckEnumerator;
+    public IEnumerator? DeckEnumerator;
 
     #endregion
 
@@ -91,5 +91,10 @@ public class GameEngine
         }
     }
 
+    public void build() {
+        Deck.BuildDeck();
+    }
+
     #endregion
+
 }

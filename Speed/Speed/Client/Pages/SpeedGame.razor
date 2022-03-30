@@ -55,7 +55,9 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private static GameEngine gameEngine = new GameEngine();    // The brains of the operation
+    private static GameEngine gameEngine = new();   // The brains of the operation
+
+    private static Deck? deck;
 
     private string currentCard = "card_back.png";
 
@@ -64,6 +66,7 @@
     /// </summary>
     /// <returns></returns>
     private async Task ConnectToHub() {
+
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
 
@@ -82,9 +85,10 @@
                 deck = new Deck();
             }
 
-            this.deck.setCards(cardList);
+            deck.setCards(cardList);
 
-            Console.WriteLine("boof");
+            deck.print();
+
             StateHasChanged();
         });
 
@@ -134,30 +138,40 @@
     /// Creates a deck and sends that deck to the connected clients;
     /// Serializes the deck as JSON for passing
     /// </summary>
-    public async void createdeck() {
-        deck = new Deck();
-        deck.BuildDeck();
-        deck.Shuffle();
+    //public async void createdeck() {
+    //    deck = new Deck();
+    //    deck.BuildDeck();
+    //    deck.Shuffle();
 
-        var deckStringJSON = JsonSerializer.Serialize(deck);
+    //    var deckStringJSON = JsonSerializer.Serialize(deck);
 
-        await SendDeck(deckStringJSON);
+    //    await SendDeck(deckStringJSON);
 
-    }
+    //}
 
     /// <summary>
     /// Prints out the deck of cards
     /// </summary>
     public void printDeck() {
 
-        if (this.deck is not null) {
-            this.deck.print();
+        if (GameEngine.Deck is not null) {
+            GameEngine.Deck.print();
         } else {
             Console.WriteLine("The deck null");
         }
+    }
+
     public async void StartGame()
     {
-        //nothing yet
+
+        deck = new();
+        deck.BuildDeck();
+
+        var deckStringJSON = JsonSerializer.Serialize(deck);
+
+        await SendDeck(deckStringJSON);
+
+
     }
 
     /// <summary>

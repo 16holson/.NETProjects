@@ -23,7 +23,7 @@ namespace Speed.Shared.Models {
         /// helps keep track of which deck this is
         /// -1 for main deck
         /// </summary>
-        private int deckId = -1;
+        private int deckId = rng.Next(10);
 
         /// <summary>
         /// rng for shuffling
@@ -113,6 +113,16 @@ namespace Speed.Shared.Models {
         public void addCard(Card card)
         {
             cards.Add(card);
+        }
+
+        public void setCards(List<Card> _cards) {
+            this.cards = _cards; 
+        }
+
+        public void print() {
+            foreach (var card in cards) {
+                Console.WriteLine(card.ToString());
+            }
         }
 
     }

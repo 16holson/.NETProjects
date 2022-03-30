@@ -10,7 +10,7 @@ namespace Speed.Server.Hubs {
     public class GameHub : Hub {
 
         public override async Task OnConnectedAsync() {
-            await SendMessage("", "User Connected");
+            await SendMessage("", "User Connected!");
             await base.OnConnectedAsync();
 
 
