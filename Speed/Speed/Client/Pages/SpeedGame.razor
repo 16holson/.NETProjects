@@ -42,35 +42,50 @@
 
 
 
-    <button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
-
+    //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
         @*Top Player Area*@
         <div class="text-center">
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+            <img src="card_back.png" width=7% height=auto @onclick="() => addHand(gameEngine.P2Draw, gameEngine.P2Hand)" class="m-5"/>
+            @*@gameEngine.P2Draw.First().ToString()*@
 
-            @for(int i = 0; i < 5; i++)
+            @foreach(Card card in gameEngine.P2Hand)
             {
-                <img src="card_back.png" width=7% height=auto onclick=@nextCard/>
+                <img src="@card.ToString()" width=7% height=auto @onclick="() => playCard(card, gameEngine.P2Hand)"/>
             }
             <br />
         </div>
             
         @*Play Area*@
         <div class="text-center">
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard/>
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard/>
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+            <img src="card_back.png" width=7% height=auto @onclick="() => incrementMiddle(gameEngine.Mid1Draw, gameEngine.Mid1Discard)" class="m-5"/>
+            @if(gameEngine.Mid1Discard.Count == 0)
+            {
+                <img src="card_back.png" width=7% height=auto @onclick="() => playedCard(gameEngine.Mid1Discard)"/>
+            }
+            else
+            {
+                <img src="@gameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => playedCard(gameEngine.Mid1Discard)"/>
+            }
+            @if(gameEngine.Mid2Discard.Count == 0)
+            {
+                <img src="card_back.png" width=7% height=auto @onclick="() => playedCard(gameEngine.Mid2Discard)"/>
+            }
+            else
+            {
+                <img src="@gameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => playedCard(gameEngine.Mid2Discard)"/>
+            }
+            <img src="card_back.png" width=7% height=auto @onclick="() => incrementMiddle(gameEngine.Mid2Draw, gameEngine.Mid2Discard)" class="m-5"/>
             <br />
         </div>   
         @*Bottom Player Area*@
         <div class='text-center'>
-            @for(int i = 0; i < 5; i++)
+            @foreach(Card card in gameEngine.P1Hand)
             {
-                <img src="card_back.png" width=7% height=auto onclick=@nextCard/>
+                <img src="@card.ToString()" width=7% height=auto @onclick="() => playCard(card, gameEngine.P1Hand)"/>
             }
 
-            <img src="@currentCard" width=7% height=auto onclick=@nextCard class="m-5"/>
+            @*@gameEngine.P1Draw.First().ToString()*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => addHand(gameEngine.P1Draw, gameEngine.P1Hand)" class="m-5"/>
         </div>
 
 }
@@ -81,7 +96,10 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private static GameEngine gameEngine = new GameEngine();    // The brains of the operation
+    private string highlight = "0px 12px 22px 1px #333;";
+    private Card selectedCard;
+    private List<Card> selectedSide;
+    private GameEngine gameEngine = new GameEngine();    // The brains of the operation
 
 
     private string currentCard = "card_back.png";
@@ -118,19 +136,42 @@
         if (hubConnection != null) {
             await hubConnection.DisposeAsync();
         }
+    }
     public async void StartGame()
     {
         //nothing yet
     }
-            Console.WriteLine(card.ToString());
+    public void resetMiddle()
+    {
+        //move cards from middle discard to middle draw
+    }
+    public void incrementMiddle(List<Card> outerMid, List<Card> innerMid)
+    {
+        //move card from outer middle to inner middle
+        innerMid.Add(outerMid.First());
+        outerMid.RemoveAt(0);
+    }
+    public void playCard(Card card, List<Card> side)
+    {
+        //remove from draw and add to hand
+        selectedCard = card;
+        selectedSide = side;
+    }
+    public void playedCard(List<Card> middleList) 
+    {
+        middleList.Add(selectedCard);
+        selectedSide.Remove(selectedCard);
+        selectedCard = null;
+        selectedSide = null;
+    }
+    public void addHand(List<Card> deck, List<Card> hand)
+    {
+        if(hand.Count < 5)
+        {
+            hand.Add(deck.First());
+            deck.RemoveAt(0);  
         }
-
-    /// <summary>
-    /// Used for printing a card to the console while troubleshooting
-    /// </summary>
-        currentCard = card.ToString();
-        Card card = deck.DrawTopCard();
-        currentCard = "" + card.Value + card.Suit + ".png";
+        
     }
 
 }
