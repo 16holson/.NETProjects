@@ -21,6 +21,7 @@ public class GameEngine
     public List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
     public List<Card> P1Hand { get; set; }           // Player 1's Hand
     public List<Card> P2Hand { get; set; }           // Player 2's Hand
+    public GameService GameService { get; set; }     // Game Functions
     public IEnumerator DeckEnumerator;
 
     #endregion
@@ -31,6 +32,7 @@ public class GameEngine
     {
         Deck = new Deck();
         Deck.BuildDeck();
+        GameService = new GameService();
         Shuffle(ref Deck.cards);
         P1Draw = new List<Card>();
         P2Draw = new List<Card>();

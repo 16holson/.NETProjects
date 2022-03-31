@@ -11,6 +11,8 @@ namespace Speed.Shared.Models {
         public CardSuit Suit { get; set; }
         public CardValue Value { get; set; }
 
+        public String highlight = "";
+
 
         public bool IsRed {
             get {
