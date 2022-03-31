@@ -104,11 +104,12 @@
 }
 
 @code {
-
     private HubConnection? hubConnection;
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
+    private int numPlaying;
+    private string clientId;
     private Card selectedCard;
     private List<Card> selectedSide;
     private String p1 = "one";
@@ -128,11 +129,24 @@
             var msg = $"{(string.IsNullOrEmpty(user) ? "" : user + ": ")} {message}";
             messages += msg + "\n";
             Console.Write(messages);
-
+            PlayerLogin();
             StateHasChanged();
         });
 
+
+
         await hubConnection.StartAsync();
+    }
+
+    private async Task PlayerLogin()
+    {
+        await hubConnection.SendAsync("Login");
+        hubConnection.On<string, int>("SetClientInfo", (clientConnectionId, numLoggedIn) =>
+            {
+                clientId = clientConnectionId;
+                numPlaying = numLoggedIn;
+            });
+        Console.Write(clientId);
     }
 
     private async Task Send() {
