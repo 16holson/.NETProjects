@@ -12,17 +12,17 @@ public class GameEngine
 {
     #region Properties
 
-    public Deck Deck { get; set; }                   // Main Deck to deal cards
-    public List<Card> P1Draw { get; set; }           // Player 1's draw pile. 15 cards
-    public List<Card> P2Draw { get; set; }           // Player 2's draw pile. 15 cards
-    public List<Card> Mid1Draw { get; set; }         // First middle draw pile. 6 cards
-    public List<Card> Mid2Draw { get; set; }         // Second middle draw pile. 6 cards
-    public List<Card> Mid1Discard { get; set; }      // First empty pile to play on. 0 cards
-    public List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
-    public List<Card> P1Hand { get; set; }           // Player 1's Hand
-    public List<Card> P2Hand { get; set; }           // Player 2's Hand
-    public GameService GameService { get; set; }     // Game Functions
-    public IEnumerator DeckEnumerator;
+    public static Deck Deck { get; set; }                   // Main Deck to deal cards
+    public static List<Card> P1Draw { get; set; }           // Player 1's draw pile. 15 cards
+    public static List<Card> P2Draw { get; set; }           // Player 2's draw pile. 15 cards
+    public static List<Card> Mid1Draw { get; set; }         // First middle draw pile. 6 cards
+    public static List<Card> Mid2Draw { get; set; }         // Second middle draw pile. 6 cards
+    public static List<Card> Mid1Discard { get; set; }      // First empty pile to play on. 0 cards
+    public static List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
+    public static List<Card> P1Hand { get; set; }           // Player 1's Hand
+    public static List<Card> P2Hand { get; set; }           // Player 2's Hand
+    public static GameService GameService { get; set; }     // Game Functions
+    public static IEnumerator DeckEnumerator;
 
     #endregion
 
@@ -33,7 +33,7 @@ public class GameEngine
         Deck = new Deck();
         Deck.BuildDeck();
         GameService = new GameService();
-        Shuffle(ref Deck.cards);
+        Shuffle(Deck.cards);
         P1Draw = new List<Card>();
         P2Draw = new List<Card>();
         Mid1Draw = new List<Card>();
@@ -79,7 +79,7 @@ public class GameEngine
     /// <summary>
     /// Function to shuffle a list of cards
     /// </summary>
-    public void Shuffle(ref List<Card> cardPile)
+    public static void Shuffle(List<Card> cardPile)
     {
         Random rng = new Random();
         int size = cardPile.Count();

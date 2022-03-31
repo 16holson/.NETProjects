@@ -45,53 +45,60 @@
     //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
         @*Top Player Area*@
         <div class="text-center">
-            <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.addCards(gameEngine.P2Draw, gameEngine.P2Hand)" class="m-5"/>
-            @*@gameEngine.P2Draw.First().ToString()*@
+            @*Player 2 Deck*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.addCards2()" class="m-5"/>
 
-            @foreach(Card card in gameEngine.P2Hand)
+            @*Player 2 Hand*@
+            @foreach(Card card in GameEngine.P2Hand)
             {
-                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => gameEngine.GameService.onHandClick(gameEngine.P2Hand, card, p2)"/>
+                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => GameEngine.GameService.onHandClick2(card)"/>
             }
             <br />
         </div>
             
         @*Play Area*@
         <div class="text-center">
-            <span style="color:green; display:@gameEngine.GameService.p1Ready">Player 1 Ready</span>
-            <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.moveMiddle(gameEngine.Mid1Draw, gameEngine.Mid2Draw, gameEngine.Mid1Discard, gameEngine.Mid2Discard, p1)" class="m-5"/>
-            @if(gameEngine.Mid1Discard.Count == 0)
+            <span style="color:green; display:@GameEngine.GameService.p1Ready">Player 1 Ready</span>
+            @*Left Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.moveMiddle(p1)" class="m-5"/>
+
+            @*2 Play Cards*@
+            @if(GameEngine.Mid1Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.onPlay(gameEngine.Mid1Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid1Discard)"/>
             }
             else
             {
-                <img src="@gameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => gameEngine.GameService.onPlay(gameEngine.Mid1Discard)"/>
+                <img src="@GameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid1Discard)"/>
             }
-            @if(gameEngine.Mid2Discard.Count == 0)
+            @if(GameEngine.Mid2Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.onPlay(gameEngine.Mid2Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid2Discard)"/>
             }
             else
             {
-                <img src="@gameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => gameEngine.GameService.onPlay(gameEngine.Mid2Discard)"/>
+                <img src="@GameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid2Discard)"/>
             }
-            <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.moveMiddle(gameEngine.Mid1Draw, gameEngine.Mid2Draw, gameEngine.Mid1Discard, gameEngine.Mid2Discard, p2)" class="m-5"/>
-            <span style="color:green; display:@gameEngine.GameService.p2Ready">Player 2 Ready</span>
+
+            @*Right Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.moveMiddle(p2)" class="m-5"/>
+            <span style="color:green; display:@GameEngine.GameService.p2Ready">Player 2 Ready</span>
             <br />
         </div>   
         @*Bottom Player Area*@
         <div class='text-center'>
-            @foreach(Card card in gameEngine.P1Hand)
+            @*Player 1 Hand*@
+            @foreach(Card card in GameEngine.P1Hand)
             {
-                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => gameEngine.GameService.onHandClick(gameEngine.P1Hand, card, p1)"/>
+                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => GameEngine.GameService.onHandClick1(card)"/>
             }
 
-            @*@gameEngine.P1Draw.First().ToString()*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => gameEngine.GameService.addCards(gameEngine.P1Draw, gameEngine.P1Hand)" class="m-5"/>
+            @*Player 1 Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.addCards1()" class="m-5"/>
         </div>
         <div>
-            <span style="display:@gameEngine.GameService.p1Won">Player 1 Won!</span>
-            <span style="display:@gameEngine.GameService.p2Won">Player 2 Won!</span>
+            <span style="display:@GameEngine.GameService.p1Won">Player 1 Won!</span>
+            <span style="display:@GameEngine.GameService.p2Won">Player 2 Won!</span>
         </div>
 
 }
@@ -102,13 +109,11 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private string highlight = "0px 12px 22px 1px #333;";
     private Card selectedCard;
     private List<Card> selectedSide;
     private String p1 = "one";
     private String p2 = "two";
     private GameEngine gameEngine = new GameEngine();    // The brains of the operation
-
 
     private string currentCard = "card_back.png";
     private string _hubUrl = string.Empty;
@@ -148,10 +153,6 @@
     public async void StartGame()
     {
         //nothing yet
-    }
-    public void resetMiddle()
-    {
-        //move cards from middle discard to middle draw
     }
 
 }
