@@ -8,18 +8,43 @@ using Speed.Shared.Models;
 
 
 namespace Speed.Server.Hubs {
+
+    public static class Connections {
+        public static List<string> connections = new();
+    }
+        
     public class GameHub : Hub {
 
-        private readonly SpeedEngine engine = new();
-        //public GameHub(SpeedEngine engine) {
-        //    this.engine = engine;
-        //}
+        private readonly SpeedEngine engine;
+        public GameHub(SpeedEngine engine) {
+           this.engine = engine;
+        }
 
         public override async Task OnConnectedAsync() {
-            await SendMessage("", "User Connected!");
+            
+            Connections.connections.Add(Context.ConnectionId);
+
+            string playername;
+
+            if(Connections.connections.Count > 1) {
+                playername = "Player 2";
+            } else {
+                playername = "Player 1";
+            }
+
+
+
+            await SendMessage("", $"{ playername } Connected!");
+            await setPlayer(playername);
+
+
             await base.OnConnectedAsync();
 
 
+        }
+
+        public async Task setPlayer(string playername) {
+            await Clients.Caller.SendAsync("SetPlayer", playername);
         }
 
 
@@ -32,39 +57,26 @@ namespace Speed.Server.Hubs {
 
         }
 
-        //public async Task SendDeck(string user, List<Card> cards) {
 
-        //    Console.WriteLine("Deck has arrived!");
-
-        //    //await Clients.All.SendAsync("ReceiveDeck", user, cards);
-
-        //    await engine.DealDeck(this);
-
-
-        //}
-
-        public async Task SendDeck() {
-
-            Console.WriteLine("Deck has arrived!");
-
-            //await Clients.All.SendAsync("ReceiveDeck", user, cards);
+        public async Task GetDeck() {
 
             await engine.DealDeck(this);
 
 
         }
 
-        /*public async Task SendDeck(string user, string deckString) {
+        public async Task RequestDeck() {
 
-            Console.WriteLine("Deck has arrived");
-
-            await Clients.All.SendAsync("ReceiveDeck", user, deckString);
-
-        }*/
+            await engine.RequestDeck(this);
 
 
+        }
 
 
+        public async Task RequestHand(bool playerOne) {
+
+            await engine.RequestHand(this, playerOne);
+        }
 
     }
 }

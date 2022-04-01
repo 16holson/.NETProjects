@@ -119,6 +119,10 @@ namespace Speed.Shared.Models {
             this.cards = _cards; 
         }
 
+        public List<Card> getCards() {
+            return this.cards;
+        }
+
         public void print() {
             foreach (var card in cards) {
                 Console.WriteLine(card.ToString());

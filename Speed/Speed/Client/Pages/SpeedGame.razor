@@ -42,7 +42,9 @@
     <br />
     <br />
 
-    <button class="btn btn-primary form-group-append" @onclick="StartGame">Start Game!</button>
+    <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
+
+
     <div>
         <img src="@currentCard" width="250px" height="400px"/>
     </div>
@@ -56,18 +58,19 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-   //private static GameEngine gameEngine = new();   // The brains of the operation
+
 
     private static Deck? deck;
 
     private string currentCard = "card_back.png";
+
+    private bool playerOne = false;
 
     /// <summary>
     /// Connects to the gamehub
     /// </summary>
     /// <returns></returns>
     private async Task ConnectToHub() {
-
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
 
@@ -79,28 +82,28 @@
             StateHasChanged();
         });
 
-        //hubConnection.On<string, string>("ReceiveDeck", (user, deckStringJSON) => {
-        //    var cardList = JsonSerializer.Deserialize<List<Card>>(deckStringJSON);
-
-        //    if(deck is null) {
-        //        deck = new Deck();
-        //    }
-
-        //    deck.setCards(cardList);
-
-        //    deck.print();
-
-        //    StateHasChanged();
-        //});
 
         hubConnection.On<string, List<Card>>("ReceiveDeck", (user, cards) => {
 
+            Console.WriteLine(user);
 
             foreach(Card card in cards) {
                 Console.WriteLine(card.ToString());
             }
 
             StateHasChanged();
+        });
+
+        hubConnection.On<List<Card>>("ReceiveHand", (hand) => {
+
+            foreach (Card card in hand) {
+                Console.WriteLine(card.ToString());
+            }
+        });
+
+        hubConnection.On<string>("SetPlayer", (playername) => {
+
+            playerOne = (playername == "Player 1") ? true : false;
         });
 
         await hubConnection.StartAsync();
@@ -118,20 +121,7 @@
         }
     }
 
-    /// <summary>
-    /// Sends a deck of 
-    /// </summary>
-    /// <param name="deckStringJSON"></param>
-    /// <returns></returns>
-    //private async Task SendDeck(string deckStringJSON) {
-    //    if (hubConnection != null) {
-    //        if(deck is not null){
-    //            await hubConnection.SendAsync("SendDeck", username, deckStringJSON);
-    //            Console.WriteLine("Sent Deck!");
-    //        }
 
-    //    }
-    //}
 
     public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
@@ -145,73 +135,19 @@
         }
     }
 
-    /// <summary>
-    /// Creates a deck and sends that deck to the connected clients;
-    /// Serializes the deck as JSON for passing
-    /// </summary>
-    //public async void createdeck() {
-    //    deck = new Deck();
-    //    deck.BuildDeck();
-    //    deck.Shuffle();
 
-    //    var deckStringJSON = JsonSerializer.Serialize(deck);
-
-    //    await SendDeck(deckStringJSON);
-
-    //}
-
-    /// <summary>
-    /// Prints out the deck of cards
-    /// </summary>
-
-
-    public async void StartGame()
-    {
-
-
-
-        await hubConnection.SendAsync("SendDeck");
-
-
-
-        //List<Card> cards = new();
-
-        //foreach (CardSuit suit in (CardSuit[])Enum.GetValues(typeof(CardSuit))) {
-
-        //    foreach (CardValue value in (CardValue[])Enum.GetValues(typeof(CardValue))) {
-
-        //        //For each suit and value, create and insert a new Card object.
-        //        Card newCard = new Card() {
-        //                Suit = suit,
-        //                Value = value,
-        //            };
-
-        //        cards.Add(newCard);
-        //    }
-
-        //}
-
-        //SendDeck(cards);
-
-        //deck = new();
-        //deck.BuildDeck();
-
-        //var deckStringJSON = JsonSerializer.Serialize(deck);
-
-        //await SendDeck(deckStringJSON);
-
-
+    //Used for testing
+    public async void RequestDeck() {
+        await hubConnection.SendAsync("RequestDeck");
     }
 
-    private async Task SendDeck(List<Card> cards) {
-        if (hubConnection != null) {
-            if(cards is not null){
-                await hubConnection.SendAsync("SendDeck", username, cards);
-                Console.WriteLine("Sent Deck!");
-            }
-
-        }
+    /// <summary>
+    /// Gets the users hand based on if they are player one or player two
+    /// </summary>
+    public async void RequestHand() {
+        await hubConnection.SendAsync("RequestHand", playerOne);
     }
+
 
     /// <summary>
     /// Used for printing a card to the console while troubleshooting
