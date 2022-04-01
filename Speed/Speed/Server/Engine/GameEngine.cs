@@ -1,6 +1,7 @@
 ﻿using System.Collections;
+using Speed.Shared.Models;
 
-namespace Speed.Shared.Models;
+namespace Speed.Server.Engine;
 
 /// <summary>
 /// Class that will manage the game, including:
@@ -12,15 +13,15 @@ public class GameEngine
 {
     #region Properties
 
-    public static Deck Deck { get; set; }                   // Main Deck to deal cards
-    public static List<Card> P1Draw { get; set; }           // Player 1's draw pile. 15 cards
-    public static List<Card> P2Draw { get; set; }           // Player 2's draw pile. 15 cards
-    public static List<Card> Mid1Draw { get; set; }         // First middle draw pile. 6 cards
-    public static List<Card> Mid2Draw { get; set; }         // Second middle draw pile. 6 cards
-    public static List<Card> Mid1Discard { get; set; }      // First empty pile to play on. 0 cards
-    public static List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
-    public static List<Card> P1Hand { get; set; }           // Player 1's Hand
-    public static List<Card> P2Hand { get; set; }           // Player 2's Hand
+    public Deck Deck { get; set; }                   // Main Deck to deal cards
+    public List<Card> P1Draw { get; set; }           // Player 1's draw pile. 15 cards
+    public List<Card> P2Draw { get; set; }           // Player 2's draw pile. 15 cards
+    public List<Card> Mid1Draw { get; set; }         // First middle draw pile. 6 cards
+    public List<Card> Mid2Draw { get; set; }         // Second middle draw pile. 6 cards
+    public List<Card> Mid1Discard { get; set; }      // First empty pile to play on. 0 cards
+    public List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
+    public List<Card> P1Hand { get; set; }           // Player 1's Hand
+    public List<Card> P2Hand { get; set; }           // Player 2's Hand
     public IEnumerator? DeckEnumerator;
 
     #endregion

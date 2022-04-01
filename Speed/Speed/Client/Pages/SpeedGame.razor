@@ -3,6 +3,7 @@
 @implements IAsyncDisposable
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Speed.Shared.Models;
+@using Speed.Shared.Models.Enums;
 @using System
 @using System.Collections
 @using System.Text
@@ -55,7 +56,7 @@
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private static GameEngine gameEngine = new();   // The brains of the operation
+   //private static GameEngine gameEngine = new();   // The brains of the operation
 
     private static Deck? deck;
 
@@ -78,16 +79,26 @@
             StateHasChanged();
         });
 
-        hubConnection.On<string, string>("ReceiveDeck", (user, deckStringJSON) => {
-            var cardList = JsonSerializer.Deserialize<List<Card>>(deckStringJSON);
+        //hubConnection.On<string, string>("ReceiveDeck", (user, deckStringJSON) => {
+        //    var cardList = JsonSerializer.Deserialize<List<Card>>(deckStringJSON);
 
-            if(deck is null) {
-                deck = new Deck();
+        //    if(deck is null) {
+        //        deck = new Deck();
+        //    }
+
+        //    deck.setCards(cardList);
+
+        //    deck.print();
+
+        //    StateHasChanged();
+        //});
+
+        hubConnection.On<string, List<Card>>("ReceiveDeck", (user, cards) => {
+
+
+            foreach(Card card in cards) {
+                Console.WriteLine(card.ToString());
             }
-
-            deck.setCards(cardList);
-
-            deck.print();
 
             StateHasChanged();
         });
@@ -112,15 +123,15 @@
     /// </summary>
     /// <param name="deckStringJSON"></param>
     /// <returns></returns>
-    private async Task SendDeck(string deckStringJSON) {
-        if (hubConnection != null) {
-            if(deck is not null){
-                await hubConnection.SendAsync("SendDeck", username, deckStringJSON);
-                Console.WriteLine("Sent Deck!");
-            }
+    //private async Task SendDeck(string deckStringJSON) {
+    //    if (hubConnection != null) {
+    //        if(deck is not null){
+    //            await hubConnection.SendAsync("SendDeck", username, deckStringJSON);
+    //            Console.WriteLine("Sent Deck!");
+    //        }
 
-        }
-    }
+    //    }
+    //}
 
     public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
@@ -152,26 +163,54 @@
     /// <summary>
     /// Prints out the deck of cards
     /// </summary>
-    public void printDeck() {
 
-        if (GameEngine.Deck is not null) {
-            GameEngine.Deck.print();
-        } else {
-            Console.WriteLine("The deck null");
-        }
-    }
 
     public async void StartGame()
     {
 
-        deck = new();
-        deck.BuildDeck();
-
-        var deckStringJSON = JsonSerializer.Serialize(deck);
-
-        await SendDeck(deckStringJSON);
 
 
+        await hubConnection.SendAsync("SendDeck");
+
+
+
+        //List<Card> cards = new();
+
+        //foreach (CardSuit suit in (CardSuit[])Enum.GetValues(typeof(CardSuit))) {
+
+        //    foreach (CardValue value in (CardValue[])Enum.GetValues(typeof(CardValue))) {
+
+        //        //For each suit and value, create and insert a new Card object.
+        //        Card newCard = new Card() {
+        //                Suit = suit,
+        //                Value = value,
+        //            };
+
+        //        cards.Add(newCard);
+        //    }
+
+        //}
+
+        //SendDeck(cards);
+
+        //deck = new();
+        //deck.BuildDeck();
+
+        //var deckStringJSON = JsonSerializer.Serialize(deck);
+
+        //await SendDeck(deckStringJSON);
+
+
+    }
+
+    private async Task SendDeck(List<Card> cards) {
+        if (hubConnection != null) {
+            if(cards is not null){
+                await hubConnection.SendAsync("SendDeck", username, cards);
+                Console.WriteLine("Sent Deck!");
+            }
+
+        }
     }
 
     /// <summary>
@@ -180,7 +219,10 @@
     public void AssignCardFace(ref Card card)
     {
         currentCard = card.ToString();
+
     }
+
+    
 
 }
 
