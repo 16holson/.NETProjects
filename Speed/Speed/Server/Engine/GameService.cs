@@ -37,20 +37,33 @@ namespace Speed.Server.Engine
         #region Methods
         public void onHandClick1(Card selectedCard)
         {
-            foreach (Card card in SpeedEngine.game.P1Hand)
+            for(int i = 0; i < SpeedEngine.game.P1Hand.Count; i++)
             {
-                if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+                if(SpeedEngine.game.P1Hand[i].Value == selectedCard.Value && SpeedEngine.game.P1Hand[i].Suit == selectedCard.Suit)
                 {
-                    selectedCard1 = card;
-                    card.highlight = "0px 12px 22px 1px #00FF00;";
-                    selectedCard1.highlight = "0px 12px 22px 1px #00FF00;";
-                    if (previousCard1 != null && previousCard1 != card)
+                    SpeedEngine.game.P1Hand[i].highlight = "0px 12px 22px 1px #00FF00;";
+                    selectedCard1 = SpeedEngine.game.P1Hand[i];
+                    if (previousCard1 != null && previousCard1 != SpeedEngine.game.P1Hand[i])
                     {
                         previousCard1.highlight = "";
                     }
-                    previousCard1 = card;
+                    previousCard1 = SpeedEngine.game.P1Hand[i];
                 }
             }
+            //foreach (Card card in SpeedEngine.game.P1Hand)
+            //{
+            //    if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+            //    {
+            //        selectedCard1 = card;
+            //        card.highlight = "0px 12px 22px 1px #00FF00;";
+            //        selectedCard1.highlight = "0px 12px 22px 1px #00FF00;";
+            //        if (previousCard1 != null && previousCard1 != card)
+            //        {
+            //            previousCard1.highlight = "";
+            //        }
+            //        previousCard1 = card;
+            //    }
+            //}
 
         }
         public void onHandClick2(Card selectedCard)
