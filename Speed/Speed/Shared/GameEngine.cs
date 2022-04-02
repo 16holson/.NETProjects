@@ -1,7 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Speed.Shared.Models;
 
-namespace Speed.Server.Engine
+namespace Speed.Shared
 {
     public class GameEngine
     {
@@ -16,8 +20,6 @@ namespace Speed.Server.Engine
         public List<Card> Mid2Discard { get; set; }      // Second empty pile to play on. 0 cards
         public List<Card> P1Hand { get; set; }           // Player 1's Hand
         public List<Card> P2Hand { get; set; }           // Player 2's Hand
-        public GameService GameService { get; set; }     // Game Functions
-        public IEnumerator? DeckEnumerator;
 
         #endregion
 
@@ -27,7 +29,6 @@ namespace Speed.Server.Engine
         {
             Deck = new Deck();
             Deck.BuildDeck();
-            GameService = new GameService();
             Shuffle(Deck.cards);
             P1Draw = new List<Card>();
             P2Draw = new List<Card>();
@@ -92,8 +93,6 @@ namespace Speed.Server.Engine
         {
             Deck.BuildDeck();
         }
-
-
 
         #endregion
 

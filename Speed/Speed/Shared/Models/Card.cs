@@ -10,7 +10,7 @@ namespace Speed.Shared.Models {
 
         public CardSuit Suit { get; set; }
         public CardValue Value { get; set; }
-
+        public string highlight = "";
 
         public bool IsRed {
             get {
@@ -25,7 +25,7 @@ namespace Speed.Shared.Models {
         }
 
         public override string ToString() {
-            return Value.ToString() + Suit.ToString() + ".png";
+            return (int)Value + Suit.ToString() + ".png";
         }
 
         public bool Equals(Card other)

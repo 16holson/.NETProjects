@@ -37,7 +37,7 @@ namespace Speed.Server.Hubs {
             await SendMessage("", $"{ playername } Connected!");
             await setPlayer(playername);
 
-
+            await RequestGame();
             await base.OnConnectedAsync();
 
 
@@ -76,6 +76,29 @@ namespace Speed.Server.Hubs {
         public async Task RequestHand(bool playerOne) {
 
             await engine.RequestHand(this, playerOne);
+        }
+        public async Task RequestGame()
+        {
+            await engine.RequestGame(this);
+        }
+
+        public async Task SetSelectedCard(Card selectedCard, bool playerOne)
+        {
+            await engine.SetSelectedCard(this, selectedCard, playerOne);
+        }
+
+        public async Task OnMiddleClick(List<Card> middleDeck)
+        {
+            await engine.OnMiddleClick(this, middleDeck);
+        }
+
+        public async Task OnMoreCards(bool playerOne)
+        {
+            await engine.OnMoreCards(this, playerOne);
+        }
+        public async Task OnOuterMiddle(bool playerOne)
+        {
+            await engine.OnOuterMiddle(this, playerOne);
         }
 
     }
