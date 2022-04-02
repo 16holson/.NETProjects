@@ -17,6 +17,7 @@
 <h3>Speed</h3>
 
 
+
 @if (!isConnected) {
     <div class="input-group">
         <input @bind="username" class="form-control" placeholder="What's your name?">
@@ -41,28 +42,6 @@
 
     <br />
     <br />
-
-
-
-    //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
-        @*Top Player Area*@
-        <div class="text-center">
-            @*Player 2 Deck*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.addCards2()" class="m-5"/>
-
-            @*Player 2 Hand*@
-            @foreach(Card card in GameEngine.P2Hand)
-            {
-                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => GameEngine.GameService.onHandClick2(card)"/>
-            }
-            <br />
-        </div>
-            
-        @*Play Area*@
-        <div class="text-center">
-            <span style="color:green; display:@GameEngine.GameService.p1Ready">Player 1 Ready</span>
-            @*Left Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.moveMiddle(p1)" class="m-5"/>
 
     <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
 
@@ -123,23 +102,18 @@
         </div>
 }
 
+
 @code {
 
     private HubConnection? hubConnection;
     private string username = string.Empty;
     private string messages = string.Empty;
     private string userMessage = string.Empty;
-    private Card selectedCard;
-    private List<Card> selectedSide;
-    private String p1 = "one";
-    private String p2 = "two";
-    private GameEngine gameEngine = new GameEngine();    // The brains of the operation
+    private GameEngine gameEngine = new GameEngine();
 
     private static Deck? deck;
 
     private string currentCard = "card_back.png";
-    private string _hubUrl = string.Empty;
-
 
     private bool playerOne = false;
 
@@ -329,3 +303,6 @@
     
 
 }
+
+
+
