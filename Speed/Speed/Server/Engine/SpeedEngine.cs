@@ -9,28 +9,26 @@ namespace Speed.Server.Engine
     {
 
         //private static readonly ConcurrentBag<GameEngine> games = new ConcurrentBag<GameEngine>();
-        public static readonly GameEngine game = new();
+        public static GameEngine game;
 
         public SpeedEngine()
         {
-            var cardList = game.Deck.getCards();
-            Shuffle(cardList);
-            game.Deck.setCards(cardList);
+            game = new GameEngine();
         }
 
-        public async Task DealDeck(Hub hub)
-        {
-
-            if (game is null)
-            {
-                Console.WriteLine("The game is null");
-                return;
-            }
-
-            var cardList = game.Deck.getCards();
-            await hub.Clients.All.SendAsync("ReceiveDeck", "test2", cardList);
-
-        }
+        // public async Task DealDeck(Hub hub)
+        // {
+        // 
+        //     if (game is null)
+        //     {
+        //         Console.WriteLine("The game is null");
+        //         return;
+        //     }
+        // 
+        //     var cardList = game.Deck.getCards();
+        //     await hub.Clients.All.SendAsync("ReceiveDeck", "test2", cardList);
+        // 
+        // }
 
         public async Task RequestDeck(Hub hub)
         {

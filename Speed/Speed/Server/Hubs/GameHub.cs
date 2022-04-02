@@ -68,13 +68,13 @@ namespace Speed.Server.Hubs
         }
 
 
-        public async Task GetDeck()
-        {
-
-            await engine.DealDeck(this);
-
-
-        }
+        // public async Task GetDeck()
+        // {
+        // 
+        //     await engine.DealDeck(this);
+        // 
+        // 
+        // }
 
         public async Task RequestDeck()
         {

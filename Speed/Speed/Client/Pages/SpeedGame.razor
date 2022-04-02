@@ -43,7 +43,7 @@
     <br />
     <br />
 
-    <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
+    <button class="btn btn-primary form-group-append" @onclick="NewGame">New Game!</button>
 
             //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
         @*Top Player Area*@
@@ -258,7 +258,7 @@
     /// <summary>
     /// Gets the users hand based on if they are player one or player two
     /// </summary>
-    public async void RequestHand() {
+    public async void NewGame() {
         await hubConnection.SendAsync("RequestHand", playerOne);
     }
 
