@@ -43,7 +43,8 @@
     <br />
     <br />
 
-    <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
+    // <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
+    <button class="btn btn-primary form-group-append" @onclick="NewGame">New Game!</button>
 
             //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
         @*Top Player Area*@
@@ -201,7 +202,7 @@
         {
             gameEngine.P1Hand = P1Hand;
             gameEngine.P2Hand = P2Hand;
-            
+
             StateHasChanged();
         });
 
@@ -213,7 +214,7 @@
             gameEngine.Mid1Draw = Mid1Draw;
             gameEngine.Mid2Draw = Mid2Draw;
             StateHasChanged();
-         });
+        });
 
         await hubConnection.StartAsync();
     }
@@ -231,6 +232,14 @@
     }
 
     public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    public async void NewGame()
+    {
+        await hubConnection.SendAsync("NewGame");
+        Console.WriteLine("New Game has been created");
+        // stateHasChanged
+        StateHasChanged();
+    }
 
     /// <summary>
     /// Used in signalR communication

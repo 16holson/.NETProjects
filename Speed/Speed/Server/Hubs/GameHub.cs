@@ -18,7 +18,7 @@ namespace Speed.Server.Hubs
     public class GameHub : Hub
     {
 
-        private readonly SpeedEngine engine;
+        private SpeedEngine engine;
         public GameHub(SpeedEngine engine)
         {
             this.engine = engine;
@@ -112,6 +112,11 @@ namespace Speed.Server.Hubs
         public async Task OnOuterMiddle(bool playerOne)
         {
             await engine.OnOuterMiddle(this, playerOne);
+        }
+
+        public async Task NewGame()
+        {
+            this.engine = new SpeedEngine();
         }
 
     }
