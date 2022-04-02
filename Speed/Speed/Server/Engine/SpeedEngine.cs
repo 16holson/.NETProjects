@@ -79,11 +79,11 @@ namespace Speed.Server.Engine
         }
 
         //Players click on middle discard with a selected card(update middle and players hand
-        public async Task OnMiddleClick(Hub hub, List<Card> middleDeck)
+        public async Task OnMiddleClick(Hub hub, List<Card> middleDeck, string midNum)
         {
 
-            game.GameService.onPlay(middleDeck);
-            if (middleDeck.Equals(game.Mid1Discard))
+            game.GameService.onPlay(middleDeck, midNum);
+            if (midNum == "one")
             {
                 await hub.Clients.All.SendAsync("ReceiveMiddleDeck", game.Mid1Discard, game.P1Hand, game.P2Hand, "one");
             }

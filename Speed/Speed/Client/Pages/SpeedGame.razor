@@ -68,19 +68,19 @@
             @*2 Play Cards*@
             @if(gameEngine.Mid1Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard, midNum1)"/>
             }
             else
             {
-                <img src="@gameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard)"/>
+                <img src="@gameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard, midNum1)"/>
             }
             @if(gameEngine.Mid2Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard, midNum2)"/>
             }
             else
             {
-                <img src="@gameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard)"/>
+                <img src="@gameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard, midNum2)"/>
             }
 
             @*Right Draw*@
@@ -110,6 +110,8 @@
     private string messages = string.Empty;
     private string userMessage = string.Empty;
     private GameEngine gameEngine = new GameEngine();
+    private string midNum1 = "one";
+    private string midNum2 = "two";
 
     private static Deck? deck;
 
@@ -157,7 +159,7 @@
             playerOne = (playername == "Player 1") ? true : false;
         });
 
-                hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>>("ReceiveGame", (P1Draw, P2Draw, Mid1Draw, Mid2Draw, Mid1Discard, Mid2Discard, P1Hand, P2Hand) =>
+        hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>>("ReceiveGame", (P1Draw, P2Draw, Mid1Draw, Mid2Draw, Mid1Discard, Mid2Discard, P1Hand, P2Hand) =>
         {
             gameEngine.P1Draw = P1Draw;
             gameEngine.P2Draw = P2Draw;
@@ -271,9 +273,9 @@
         await hubConnection.SendAsync("SetSelectedCard", selectedCard, playerOne);
     }
 
-    public async void OnMiddleClick(List<Card> middleDeck)
+    public async void OnMiddleClick(List<Card> middleDeck, string midNum)
     {
-        await hubConnection.SendAsync("OnMiddleClick", middleDeck);
+        await hubConnection.SendAsync("OnMiddleClick", middleDeck, midNum);
     }
 
     public async void OnMoreCards()
