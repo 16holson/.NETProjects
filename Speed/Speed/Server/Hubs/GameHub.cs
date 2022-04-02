@@ -100,9 +100,9 @@ namespace Speed.Server.Hubs
             await engine.SetSelectedCard(this, selectedCard, playerOne);
         }
 
-        public async Task OnMiddleClick(List<Card> middleDeck)
+        public async Task OnMiddleClick(List<Card> middleDeck, string midNum)
         {
-            await engine.OnMiddleClick(this, middleDeck);
+            await engine.OnMiddleClick(this, middleDeck, midNum);
         }
 
         public async Task OnMoreCards(bool playerOne)

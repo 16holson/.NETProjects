@@ -70,7 +70,7 @@ namespace Speed.Server.Engine
             }
         }
 
-        public void onPlay(List<Card> middleDeck)
+        public void onPlay(List<Card> middleDeck, string midNum)
         {
             if (middleDeck.Count != 0)
             {
@@ -80,21 +80,40 @@ namespace Speed.Server.Engine
                     if ((int)selectedCard1.Value + 1 == (int)middleDeck.Last().Value || (int)selectedCard1.Value - 1 == (int)middleDeck.Last().Value
                        || ((int)selectedCard1.Value == 13 && (int)middleDeck.Last().Value == 1) || ((int)selectedCard1.Value == 1 && (int)middleDeck.Last().Value == 13))
                     {
-                        middleDeck.Add(selectedCard1);
+                        if(midNum == "one")
+                        {
+                            SpeedEngine.game.Mid1Discard.Add(selectedCard1);
+                        }
+                        else
+                        {
+                            SpeedEngine.game.Mid2Discard.Remove(selectedCard1);
+                        }
                         SpeedEngine.game.P1Hand.Remove(selectedCard1);
                         //Player won
                         if (SpeedEngine.game.P1Hand.Count == 0)
                         {
                             p1Won = "inline";
                         }
-                        selectedCard1.highlight = "";
+                        foreach (Card card in SpeedEngine.game.P1Hand)
+                        {
+                            if (card.Value == selectedCard1.Value && card.Suit == selectedCard1.Suit)
+                            {
+                                card.highlight = "";
+                            }
+                        }
                         selectedCard1 = null;
                     }
                     else
                     {
                         //Highlight card with red border 
                         //Figure out how to change highlight for 1 sec the change it back
-                        selectedCard1.highlight = "";
+                        foreach (Card card in SpeedEngine.game.P1Hand)
+                        {
+                            if (card.Value == selectedCard1.Value && card.Suit == selectedCard1.Suit)
+                            {
+                                card.highlight = "";
+                            }
+                        }
                         selectedCard1 = null;
                     }
                 }
@@ -110,21 +129,40 @@ namespace Speed.Server.Engine
                     if ((int)selectedCard2.Value + 1 == (int)middleDeck.Last().Value || (int)selectedCard2.Value - 1 == (int)middleDeck.Last().Value
                        || ((int)selectedCard2.Value == 13 && (int)middleDeck.Last().Value == 1) || ((int)selectedCard2.Value == 1 && (int)middleDeck.Last().Value == 13))
                     {
-                        middleDeck.Add(selectedCard2);
+                        if (midNum == "one")
+                        {
+                            SpeedEngine.game.Mid1Discard.Add(selectedCard2);
+                        }
+                        else
+                        {
+                            SpeedEngine.game.Mid2Discard.Remove(selectedCard2);
+                        }
                         SpeedEngine.game.P2Hand.Remove(selectedCard2);
                         //Player won
                         if (SpeedEngine.game.P2Hand.Count == 0)
                         {
                             p1Won = "inline";
                         }
-                        selectedCard2.highlight = "";
+                        foreach (Card card in SpeedEngine.game.P2Hand)
+                        {
+                            if (card.Value == selectedCard2.Value && card.Suit == selectedCard2.Suit)
+                            {
+                                card.highlight = "";
+                            }
+                        }
                         selectedCard2 = null;
                     }
                     else
                     {
                         //Highlight card with red border 
                         //Figure out how to change highlight for 1 sec the change it back
-                        selectedCard2.highlight = "";
+                        foreach (Card card in SpeedEngine.game.P2Hand)
+                        {
+                            if (card.Value == selectedCard2.Value && card.Suit == selectedCard2.Suit)
+                            {
+                                card.highlight = "";
+                            }
+                        }
                         selectedCard2 = null;
                     }
                 }
