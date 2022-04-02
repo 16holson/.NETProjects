@@ -171,21 +171,15 @@
         });
 
         //Selecting a card
-        hubConnection.On<List<Card>>("ReceiveSelectedCards", (selectedCards) =>
+        hubConnection.On<List<Card>, List<Card>>("ReceiveSelectedCards", (P1Hand, P2Hand) =>
         {
-            if(playerOne)
-            {
-                gameEngine.P1Hand = selectedCards;
-            }
-            else
-            {
-                gameEngine.P2Hand = selectedCards;
-            }
+            gameEngine.P1Hand = P1Hand;
+            gameEngine.P2Hand = P2Hand;
             StateHasChanged();
         });
 
         //Updating middle deck and players hands
-        hubConnection.On<List<Card>, List<Card>, List<Card>, string>("RecieveMiddleDeck", (MidDiscard, P1Hand, P2Hand, midNum) =>
+        hubConnection.On<List<Card>, List<Card>, List<Card>, string>("ReceiveMiddleDeck", (MidDiscard, P1Hand, P2Hand, midNum) =>
         {
             if(midNum == "one")
             {
@@ -201,7 +195,7 @@
         });
 
         //When drawing a card
-        hubConnection.On<List<Card>, List<Card>, List<Card>>("RecieveDeckandHand", (PHand, PDraw, OtherPHand) =>
+        hubConnection.On<List<Card>, List<Card>, List<Card>>("ReceiveDeckandHand", (PHand, PDraw, OtherPHand) =>
         {
             if(playerOne)
             {
@@ -219,7 +213,7 @@
         });
 
         //When flipping over new card in middle
-        hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>>("RecieveMiddleDecks", async (Mid1Discard, Mid2Discard, Mid1Draw, Mid2Draw) =>
+        hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>>("ReceiveMiddleDecks", async (Mid1Discard, Mid2Discard, Mid1Draw, Mid2Draw) =>
         {
             gameEngine.Mid1Discard = Mid1Discard;
             gameEngine.Mid2Discard = Mid2Discard;
@@ -303,6 +297,7 @@
     
 
 }
+
 
 
 

@@ -7,28 +7,36 @@ using Speed.Shared.Models;
 
 
 
-namespace Speed.Server.Hubs {
+namespace Speed.Server.Hubs
+{
 
-    public static class Connections {
+    public static class Connections
+    {
         public static List<string> connections = new();
     }
-        
-    public class GameHub : Hub {
+
+    public class GameHub : Hub
+    {
 
         private readonly SpeedEngine engine;
-        public GameHub(SpeedEngine engine) {
-           this.engine = engine;
+        public GameHub(SpeedEngine engine)
+        {
+            this.engine = engine;
         }
 
-        public override async Task OnConnectedAsync() {
-            
+        public override async Task OnConnectedAsync()
+        {
+
             Connections.connections.Add(Context.ConnectionId);
 
             string playername;
 
-            if(Connections.connections.Count > 1) {
+            if (Connections.connections.Count > 1)
+            {
                 playername = "Player 2";
-            } else {
+            }
+            else
+            {
                 playername = "Player 1";
             }
 
@@ -43,29 +51,33 @@ namespace Speed.Server.Hubs {
 
         }
 
-        public async Task setPlayer(string playername) {
+        public async Task setPlayer(string playername)
+        {
             await Clients.Caller.SendAsync("SetPlayer", playername);
         }
 
 
-        public async Task SendMessage(string user, string message) {
+        public async Task SendMessage(string user, string message)
+        {
 
             Console.WriteLine(message);
 
             await Clients.All.SendAsync("ReceiveMessage", user, message);
-            
+
 
         }
 
 
-        public async Task GetDeck() {
+        public async Task GetDeck()
+        {
 
             await engine.DealDeck(this);
 
 
         }
 
-        public async Task RequestDeck() {
+        public async Task RequestDeck()
+        {
 
             await engine.RequestDeck(this);
 
@@ -73,7 +85,8 @@ namespace Speed.Server.Hubs {
         }
 
 
-        public async Task RequestHand(bool playerOne) {
+        public async Task RequestHand(bool playerOne)
+        {
 
             await engine.RequestHand(this, playerOne);
         }

@@ -37,23 +37,37 @@ namespace Speed.Server.Engine
         #region Methods
         public void onHandClick1(Card selectedCard)
         {
-            selectedCard1 = selectedCard;
-            selectedCard1.highlight = "0px 12px 22px 1px #00FF00;";
-            if (previousCard1 != null && previousCard1 != selectedCard)
+            foreach (Card card in SpeedEngine.game.P1Hand)
             {
-                previousCard1.highlight = "";
+                if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+                {
+                    selectedCard1 = card;
+                    card.highlight = "0px 12px 22px 1px #00FF00;";
+                    selectedCard1.highlight = "0px 12px 22px 1px #00FF00;";
+                    if (previousCard1 != null && previousCard1 != card)
+                    {
+                        previousCard1.highlight = "";
+                    }
+                    previousCard1 = card;
+                }
             }
-            previousCard1 = selectedCard;
+
         }
         public void onHandClick2(Card selectedCard)
         {
-            selectedCard2 = selectedCard;
-            selectedCard2.highlight = "0px 12px 22px 1px #00FF00;";
-            if (previousCard2 != null && previousCard2 != selectedCard)
+            foreach (Card card in SpeedEngine.game.P2Hand)
             {
-                previousCard2.highlight = "";
+                if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+                {
+                    card.highlight = "0px 12px 22px 1px #00FF00;";
+                    selectedCard2 = card;
+                    if (previousCard2 != null && previousCard2 != card)
+                    {
+                        previousCard2.highlight = "";
+                    }
+                    previousCard2 = card;
+                }
             }
-            previousCard2 = selectedCard;
         }
 
         public void onPlay(List<Card> middleDeck)

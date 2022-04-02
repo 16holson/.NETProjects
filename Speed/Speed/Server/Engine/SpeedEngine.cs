@@ -72,13 +72,12 @@ namespace Speed.Server.Engine
             if (playerOne)
             {
                 game.GameService.onHandClick1(selectedCard);
-                await hub.Clients.Caller.SendAsync("ReceiveSelectedCards", game.P1Hand);
             }
             else
             {
                 game.GameService.onHandClick2(selectedCard);
-                await hub.Clients.Caller.SendAsync("RecieveSelectedCards", game.P2Hand);
             }
+            await hub.Clients.All.SendAsync("ReceiveSelectedCards", game.P1Hand, game.P2Hand);
         }
 
         //Players click on middle discard with a selected card(update middle and players hand
@@ -88,11 +87,11 @@ namespace Speed.Server.Engine
             game.GameService.onPlay(middleDeck);
             if (middleDeck.Equals(game.Mid1Discard))
             {
-                await hub.Clients.Caller.SendAsync("RecieveMiddleDeck", game.Mid1Discard, game.P1Hand, game.P2Hand, "one");
+                await hub.Clients.All.SendAsync("ReceiveMiddleDeck", game.Mid1Discard, game.P1Hand, game.P2Hand, "one");
             }
             else
             {
-                await hub.Clients.Caller.SendAsync("RecieveMiddleDeck", game.Mid2Discard, game.P1Hand, game.P2Hand, "two");
+                await hub.Clients.All.SendAsync("ReceiveMiddleDeck", game.Mid2Discard, game.P1Hand, game.P2Hand, "two");
             }
         }
 
@@ -102,12 +101,12 @@ namespace Speed.Server.Engine
             if (playerOne)
             {
                 game.GameService.addCards1();
-                await hub.Clients.Caller.SendAsync("RecieveDeckandHand", game.P1Hand, game.P1Draw, game.P2Hand);
+                await hub.Clients.Caller.SendAsync("ReceiveDeckandHand", game.P1Hand, game.P1Draw, game.P2Hand);
             }
             else
             {
                 game.GameService.addCards2();
-                await hub.Clients.Caller.SendAsync("RecieveDeckandHand", game.P2Hand, game.P2Draw, game.P1Hand);
+                await hub.Clients.Caller.SendAsync("ReceiveDeckandHand", game.P2Hand, game.P2Draw, game.P1Hand);
             }
         }
 
@@ -122,7 +121,7 @@ namespace Speed.Server.Engine
             {
                 game.GameService.moveMiddle("two");
             }
-            await hub.Clients.All.SendAsync("RecieveMiddleDecks", game.Mid1Discard, game.Mid2Discard, game.Mid1Draw, game.Mid2Draw);
+            await hub.Clients.All.SendAsync("ReceiveMiddleDecks", game.Mid1Discard, game.Mid2Discard, game.Mid1Draw, game.Mid2Draw);
         }
 
 
