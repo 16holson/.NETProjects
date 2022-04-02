@@ -3,10 +3,12 @@
 @implements IAsyncDisposable
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Speed.Shared.Models;
-@using Speed.Shared.Models.Enums
+@using Speed.Shared.Models.Enums;
 @using System
 @using System.Collections
 @using System.Text
+@using System.Text.Json;
+@using Speed.Shared;
 
 
 
@@ -27,7 +29,7 @@
 
 } else {
     
-    @*<textarea style="width: 75%; height: 300px;">
+    <textarea style="width: 75%; height: 300px;">
         @messages
     </textarea>
 
@@ -38,7 +40,7 @@
     </div>
 
     <br />
-    <br />*@
+    <br />
 
 
 
@@ -62,45 +64,63 @@
             @*Left Draw*@
             <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.moveMiddle(p1)" class="m-5"/>
 
+    <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
+
+            //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
+        @*Top Player Area*@
+        <div class="text-center">
+            @*Player 2 Deck*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
+
+            @*Player 2 Hand*@
+            @foreach(Card card in gameEngine.P2Hand)
+            {
+                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => SetSelectedCard(card)"/>
+            }
+            <br />
+        </div>
+            
+        @*Play Area*@
+        <div class="text-center">
+            @*<span style="color:green; display:@gameEngine.p1Ready">Player 1 Ready</span>*@
+            @*Left Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle()" class="m-5"/>
+
             @*2 Play Cards*@
-            @if(GameEngine.Mid1Discard.Count == 0)
+            @if(gameEngine.Mid1Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid1Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard)"/>
             }
             else
             {
-                <img src="@GameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid1Discard)"/>
+                <img src="@gameEngine.Mid1Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid1Discard)"/>
             }
-            @if(GameEngine.Mid2Discard.Count == 0)
+            @if(gameEngine.Mid2Discard.Count == 0)
             {
-                <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid2Discard)"/>
+                <img src="card_back.png" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard)"/>
             }
             else
             {
-                <img src="@GameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => GameEngine.GameService.onPlay(GameEngine.Mid2Discard)"/>
+                <img src="@gameEngine.Mid2Discard.Last().ToString()" width=7% height=auto @onclick="() => OnMiddleClick(gameEngine.Mid2Discard)"/>
             }
 
             @*Right Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.moveMiddle(p2)" class="m-5"/>
-            <span style="color:green; display:@GameEngine.GameService.p2Ready">Player 2 Ready</span>
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle()" class="m-5"/>
+            @*<span style="color:green; display:@GameEngine.GameService.p2Ready">Player 2 Ready</span>*@
             <br />
+
         </div>   
         @*Bottom Player Area*@
         <div class='text-center'>
             @*Player 1 Hand*@
-            @foreach(Card card in GameEngine.P1Hand)
+            @foreach(Card card in gameEngine.P1Hand)
             {
-                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => GameEngine.GameService.onHandClick1(card)"/>
+                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => SetSelectedCard(card)"/>
             }
 
             @*Player 1 Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => GameEngine.GameService.addCards1()" class="m-5"/>
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
         </div>
-        <div>
-            <span style="display:@GameEngine.GameService.p1Won">Player 1 Won!</span>
-            <span style="display:@GameEngine.GameService.p2Won">Player 2 Won!</span>
-        </div>
-
 }
 
 @code {
@@ -115,11 +135,18 @@
     private String p2 = "two";
     private GameEngine gameEngine = new GameEngine();    // The brains of the operation
 
+    private static Deck? deck;
+
     private string currentCard = "card_back.png";
     private string _hubUrl = string.Empty;
 
 
+    private bool playerOne = false;
 
+    /// <summary>
+    /// Connects to the gamehub
+    /// </summary>
+    /// <returns></returns>
     private async Task ConnectToHub() {
 
         hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/gamehub")).Build();
@@ -132,9 +159,108 @@
             StateHasChanged();
         });
 
+
+        hubConnection.On<string, List<Card>>("ReceiveDeck", (user, cards) => {
+
+            Console.WriteLine(user);
+
+            foreach(Card card in cards) {
+                Console.WriteLine(card.ToString());
+            }
+
+            StateHasChanged();
+        });
+
+        hubConnection.On<List<Card>>("ReceiveHand", (hand) => {
+
+            foreach (Card card in hand) {
+                Console.WriteLine(card.ToString());
+            }
+        });
+
+        hubConnection.On<string>("SetPlayer", (playername) => {
+
+            playerOne = (playername == "Player 1") ? true : false;
+        });
+
+                hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>, List<Card>>("ReceiveGame", (P1Draw, P2Draw, Mid1Draw, Mid2Draw, Mid1Discard, Mid2Discard, P1Hand, P2Hand) =>
+        {
+            gameEngine.P1Draw = P1Draw;
+            gameEngine.P2Draw = P2Draw;
+            gameEngine.Mid1Draw = Mid1Draw;
+            gameEngine.Mid2Draw = Mid2Draw;
+            gameEngine.Mid1Discard = Mid1Discard;
+            gameEngine.Mid2Discard = Mid2Discard;
+            gameEngine.P1Hand = P1Hand;
+            gameEngine.P2Hand = P2Hand;
+            StateHasChanged();
+        });
+
+        //Selecting a card
+        hubConnection.On<List<Card>>("ReceiveSelectedCards", (selectedCards) =>
+        {
+            if(playerOne)
+            {
+                gameEngine.P1Hand = selectedCards;
+            }
+            else
+            {
+                gameEngine.P2Hand = selectedCards;
+            }
+            StateHasChanged();
+        });
+
+        //Updating middle deck and players hands
+        hubConnection.On<List<Card>, List<Card>, List<Card>, string>("RecieveMiddleDeck", (MidDiscard, P1Hand, P2Hand, midNum) =>
+        {
+            if(midNum == "one")
+            {
+                gameEngine.Mid1Discard = MidDiscard;
+            }
+            else
+            {
+                gameEngine.Mid2Discard = MidDiscard;
+            }
+            gameEngine.P1Hand = P1Hand;
+            gameEngine.P2Hand = P2Hand;
+            StateHasChanged();
+        });
+
+        //When drawing a card
+        hubConnection.On<List<Card>, List<Card>, List<Card>>("RecieveDeckandHand", (PHand, PDraw, OtherPHand) =>
+        {
+            if(playerOne)
+            {
+                gameEngine.P1Hand = PHand;
+                gameEngine.P1Draw = PDraw;
+                gameEngine.P2Hand = OtherPHand;
+            }
+            else
+            {
+                gameEngine.P2Hand = PHand;
+                gameEngine.P2Draw = PDraw;
+                gameEngine.P1Hand = OtherPHand;
+            }
+            StateHasChanged();
+        });
+
+        //When flipping over new card in middle
+        hubConnection.On<List<Card>, List<Card>, List<Card>, List<Card>>("RecieveMiddleDecks", async (Mid1Discard, Mid2Discard, Mid1Draw, Mid2Draw) =>
+        {
+            gameEngine.Mid1Discard = Mid1Discard;
+            gameEngine.Mid2Discard = Mid2Discard;
+            gameEngine.Mid1Draw = Mid1Draw;
+            gameEngine.Mid2Draw = Mid2Draw;
+            StateHasChanged();
+         });
+
         await hubConnection.StartAsync();
     }
 
+    /// <summary>
+    /// Sends a message to all connected clients
+    /// </summary>
+    /// <returns></returns>
     private async Task Send() {
         if (hubConnection != null) {
             await hubConnection.SendAsync("SendMessage", username, userMessage);
@@ -145,14 +271,61 @@
 
     public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
+    /// <summary>
+    /// Used in signalR communication
+    /// </summary>
+    /// <returns></returns>
     public async ValueTask DisposeAsync() {
         if (hubConnection != null) {
             await hubConnection.DisposeAsync();
         }
     }
-    public async void StartGame()
-    {
-        //nothing yet
+
+
+    //Used for testing
+    public async void RequestDeck() {
+        await hubConnection.SendAsync("RequestDeck");
     }
+
+    /// <summary>
+    /// Gets the users hand based on if they are player one or player two
+    /// </summary>
+    public async void RequestHand() {
+        await hubConnection.SendAsync("RequestHand", playerOne);
+    }
+
+        public async void RequestGame()
+    {
+        await hubConnection.SendAsync("RequestGame");
+    }
+    public async void SetSelectedCard(Card selectedCard)
+    {
+        await hubConnection.SendAsync("SetSelectedCard", selectedCard, playerOne);
+    }
+
+    public async void OnMiddleClick(List<Card> middleDeck)
+    {
+        await hubConnection.SendAsync("OnMiddleClick", middleDeck);
+    }
+
+    public async void OnMoreCards()
+    {
+        await hubConnection.SendAsync("OnMoreCards", playerOne);
+    }
+
+    public async void OnOuterMiddle()
+    {
+        await hubConnection.SendAsync("OnOuterMiddle", playerOne);
+    }
+    /// <summary>
+    /// Used for printing a card to the console while troubleshooting
+    /// </summary>
+    public void AssignCardFace(ref Card card)
+    {
+        currentCard = card.ToString();
+
+    }
+
+    
 
 }

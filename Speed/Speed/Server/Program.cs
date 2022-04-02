@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Speed.Server.Hubs;
+using Speed.Server.Engine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddSignalR();
 builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" })
 );
+
+builder.Services.AddSingleton<SpeedEngine>();
 
 //--------------------------------------------------------------------------------------------------------------
 
