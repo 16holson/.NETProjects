@@ -197,20 +197,11 @@
         });
 
         //When drawing a card
-        hubConnection.On<List<Card>, List<Card>, List<Card>>("ReceiveDeckandHand", (PHand, PDraw, OtherPHand) =>
+        hubConnection.On<List<Card>, List<Card>>("ReceiveDeckandHand", (P1Hand,P2Hand) =>
         {
-            if(playerOne)
-            {
-                gameEngine.P1Hand = PHand;
-                gameEngine.P1Draw = PDraw;
-                gameEngine.P2Hand = OtherPHand;
-            }
-            else
-            {
-                gameEngine.P2Hand = PHand;
-                gameEngine.P2Draw = PDraw;
-                gameEngine.P1Hand = OtherPHand;
-            }
+            gameEngine.P1Hand = P1Hand;
+            gameEngine.P2Hand = P2Hand;
+            
             StateHasChanged();
         });
 

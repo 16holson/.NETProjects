@@ -101,13 +101,12 @@ namespace Speed.Server.Engine
             if (playerOne)
             {
                 game.GameService.addCards1();
-                await hub.Clients.Caller.SendAsync("ReceiveDeckandHand", game.P1Hand, game.P1Draw, game.P2Hand);
             }
             else
             {
-                game.GameService.addCards2();
-                await hub.Clients.Caller.SendAsync("ReceiveDeckandHand", game.P2Hand, game.P2Draw, game.P1Hand);
+                game.GameService.addCards2();  
             }
+            await hub.Clients.All.SendAsync("ReceiveDeckandHand", game.P1Hand, game.P2Hand);
         }
 
         //Move outer middle to inner middle deck

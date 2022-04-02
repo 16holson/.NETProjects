@@ -86,7 +86,7 @@ namespace Speed.Server.Engine
                         }
                         else
                         {
-                            SpeedEngine.game.Mid2Discard.Remove(selectedCard1);
+                            SpeedEngine.game.Mid2Discard.Add(selectedCard1);
                         }
                         SpeedEngine.game.P1Hand.Remove(selectedCard1);
                         //Player won
@@ -135,7 +135,7 @@ namespace Speed.Server.Engine
                         }
                         else
                         {
-                            SpeedEngine.game.Mid2Discard.Remove(selectedCard2);
+                            SpeedEngine.game.Mid2Discard.Add(selectedCard2);
                         }
                         SpeedEngine.game.P2Hand.Remove(selectedCard2);
                         //Player won
