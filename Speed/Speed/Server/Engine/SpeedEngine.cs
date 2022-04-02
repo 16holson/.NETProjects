@@ -72,10 +72,24 @@ namespace Speed.Server.Engine
             if (playerOne)
             {
                 game.GameService.onHandClick1(selectedCard);
+                foreach(Card card in game.P1Hand)
+                {
+                    if(card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+                    {
+                        card.highlight = "0px 12px 22px 1px #00FF00;";
+                    }
+                }
             }
             else
             {
                 game.GameService.onHandClick2(selectedCard);
+                foreach (Card card in game.P2Hand)
+                {
+                    if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
+                    {
+                        card.highlight = "0px 12px 22px 1px #00FF00;";
+                    }
+                }
             }
             await hub.Clients.All.SendAsync("ReceiveSelectedCards", game.P1Hand, game.P2Hand);
         }

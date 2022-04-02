@@ -29,36 +29,34 @@
 
 
 } else {
-    
-    <textarea style="width: 75%; height: 300px;">
-        @messages
-    </textarea>
-
-    <div class="input-group">
-        <input @bind-value="userMessage" @bind-value:event="oninput" class="form-control">
-        <button class="btn btn-primary form-group-append" @onclick="Send" disabled="@(!isConnected)"> Send!</button>
-        
-    </div>
-
-    <br />
-    <br />
-
-    <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
-
-            //<button class="btn btn-primary form-group-append" @onclick="createdeck"> Deck!</button>
-        @*Top Player Area*@
+        @if(playerOne)
+        {
         <div class="text-center">
-            @*Player 2 Deck*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
 
             @*Player 2 Hand*@
             @foreach(Card card in gameEngine.P2Hand)
             {
-                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => SetSelectedCard(card)"/>
+                <img src="card_back.png" class="m-1" width=7% height=auto @onclick="() => SetSelectedCard(card)"/>
             }
+            @*Player 2 Deck*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
             <br />
         </div>
-            
+        }
+        else
+        {
+        <div class='text-center'>
+            @*Player 1 Hand*@
+            @foreach(Card card in gameEngine.P1Hand)
+            {
+                <img src="card_back.png" class="m-1" width=7% height=auto @onclick="() => SetSelectedCard(card)"/>
+            }
+
+            @*Player 1 Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
+        </div>
+        }
+
         @*Play Area*@
         <div class="text-center">
             @*<span style="color:green; display:@gameEngine.p1Ready">Player 1 Ready</span>*@
@@ -89,17 +87,32 @@
             <br />
 
         </div>   
-        @*Bottom Player Area*@
+        @if(!playerOne)
+        {
+        <div class="text-center">
+            @*Player 2 Deck*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
+
+            @*Player 2 Hand*@
+            @foreach(Card card in gameEngine.P2Hand)
+            {
+                <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => SetSelectedCard(card)"/>
+            }
+            <br />
+        </div>
+        }
+        else
+        {
         <div class='text-center'>
+            @*Player 1 Draw*@
+            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
             @*Player 1 Hand*@
             @foreach(Card card in gameEngine.P1Hand)
             {
                 <img src="@card.ToString()" class="m-1" width=7% height=auto style="box-shadow:@card.highlight" @onclick="() => SetSelectedCard(card)"/>
             }
-
-            @*Player 1 Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
         </div>
+        }
 }
 
 
