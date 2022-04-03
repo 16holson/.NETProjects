@@ -90,8 +90,7 @@ namespace Speed.Server.Engine
                 //Player 1
                 if (selectedCard1 != null)
                 {
-                    if ((int)selectedCard1.Value + 1 == (int)middleDeck.Last().Value || (int)selectedCard1.Value - 1 == (int)middleDeck.Last().Value
-                       || ((int)selectedCard1.Value == 13 && (int)middleDeck.Last().Value == 1) || ((int)selectedCard1.Value == 1 && (int)middleDeck.Last().Value == 13))
+                    if (SpeedEngine.game.isValidMove(selectedCard1, middleDeck.Last()))
                     {
                         if(midNum == "one")
                         {
@@ -139,8 +138,7 @@ namespace Speed.Server.Engine
                 //Player 2
                 if (selectedCard2 != null)
                 {
-                    if ((int)selectedCard2.Value + 1 == (int)middleDeck.Last().Value || (int)selectedCard2.Value - 1 == (int)middleDeck.Last().Value
-                       || ((int)selectedCard2.Value == 13 && (int)middleDeck.Last().Value == 1) || ((int)selectedCard2.Value == 1 && (int)middleDeck.Last().Value == 13))
+                    if (SpeedEngine.game.isValidMove(selectedCard2,middleDeck.Last()))
                     {
                         if (midNum == "one")
                         {
