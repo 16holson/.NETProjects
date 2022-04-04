@@ -93,7 +93,19 @@ namespace Speed.Server.Engine
             Deck.BuildDeck();
         }
 
-
+        /// <summary>
+        /// compares two cards if they are a valid move option
+        /// </summary>
+        /// <param name="card1"></param>
+        /// <param name="card2"></param>
+        /// <returns>
+        /// true if the cards value is off by one
+        /// or twelve for the case of ace and king
+        /// </returns>
+        public bool isValidMove(Card card1, Card card2)
+        {
+            return Math.Abs(card1.Value - card2.Value) == 1 || Math.Abs(card1.Value - card2.Value) == 12;
+        }
 
         #endregion
 

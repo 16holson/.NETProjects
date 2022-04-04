@@ -94,7 +94,8 @@ namespace Speed.Server.Engine
         //Players click on middle discard with a selected card(update middle and players hand
         public async Task OnMiddleClick(Hub hub, List<Card> middleDeck, string midNum)
         {
-
+            Card midCard = middleDeck[0];
+            
             game.GameService.onPlay(middleDeck, midNum);
             if (midNum == "one")
             {
