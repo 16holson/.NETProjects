@@ -50,20 +50,6 @@ namespace Speed.Server.Engine
                     previousCard1 = SpeedEngine.game.P1Hand[i];
                 }
             }
-            //foreach (Card card in SpeedEngine.game.P1Hand)
-            //{
-            //    if (card.Value == selectedCard.Value && card.Suit == selectedCard.Suit)
-            //    {
-            //        selectedCard1 = card;
-            //        card.highlight = "0px 12px 22px 1px #00FF00;";
-            //        selectedCard1.highlight = "0px 12px 22px 1px #00FF00;";
-            //        if (previousCard1 != null && previousCard1 != card)
-            //        {
-            //            previousCard1.highlight = "";
-            //        }
-            //        previousCard1 = card;
-            //    }
-            //}
 
         }
         public void onHandClick2(Card selectedCard)

@@ -32,7 +32,7 @@
         @if(playerOne)
         {
     
-    <textarea style="width: 75%; height: 300px;">
+@*    <textarea style="width: 75%; height: 300px;">
         @messages
     </textarea>
 
@@ -43,7 +43,7 @@
     </div>
 
     <br />
-    <br />
+    <br />*@
 
     // <button class="btn btn-primary form-group-append" @onclick="RequestHand">Request Hand!</button>
     <button class="btn btn-primary form-group-append" @onclick="NewGame">New Game!</button>
@@ -78,9 +78,8 @@
 
         @*Play Area*@
         <div class="text-center">
-            @*<span style="color:green; display:@gameEngine.p1Ready">Player 1 Ready</span>*@
             @*Left Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle()" class="m-5"/>
+            <img style="box-shadow:@leftHighlight" src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle(true)" class="m-5"/>
 
             @*2 Play Cards*@
             @if(gameEngine.Mid1Discard.Count == 0)
@@ -101,7 +100,7 @@
             }
 
             @*Right Draw*@
-            <img src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle()" class="m-5"/>
+            <img style="box-shadow:@rightHighlight" src="card_back.png" width=7% height=auto @onclick="() => OnOuterMiddle(false)" class="m-5"/>
             @*<span style="color:green; display:@GameEngine.GameService.p2Ready">Player 2 Ready</span>*@
             <br />
 
@@ -110,6 +109,7 @@
         {
         <div class="text-center">
             @*Player 2 Deck*@
+            <span>Cards Left: @P2NumCards</span>
             <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
 
             @*Player 2 Hand*@
@@ -124,6 +124,7 @@
         {
         <div class='text-center'>
             @*Player 1 Draw*@
+            <span>Cards Left: @P1NumCards</span>
             <img src="card_back.png" width=7% height=auto @onclick="() => OnMoreCards()" class="m-5"/>
             @*Player 1 Hand*@
             @foreach(Card card in gameEngine.P1Hand)
@@ -144,6 +145,10 @@
     private GameEngine gameEngine = new GameEngine();
     private string midNum1 = "one";
     private string midNum2 = "two";
+    private int P1NumCards = 15;
+    private int P2NumCards = 15;
+    private string leftHighlight = "";
+    private string rightHighlight = "";
 
     private static Deck? deck;
 
@@ -247,6 +252,22 @@
             StateHasChanged();
         });
 
+        hubConnection.On<string>("ReceiveNewGame", (test) =>
+        {
+            StateHasChanged();
+        });
+
+        hubConnection.On<string, string>("ReceiveHighlight", (leftHighlight, rightHighlight) =>
+        {
+            this.leftHighlight = leftHighlight;
+            this.rightHighlight = rightHighlight;
+            if(leftHighlight != "" && rightHighlight != "")
+            {
+                this.leftHighlight = "";
+                this.rightHighlight = "";
+            }
+        });
+
         await hubConnection.StartAsync();
     }
 
@@ -295,7 +316,7 @@
         await hubConnection.SendAsync("RequestHand", playerOne);
     }
 
-        public async void RequestGame()
+    public async void RequestGame()
     {
         await hubConnection.SendAsync("RequestGame");
     }
@@ -311,12 +332,33 @@
 
     public async void OnMoreCards()
     {
+        if(playerOne)
+        {
+            P1NumCards--;
+        }
+        else
+        {
+            P2NumCards--;
+        }
         await hubConnection.SendAsync("OnMoreCards", playerOne);
     }
 
-    public async void OnOuterMiddle()
+    public async void OnOuterMiddle(bool left)
     {
+        OnMiddleHighlight(left);
         await hubConnection.SendAsync("OnOuterMiddle", playerOne);
+    }
+    public async void OnMiddleHighlight(bool left)
+    {
+        if(left)
+        {
+            leftHighlight = "0px 12px 22px 1px #00FF00;";
+        }
+        else
+        {
+            rightHighlight = "0px 12px 22px 1px #00FF00;";
+        }
+        await hubConnection.SendAsync("OnMiddleHighlight", leftHighlight, rightHighlight);
     }
     /// <summary>
     /// Used for printing a card to the console while troubleshooting

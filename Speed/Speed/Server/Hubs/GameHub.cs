@@ -117,6 +117,11 @@ namespace Speed.Server.Hubs
         public async Task NewGame()
         {
             this.engine = new SpeedEngine();
+            await Clients.All.SendAsync("ReceiveNewGame", "test");
+        }
+        public async Task OnMiddleHighlight(string left, string right)
+        {
+            await Clients.All.SendAsync("ReceiveHighlight", left, right);
         }
 
     }
