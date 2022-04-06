@@ -16,9 +16,8 @@ ASP.NET Core 6.0,
 SQL,
 Entity Framework,
 Visual Studio
-### Cecilia Harvey's Contributions
-Added a new field on the Student's profile. This required adjustments to the student profile table to add a new column and insert the new information through Entity Framework. 
-This also required adjustments to the Student Profile views visible from the roles of Student, Judge, and Admin. 
+### Hunter Olson's Contributions
+Helped to migrate to dotnet 2.1. Fixed bug that wouldn't allow you to see applications if a judge hasen't rated it. 
 ### Usage:
 **Logging In**
 To log in, use an existing username and password, or create a new account. 
