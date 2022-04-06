@@ -13,11 +13,11 @@ ASP.NET Core 6.0,
 Web Sockets with SignalR,
 Access Database,
 Visual Studio
-### Cecilia Harvey's Contributions
-Password salting and hashing,
-Login with SignalR,
-SignalR set up and examples,
-Database set up (with a lot of help from teamates, especially Dennis Chase)
+### Hunter Olson's Contributions
+Designed the Login and Hangman pages,
+Helped with SignalR,
+Added functionality to Hangman page,
+Added top ten functionality
 ### Usage:
 **Logging In**
 To log in, use an existing username and password, or create a new account. 
