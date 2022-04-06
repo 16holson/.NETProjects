@@ -13,9 +13,9 @@ ASP.NET Core 6.0,
 Web Sockets with SignalR,
 Visual Studio
 ### Cecilia Harvey's Contributions
-I helped refactor code, to implement the MVC design model. 
-I also added the feature to reshuffle and deal a new game after finishing a game, or in the event of a draw. 
-I also helped troubleshoot the problems we were having with SignalR, passing objects from the Client side to the Server. 
+I designed the front end
+I also implemented the draw card, play card, and flip new card functions.
+I also applied our understanding of SignalR to our project.
 ### Usage:
 **Starting a game**
 Start a game, Launch the web app and then click Speed Game from the navigation menu. 
