@@ -13,9 +13,9 @@ ASP.NET Core 6.0,
 Web Sockets with SignalR,
 Visual Studio
 ### Hunter Olson's Contributions
-I designed the front end
-I also implemented the draw card, play card, and flip new card functions.
-I also applied our understanding of SignalR to our project.
+-I designed the front end
+-I implemented the draw card, play card, and flip new card functions.
+-I applied our understanding of SignalR to our project.
 ### Usage:
 **Starting a game**
 Start a game, Launch the web app and then click Speed Game from the navigation menu. 
