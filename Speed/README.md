@@ -13,7 +13,7 @@ ASP.NET Core 6.0,
 Web Sockets with SignalR,
 Visual Studio
 ### Hunter Olson's Contributions
-- I designed the front end
+- I designed the layout of the cards on the front end.
 - I implemented the draw card, play card, and flip new card functions.
 - I applied our understanding of SignalR to our project.
 ### Usage:
