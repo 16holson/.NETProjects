@@ -12,7 +12,7 @@ April 2022
 ASP.NET Core 6.0,
 Web Sockets with SignalR,
 Visual Studio
-### Cecilia Harvey's Contributions
+### Hunter Olson's Contributions
 I designed the front end
 I also implemented the draw card, play card, and flip new card functions.
 I also applied our understanding of SignalR to our project.
